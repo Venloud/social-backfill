@@ -1,0 +1,148 @@
+name: Publish Instagram Reel
+
+on:
+  workflow_dispatch:
+    inputs:
+      video_url:
+        description: Public HTTPS URL to the Reel video file
+        required: true
+        type: string
+      caption:
+        description: Caption for this Reel
+        required: true
+        type: string
+      share_to_feed:
+        description: Also show the Reel in the Instagram feed
+        required: true
+        default: true
+        type: boolean
+
+permissions: {}
+
+concurrency:
+  group: instagram-reel-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish one Reel
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      GRAPH_API_VERSION: ${{ vars.INSTAGRAM_GRAPH_API_VERSION }}
+      INSTAGRAM_USER_ID: ${{ secrets.INSTAGRAM_USER_ID }}
+      INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+      VIDEO_URL: ${{ inputs.video_url }}
+      CAPTION: ${{ inputs.caption }}
+      SHARE_TO_FEED: ${{ inputs.share_to_feed }}
+    steps:
+      - name: Create, process, and publish Reel
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import sys
+          import time
+          import urllib.error
+          import urllib.parse
+          import urllib.request
+
+          token = os.environ.get("INSTAGRAM_ACCESS_TOKEN", "").strip()
+          user_id = os.environ.get("INSTAGRAM_USER_ID", "").strip()
+          video_url = os.environ.get("VIDEO_URL", "").strip()
+          caption = os.environ.get("CAPTION", "")
+          share_to_feed = os.environ.get("SHARE_TO_FEED", "true").lower() == "true"
+          version = os.environ.get("GRAPH_API_VERSION", "").strip() or "v26.0"
+
+          if not token or not user_id:
+              sys.exit("Missing INSTAGRAM_ACCESS_TOKEN or INSTAGRAM_USER_ID repository secret.")
+          if len(caption) > 2200:
+              sys.exit("Caption exceeds Instagram's 2,200-character limit.")
+          parsed_video_url = urllib.parse.urlsplit(video_url)
+          if parsed_video_url.scheme != "https" or not parsed_video_url.hostname:
+              sys.exit("video_url must be a publicly accessible HTTPS URL.")
+          if parsed_video_url.username or parsed_video_url.password:
+              sys.exit("video_url must not contain embedded credentials.")
+
+          base = f"https://graph.instagram.com/{version}"
+
+          def api(method, path, params=None):
+              params = params or {}
+              url = f"{base}/{path.lstrip('/')}"
+              body = None
+              if method == "GET" and params:
+                  url += "?" + urllib.parse.urlencode(params)
+              elif method == "POST":
+                  body = urllib.parse.urlencode(params).encode("utf-8")
+
+              headers = {
+                  "Accept": "application/json",
+                  "Authorization": f"Bearer {token}",
+              }
+              if body is not None:
+                  headers["Content-Type"] = "application/x-www-form-urlencoded"
+
+              request = urllib.request.Request(url, data=body, headers=headers, method=method)
+              try:
+                  with urllib.request.urlopen(request, timeout=90) as response:
+                      payload = json.loads(response.read().decode("utf-8"))
+              except urllib.error.HTTPError as exc:
+                  try:
+                      error_payload = json.loads(exc.read().decode("utf-8"))
+                      error = error_payload.get("error", {})
+                      message = error.get("message", "Instagram API request failed.")
+                  except Exception:
+                      message = "Instagram API request failed."
+                  raise RuntimeError(f"Instagram API returned HTTP {exc.code}: {message}") from None
+              except urllib.error.URLError as exc:
+                  raise RuntimeError(f"Could not reach Instagram API: {exc.reason}") from None
+
+              if not isinstance(payload, dict):
+                  raise RuntimeError("Instagram API returned an unexpected response.")
+              if payload.get("error"):
+                  message = payload["error"].get("message", "Instagram API request failed.")
+                  raise RuntimeError(f"Instagram API error: {message}")
+              return payload
+
+          try:
+              created = api("POST", f"{user_id}/media", {
+                  "media_type": "REELS",
+                  "video_url": video_url,
+                  "caption": caption,
+                  "share_to_feed": str(share_to_feed).lower(),
+              })
+              container_id = created.get("id")
+              if not container_id:
+                  raise RuntimeError("Instagram did not return a media container ID.")
+
+              for attempt in range(180):
+                  status = api("GET", container_id, {
+                      "fields": "status_code,status",
+                  })
+                  status_code = status.get("status_code", "")
+                  if status_code == "FINISHED":
+                      break
+                  if status_code in {"ERROR", "EXPIRED"}:
+                      detail = status.get("status", status_code)
+                      raise RuntimeError(f"Instagram could not process the Reel: {detail}")
+                  if attempt == 179:
+                      raise RuntimeError("Timed out waiting for Instagram to process the Reel.")
+                  time.sleep(10)
+
+              published = api("POST", f"{user_id}/media_publish", {
+                  "creation_id": container_id,
+              })
+              media_id = published.get("id")
+              if not media_id:
+                  raise RuntimeError("Instagram did not return a published media ID.")
+
+              print(f"Reel published successfully. Instagram media ID: {media_id}")
+              summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
+              if summary_path:
+                  with open(summary_path, "a", encoding="utf-8") as summary:
+                      summary.write("## Instagram Reel published\n\n")
+                      summary.write(f"Instagram media ID: `{media_id}`\n")
+          except RuntimeError as exc:
+              sys.exit(str(exc))
+          PY
