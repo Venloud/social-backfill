@@ -3,9 +3,11 @@ name: Backfill Publish (one)
 # Advances each destination independently: YouTube and Instagram each select their own oldest eligible TikTok.
 # A failed/stuck destination never blocks the healthy destination from continuing its backlog. State lives on the `state` branch (state/manifest.json), committed with GITHUB_TOKEN:
 # 'publishing' is pushed before each upload, 'published' + id + URL after. A destination stuck on
-# 'publishing' is never retried automatically. Never refreshes or writes TikTok secrets. Manual only.
+# 'publishing' is never retried automatically. Scheduled runs refresh TikTok credentials in this repo, and cap historical sources at 20/day.
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '*/5 * * * *'
 
 permissions:
   contents: write   # push the state branch
@@ -42,6 +44,13 @@ jobs:
             mkdir -p .state/state
             echo "State branch: created (first run)"
           fi
+      - name: Refresh TikTok token for reliable scheduled discovery
+        env:
+          TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
+          TIKTOK_CLIENT_SECRET: ${{ secrets.TIKTOK_CLIENT_SECRET }}
+          TIKTOK_REFRESH_TOKEN: ${{ secrets.TIKTOK_REFRESH_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: python pipeline/tiktok_auth.py
       - name: Publish one video
         env:
           TIKTOK_ACCESS_TOKEN: ${{ secrets.TIKTOK_ACCESS_TOKEN }}
@@ -50,4 +59,9 @@ jobs:
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
           INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
           INSTAGRAM_USER_ID: ${{ secrets.INSTAGRAM_USER_ID }}
-        run: python -m pipeline.publish_one --state-dir .state --discover
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            python -m pipeline.publish_one --state-dir .state --discover --daily-limit 20
+          else
+            python -m pipeline.publish_one --state-dir .state --discover --daily-limit 20
+          fi
