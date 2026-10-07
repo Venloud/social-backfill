@@ -1,6 +1,6 @@
 """Regression tests for independent destination backfill selection (CI-safe).
 
-These tests are pure state-selection tests: they never call TikTok, YouTube, Instagram, yt-dlp, or ffmpeg.
+These tests are pure state-selection regression tests: they never call TikTok, YouTube, Instagram, yt-dlp, or ffmpeg.
 """
 import unittest
 
