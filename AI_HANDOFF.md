@@ -164,3 +164,9 @@ Do NOT enable the daily schedule yet.
 - Instagram long-term token refresh and Snapchat API access still require follow-up.
 
 **Relevant commits:** `74cfe3e` (fresh priority + quota), `0f9f07d` (schedule + token refresh), `2656f18` (regression tests). Later commits update documentation and test results.
+
+### Verification and token-env correction
+
+- GitHub Actions [Publisher Queue Tests run 37701203268](https://github.com/Venloud/social-backfill/actions/runs/37701203268) passed all **7** regression tests (including fresh priority and historical quota). This is an offline logic test, not a live scheduled publishing run.
+- Commit `3f77939`: removed `TIKTOK_ACCESS_TOKEN` from the publishing step's explicit `env` so the newly refreshed token exported to `GITHUB_ENV` is actually used. Also simplified the identical manual/scheduled run commands. This prevents an old repository-secret value from shadowing the freshly refreshed access token.
+- No successful scheduled publishing run has been verified yet. Review the first scheduled run logs before assuming unattended reliability.
