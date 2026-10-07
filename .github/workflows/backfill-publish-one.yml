@@ -53,15 +53,9 @@ jobs:
         run: python pipeline/tiktok_auth.py
       - name: Publish one video
         env:
-          TIKTOK_ACCESS_TOKEN: ${{ secrets.TIKTOK_ACCESS_TOKEN }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
           INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
           INSTAGRAM_USER_ID: ${{ secrets.INSTAGRAM_USER_ID }}
-        run: |
-          if [ "${{ github.event_name }}" = "schedule" ]; then
-            python -m pipeline.publish_one --state-dir .state --discover --daily-limit 20
-          else
-            python -m pipeline.publish_one --state-dir .state --discover --daily-limit 20
-          fi
+        run: python -m pipeline.publish_one --state-dir .state --discover --daily-limit 20
