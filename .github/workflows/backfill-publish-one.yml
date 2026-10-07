@@ -1,7 +1,7 @@
 name: Backfill Publish (one)
 
-# Posts exactly ONE TikTok video (the oldest not fully posted) to YouTube (public Short) and Instagram (Reel,
-# also in the feed). State lives on the `state` branch (state/manifest.json), committed with GITHUB_TOKEN:
+# Advances each destination independently: YouTube and Instagram each select their own oldest eligible TikTok.
+# A failed/stuck destination never blocks the healthy destination from continuing its backlog. State lives on the `state` branch (state/manifest.json), committed with GITHUB_TOKEN:
 # 'publishing' is pushed before each upload, 'published' + id + URL after. A destination stuck on
 # 'publishing' is never retried automatically. Never refreshes or writes TikTok secrets. Manual only.
 on:
