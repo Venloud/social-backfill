@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-07T23:44:03Z",
+  "updated_at": "2026-10-07T23:44:06Z",
   "videos": {
     "7693026624211569934": {
       "destinations": {
@@ -3075,12 +3075,14 @@
         },
         "youtube": {
           "attempts": 1,
+          "format": "original MP4",
           "last_error": null,
-          "published_at": null,
-          "remote_id": null,
+          "privacy": "public",
+          "published_at": "2026-10-07T23:44:06Z",
+          "remote_id": "D3SMDtX8wfg",
           "started_at": "2026-10-07T23:44:03Z",
-          "status": "publishing",
-          "url": null
+          "status": "published",
+          "url": "https://youtube.com/shorts/D3SMDtX8wfg"
         }
       },
       "media": {
