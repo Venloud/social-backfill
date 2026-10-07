@@ -1,0 +1,82 @@
+name: Meta Token Refresh
+
+# Adapted from Venloud/MoneyPrinterTurbo. Turns a fresh short-lived Facebook USER token into a Page token that
+# does not expire and saves it as FACEBOOK_PAGE_ACCESS_TOKEN in THIS repo only (needed only if this page posts
+# Facebook Reels; nothing publishes in this phase).
+# Secrets needed: META_APP_ID, META_APP_SECRET (Meta app > App settings > Basic), META_SHORT_USER_TOKEN
+# (temporary: a fresh user token from the Graph API Explorer for the same app; deleted by this workflow),
+# FACEBOOK_PAGE_ID, GH_PAT. Prints only page name, page id, expiry and scopes.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Exchange for a long-lived Page token
+        env:
+          APP_ID: ${{ secrets.META_APP_ID }}
+          APP_SECRET: ${{ secrets.META_APP_SECRET }}
+          SHORT: ${{ secrets.META_SHORT_USER_TOKEN }}
+          PAGE_ID: ${{ secrets.FACEBOOK_PAGE_ID }}
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          set -euo pipefail
+          for v in APP_ID APP_SECRET SHORT PAGE_ID GH_TOKEN; do
+            [ -n "${!v}" ] || { echo "::error::missing secret for $v (META_APP_ID, META_APP_SECRET, META_SHORT_USER_TOKEN, FACEBOOK_PAGE_ID, GH_PAT)"; exit 1; }
+          done
+          python3 - <<'PY'
+          import json, os, subprocess, sys, time, urllib.error, urllib.parse, urllib.request
+          G = "https://graph.facebook.com/v23.0"
+          def get(path, **q):
+              url = f"{G}/{path}?" + urllib.parse.urlencode(q)
+              try:
+                  with urllib.request.urlopen(url, timeout=30) as r:
+                      return json.load(r)
+              except urllib.error.HTTPError as e:
+                  err = json.loads(e.read().decode() or "{}").get("error", {})
+                  sys.exit(f"FAIL {path}: {err.get('message', e.code)} (code {err.get('code')}, subcode {err.get('error_subcode')})")
+          def mask(v):
+              print(f"::add-mask::{v}", flush=True)
+          app, secret, short, page_id = (os.environ[k] for k in ("APP_ID", "APP_SECRET", "SHORT", "PAGE_ID"))
+          mask(short)
+          ll = get("oauth/access_token", grant_type="fb_exchange_token", client_id=app, client_secret=secret,
+                   fb_exchange_token=short)["access_token"]
+          mask(ll)
+          pages = get("me/accounts", access_token=ll, fields="id,name,access_token", limit=100).get("data", [])
+          page = next((p for p in pages if p["id"] == page_id), None)
+          if not page:
+              sys.exit(f"FAIL: FACEBOOK_PAGE_ID is not among the {len(pages)} Page(s) this user manages "
+                       "(tick the Page when you approve the app, and pages_show_list)")
+          tok = page["access_token"]
+          mask(tok)
+          info = get("debug_token", input_token=tok, access_token=f"{app}|{secret}")["data"]
+          exp = int(info.get("expires_at") or 0)
+          dax = int(info.get("data_access_expires_at") or 0)
+          print(f"Page: {page['name']} ({page['id']})")
+          print(f"type: {info.get('type')}, valid: {info.get('is_valid')}")
+          print(f"expires: {'never' if exp == 0 else time.strftime('%Y-%m-%d %H:%M UTC', time.gmtime(exp))}")
+          if dax:
+              print(f"data access expires: {time.strftime('%Y-%m-%d', time.gmtime(dax))} (renewed whenever the token is used)")
+          print(f"scopes: {', '.join(info.get('scopes', []))}")
+          if not info.get("is_valid") or exp != 0 or info.get("type") != "PAGE":
+              sys.exit("FAIL: this is not a never-expiring Page token (was the short token a USER token for this app?)")
+          need = {"pages_show_list", "pages_read_engagement", "pages_manage_posts"}
+          missing = sorted(need - set(info.get("scopes", [])))
+          if missing:
+              print(f"::warning::missing permissions for posting Reels: {', '.join(missing)}")
+          r = subprocess.run(["gh", "secret", "set", "FACEBOOK_PAGE_ACCESS_TOKEN", "--repo", os.environ["GITHUB_REPOSITORY"]],
+                             input=tok, capture_output=True, text=True)
+          if r.returncode:
+              sys.exit(f"FAIL: could not save FACEBOOK_PAGE_ACCESS_TOKEN (GH_PAT needs Secrets: Read and write): {r.stderr.strip()[:200]}")
+          print("Saved FACEBOOK_PAGE_ACCESS_TOKEN (not tied to a browser session).")
+          PY
+      - name: Delete the temporary short-lived token
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: gh secret delete META_SHORT_USER_TOKEN --repo "$GITHUB_REPOSITORY" || true

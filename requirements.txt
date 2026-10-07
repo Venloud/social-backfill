@@ -1,0 +1,4 @@
+# Media acquisition (pinned; bump yt-dlp deliberately when TikTok changes break extraction)
+yt-dlp==2026.8.19
+# Browser impersonation for yt-dlp: without it TikTok serves a challenge page ("Unexpected response")
+curl_cffi==0.13.0

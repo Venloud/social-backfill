@@ -1,0 +1,71 @@
+name: TikTok Backfill Test
+
+# Read-only/media test: TikTok video.list -> manifest -> yt-dlp download of ONE video -> ffprobe validation.
+# Publishes NOTHING. The MP4 and manifest are uploaded as a workflow artifact (runners are ephemeral).
+on:
+  workflow_dispatch:
+    inputs:
+      video_id:
+        description: "Optional: a discovered TikTok video id to download (default: oldest not yet downloaded)"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+# Shares the TikTok token refresh with Connect TikTok / Platform Connection Check.
+concurrency:
+  group: tiktok-token
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
+      TIKTOK_CLIENT_SECRET: ${{ secrets.TIKTOK_CLIENT_SECRET }}
+      TIKTOK_REFRESH_TOKEN: ${{ secrets.TIKTOK_REFRESH_TOKEN }}
+      GH_TOKEN: ${{ secrets.GH_PAT }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: pip install -q -r requirements.txt
+      - name: Ensure ffmpeg / ffprobe
+        run: |
+          if ! command -v ffprobe >/dev/null || ! command -v ffmpeg >/dev/null; then
+            sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          fi
+          ffprobe -version | head -1
+      - name: Secrets present
+        run: |
+          for n in TIKTOK_CLIENT_KEY TIKTOK_CLIENT_SECRET TIKTOK_REFRESH_TOKEN GH_TOKEN; do
+            if [ -n "${!n}" ]; then echo "$n: PRESENT"; else echo "$n: MISSING"; fi
+          done
+      - name: Discover (TikTok video.list -> manifest)
+        run: python -m pipeline.backfill discover
+      - name: Download and validate ONE video
+        env:
+          VIDEO_ID: ${{ inputs.video_id }}
+        run: |
+          if [ -n "$VIDEO_ID" ]; then
+            python -m pipeline.backfill download --video-id "$VIDEO_ID"
+          else
+            python -m pipeline.backfill download --limit 1
+          fi
+      - name: Status
+        if: always()
+        run: python -m pipeline.backfill status || true
+      - name: Upload MP4 + manifest
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tiktok-backfill-test-${{ github.run_number }}
+          path: |
+            media/*.mp4
+            state/manifest.json
+          if-no-files-found: warn
+          retention-days: 7

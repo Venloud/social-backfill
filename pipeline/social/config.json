@@ -1,0 +1,7 @@
+{
+ "_help": "publish_mode per platform: live | draft | off. Nothing publishes in this phase; the upload functions are not called anywhere yet.",
+ "publish_mode": {"tiktok": "off", "youtube": "off", "instagram": "off", "threads": "off", "facebook": "off"},
+ "youtube_category": "22",
+ "graph_version": "v23.0",
+ "token_warn_days": 7
+}

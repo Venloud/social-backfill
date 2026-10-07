@@ -15,3 +15,12 @@ state/*.json
 # Media
 input/videos/*
 !input/videos/.gitkeep
+
+# Backfill media and scratch (never commit downloads, cookies or temp files)
+media/
+work/
+*.mp4
+*.part
+*.ytdl
+cookies*.txt
+connection_check.json
