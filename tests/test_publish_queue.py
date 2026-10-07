@@ -47,6 +47,43 @@ class IndependentQueueTests(unittest.TestCase):
         self.assertEqual(jobs["youtube"][0], "next")
         self.assertEqual(jobs["instagram"][0], "next")
 
+    def test_daily_cap_blocks_new_historical_ids(self):
+        from datetime import datetime, timezone
+        today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        m = {"videos": {
+            "old": entry("2026-01-01T00:00:00Z", youtube="published", instagram="pending"),
+            "next": entry("2026-01-02T00:00:00Z"),
+        }}
+        m["videos"]["old"]["destinations"]["youtube"]["published_at"] = today + "T08:00:00Z"
+        jobs = pick_jobs(m, daily_limit=1)
+        self.assertNotIn("youtube", jobs)
+        self.assertEqual(jobs["instagram"][0], "old")
+
+    def test_fresh_post_bypasses_daily_cap(self):
+        from pipeline import manifest as mf
+        m = {"videos": {
+            "old": entry("2026-01-01T00:00:00Z"),
+            "fresh": entry("2026-10-07T23:00:00Z"),
+        }}
+        m["videos"]["fresh"]["source"]["first_seen_at"] = mf.now()
+        m["videos"]["fresh"]["source"]["fresh_priority"] = True
+        jobs = pick_jobs(m, daily_limit=1)
+        self.assertEqual(jobs["youtube"][0], "fresh")
+        self.assertEqual(jobs["instagram"][0], "fresh")
+
+    def test_quota_counts_distinct_ids_not_destinations(self):
+        from datetime import datetime, timezone
+        today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        m = {"videos": {
+            "old": entry("2026-01-01T00:00:00Z", youtube="published", instagram="published"),
+            "next": entry("2026-01-02T00:00:00Z"),
+        }}
+        for d in m["videos"]["old"]["destinations"].values():
+            d["published_at"] = today + "T08:00:00Z"
+        jobs = pick_jobs(m, daily_limit=2)
+        self.assertEqual(jobs["youtube"][0], "next")
+        self.assertEqual(jobs["instagram"][0], "next")
+
     def test_failed_destination_is_retryable(self):
         m = {"videos": {"old": entry("2026-01-01T00:00:00Z", youtube="failed", instagram="published")}}
         jobs = pick_jobs(m)
