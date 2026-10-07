@@ -114,8 +114,10 @@ the oldest that is not fully posted, as a **public** YouTube Short (not made for
 - **Write-ahead:** `publishing` is pushed before each upload; `published` (+ id, URL) after. If the state push
   fails, nothing is uploaded. A destination stuck on `publishing` (interrupted run) is logged and the video is
   skipped until someone checks the platform and edits the state branch by hand.
-- **Already posted / partial:** fully posted videos are logged as `already posted: <id> -> <yt> / <ig>`;
-  only missing destinations are posted, and a platform that already has the video is never uploaded again.
+- **Already posted / partial:** a platform that already has a video is never uploaded again. Each destination now has
+  an independent oldest-first queue. If YouTube fails on video A after Instagram published it, the next run retries
+  video A on YouTube while Instagram advances to video B. A `publishing` (uncertain) item blocks only that destination,
+  not the other platform. One run can therefore process up to one source item per destination.
 - **Text:**
   - YouTube title: first sentence of the TikTok caption (max 90 chars) + ` #shorts`.
   - YouTube description: the caption with #fyp-style tags removed + a last line `tt:<video_id>`.
