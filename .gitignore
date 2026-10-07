@@ -1,0 +1,17 @@
+# Local secrets
+secretapi.env.local
+.env
+.env.*
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Runtime state
+state/*.json
+
+# Media
+input/videos/*
+!input/videos/.gitkeep
