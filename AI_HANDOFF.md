@@ -85,7 +85,28 @@ Updated the comments in `.github/workflows/backfill-publish-one.yml` and the REA
 - `2ca7bd3` — Document independent destination queue behavior
 - `920f1e2` — Explain independent per-platform backfill queues
 
-This handoff file is committed after those changes, so use the latest main SHA as the authoritative head.
+- `6f2084d` — Add this AI handoff
+- `13ba943` — Final harmless test-file wording update after CI was installed
+
+Use the latest main SHA as the authoritative head.
+
+## Test evidence from ChatGPT takeover
+
+GitHub Actions run `37699491282` (`Publisher Queue Tests`) completed SUCCESS on commit `a89ff72`.
+The tested publisher code is the same queue implementation in current main; later commits only changed docs/workflow comments/handoff/test wording.
+
+Actual CI log:
+```
+test_failed_destination_is_retryable ... ok
+test_partial_failure_does_not_hold_healthy_platform_back ... ok
+test_published_destination_is_never_selected_again ... ok
+test_stuck_destination_does_not_block_other_platform ... ok
+
+Ran 4 tests
+OK
+```
+
+No real platform upload was triggered by ChatGPT during this takeover. The next live publisher run remains intentionally manual.
 
 ## Next safe tests
 
