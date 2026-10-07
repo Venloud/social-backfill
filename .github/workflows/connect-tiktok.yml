@@ -1,0 +1,36 @@
+name: Connect TikTok
+
+on:
+  workflow_dispatch:
+    inputs:
+      auth_code:
+        description: "Paste the full URL you landed on after approving TikTok (or just the code)"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+# Shared with every job that refreshes TikTok tokens, so two runs never rotate the
+# refresh token at the same time.
+concurrency:
+  group: tiktok-token
+  cancel-in-progress: false
+
+jobs:
+  connect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Exchange code and save TikTok secrets
+        env:
+          AUTH_CODE_OR_URL: ${{ inputs.auth_code }}
+          TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
+          TIKTOK_CLIENT_SECRET: ${{ secrets.TIKTOK_CLIENT_SECRET }}
+          TIKTOK_REDIRECT_URI: ${{ secrets.TIKTOK_REDIRECT_URI }}
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: python pipeline/connect_tiktok.py
