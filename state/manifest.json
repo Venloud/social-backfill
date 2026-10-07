@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-07T23:09:37Z",
+  "updated_at": "2026-10-07T23:10:11Z",
   "videos": {
     "7693026624211569934": {
       "destinations": {
@@ -79,12 +79,13 @@
       "destinations": {
         "instagram": {
           "attempts": 1,
+          "format": "hevc (original)",
           "last_error": null,
-          "published_at": null,
-          "remote_id": null,
+          "published_at": "2026-10-07T23:10:11Z",
+          "remote_id": "18636655093012280",
           "started_at": "2026-10-07T23:09:37Z",
-          "status": "publishing",
-          "url": null
+          "status": "published",
+          "url": "https://www.instagram.com/reel/DeNgZBFj_UZ/"
         },
         "snapchat": {
           "attempts": 0,
