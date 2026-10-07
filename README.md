@@ -32,14 +32,15 @@ The workflow creates a Reel media container, waits for Instagram to finish proce
 
 ## Connect TikTok
 
-The manual workflow [Connect TikTok](.github/workflows/connect-tiktok.yml) swaps a TikTok login code for tokens and saves `TIKTOK_REFRESH_TOKEN`, `TIKTOK_ACCESS_TOKEN` and `TIKTOK_OPEN_ID` as secrets of this repository only. It does not post, upload or delete anything.
+The manual workflow **Connect TikTok** ([connect-tiktok.yml](.github/workflows/connect-tiktok.yml)) swaps a TikTok login code for tokens and saves `TIKTOK_REFRESH_TOKEN`, `TIKTOK_ACCESS_TOKEN` and `TIKTOK_OPEN_ID` as secrets of this repository only. It then makes a read-only check (user info and `video.list` for 5 videos). It never posts, uploads or deletes.
 
-Required repository secrets:
+Required repository secrets: `TIKTOK_CLIENT_KEY`, `TIKTOK_CLIENT_SECRET`, and `GH_PAT` (fine-grained PAT with this repository selected and **Secrets: Read and write**; classic PAT: `repo`). The redirect URI `https://venloud.github.io/nightfiles/tiktok-callback.html` is hard-coded in `pipeline/tiktok_auth.py`.
 
-- `TIKTOK_CLIENT_KEY`, `TIKTOK_CLIENT_SECRET` — from the TikTok developer app
-- `TIKTOK_REDIRECT_URI` — `https://venloud.github.io/nightfiles/tiktok-callback.html` (must match the app's registered redirect URI exactly)
-- `GH_PAT` — fine-grained personal access token with access to this repository and **Secrets: Read and write** (Metadata: Read is added automatically)
+1. Open the authorize link (it must request `video.list` and use the redirect URI above):
+   `https://www.tiktok.com/v2/auth/authorize/?client_key=sbawsigziq7u79m4vi&scope=user.info.basic%2Cuser.info.profile%2Cvideo.list&response_type=code&redirect_uri=https%3A%2F%2Fvenloud.github.io%2Fnightfiles%2Ftiktok-callback.html&state=social-backfill`
+2. Approve, copy the URL of the page you land on.
+3. Within a few minutes: Actions → **Connect TikTok** → Run workflow → paste the URL.
 
-Approve the app on TikTok (the authorize URL must request `video.list`), then run the workflow with the full callback URL or just the code within a few minutes. The log shows only PASS/FAIL, the account, the granted scopes and the token lifetimes; the run fails if `video.list` is missing.
+The log shows only PASS/FAIL, the account, the granted scopes, the token lifetimes and the video ids. It fails if `video.list` is missing or if `GH_PAT` cannot write secrets (checked before the code is used).
 
-TikTok access tokens last 24 h and refreshing can rotate the refresh token. Any job that calls the TikTok API must refresh first: add a step `python pipeline/tiktok_auth.py` (env `TIKTOK_CLIENT_KEY`, `TIKTOK_CLIENT_SECRET`, `TIKTOK_REFRESH_TOKEN`, `GH_TOKEN: ${{ secrets.GH_PAT }}`) or call `tiktok_auth.access_token()` before each call. It saves the new tokens back to the secrets, exports `TIKTOK_ACCESS_TOKEN` / `TIKTOK_OPEN_ID` to later steps, and the job should use the `tiktok-token` concurrency group.
+TikTok access tokens last 24 h and refreshing can rotate the refresh token. Every later TikTok call must refresh first: use `tiktok_auth.get_user_info()` / `tiktok_auth.get_video_ids()` or call `tiktok_auth.access_token()` first, or add a workflow step `python pipeline/tiktok_auth.py` (env `TIKTOK_CLIENT_KEY`, `TIKTOK_CLIENT_SECRET`, `TIKTOK_REFRESH_TOKEN`, `GH_TOKEN: ${{ secrets.GH_PAT }}`). Each refresh saves the new access and refresh tokens back to the secrets and exports `TIKTOK_ACCESS_TOKEN` / `TIKTOK_OPEN_ID` to later steps. Use the `tiktok-token` concurrency group for such jobs.

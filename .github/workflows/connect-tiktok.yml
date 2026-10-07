@@ -31,6 +31,5 @@ jobs:
           AUTH_CODE_OR_URL: ${{ inputs.auth_code }}
           TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
           TIKTOK_CLIENT_SECRET: ${{ secrets.TIKTOK_CLIENT_SECRET }}
-          TIKTOK_REDIRECT_URI: ${{ secrets.TIKTOK_REDIRECT_URI }}
           GH_TOKEN: ${{ secrets.GH_PAT }}
         run: python pipeline/connect_tiktok.py

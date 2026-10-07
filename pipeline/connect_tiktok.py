@@ -1,7 +1,8 @@
 """One-time: swap the TikTok login code for tokens (run by the 'Connect TikTok' workflow).
 
 Saves TIKTOK_REFRESH_TOKEN, TIKTOK_ACCESS_TOKEN and TIKTOK_OPEN_ID as secrets of THIS repo.
-Prints only PASS/FAIL, the account, the granted scopes and the token lifetimes.
+Then a read-only check: user info and video.list (5 videos).
+Prints only PASS/FAIL, the account, the granted scopes, the token lifetimes and video ids.
 """
 import os
 import sys
@@ -33,7 +34,12 @@ def main() -> int:
         return 1
     tiktok_auth.mask(code)
     try:
-        tiktok_auth.target_repo()  # refuse before the one-time code is spent
+        tiktok_auth.check_pat()  # refuse before the one-time code is spent
+    except tiktok_auth.TikTokAuthError as e:
+        print(f"FAIL: {e}")
+        print("The login code was not used; it may still work if you rerun within a few minutes.")
+        return 1
+    try:
         data = tiktok_auth.exchange_code(code)
     except tiktok_auth.TikTokAuthError as e:
         print(f"FAIL: {e}")
@@ -55,8 +61,19 @@ def main() -> int:
     except tiktok_auth.TikTokAuthError as e:
         print(f"FAIL: {e}")
         return 1
-    print(f"PASS: saved TIKTOK_REFRESH_TOKEN, TIKTOK_ACCESS_TOKEN, TIKTOK_OPEN_ID "
+    print(f"Saved TIKTOK_REFRESH_TOKEN, TIKTOK_ACCESS_TOKEN, TIKTOK_OPEN_ID "
           f"in {os.environ['GITHUB_REPOSITORY']}")
+
+    # Read-only check with the new token: video.list for 5 videos (user info was read above).
+    try:
+        ids = tiktok_auth.video_list(data["access_token"], 5)
+    except tiktok_auth.TikTokAuthError as e:
+        print(f"FAIL: {e}")
+        return 1
+    print(f"Videos returned: {len(ids)}")
+    for vid in ids:
+        print(f"  {vid}")
+    print("PASS")
     return 0
 
 
