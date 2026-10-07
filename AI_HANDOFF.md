@@ -140,3 +140,27 @@ Do NOT enable the daily schedule yet.
 - Never upload before the write-ahead state push succeeds.
 - Never expose tokens, secrets, auth headers, or cookies in logs or documentation.
 - Do not turn on high-volume publishing until the manual real-world queue test passes.
+
+
+## 2026-10-07: permanent watcher enabled by ChatGPT
+
+**Live proof before enabling:** Actions run [37700545706](https://github.com/Venloud/social-backfill/actions/runs/37700545706) succeeded. It discovered 53 TikToks, retried YouTube video `7693026624211569934` and published `https://youtube.com/shorts/6BbCO9eeA7s`; independently advanced Instagram to `7693031212864130317` and published `https://www.instagram.com/reel/DeNgZBFj_UZ/`. No duplicate Instagram Reel for the first video.
+
+**Changes:**
+- `pipeline/publish_one.py`: newly discovered TikToks receive `source.fresh_priority=true` during discovery. For their first 24 hours since `first_seen_at`, each destination picks fresh pending/failed videos before historical backlog. Published destinations are skipped, uncertain `publishing` entries remain manual-check-only. Old manifest entries are not reclassified as fresh.
+- `pick_jobs(m, daily_limit=20)`: caps **distinct historical source TikTok IDs** with successful uploads per UTC day, not individual destination uploads. An already-counted source can finish missing destinations even after cap. Fresh videos bypass the historical cap. The existing per-destination queues and write-ahead state pushes remain unchanged.
+- `.github/workflows/backfill-publish-one.yml`: enabled `*/5 * * * *` GitHub Actions cron and kept manual dispatch. Before discovery, it runs existing `pipeline/tiktok_auth.py` to rotate and save TikTok credentials with `GH_PAT`, and exports the fresh access token via `GITHUB_ENV`. Uses shared `tiktok-token` concurrency group, `cancel-in-progress: false`, `contents: write`, and `--daily-limit 20`. Cron timing is best effort, not guaranteed exact five-minute delivery.
+- `tests/test_publish_queue.py`: adds tests for fresh priority, historical cap, and distinct-ID counting.
+- No Snapchat publisher has been added. Only YouTube and Instagram currently publish.
+- No existing state branch was cleared or reset. No real uploads were intentionally triggered during these code changes.
+
+**Important operational notes:**
+- The 20/day count is a daily cap on historical source IDs that achieved at least one successful destination publish, plus sources reserved within the current run. It is **not** a guaranteed 20 completions, because API failures, delays, and GitHub scheduling can reduce throughput.
+- Failed destinations are retried on subsequent runs, so repeated permanent errors may consume Actions minutes; consider exponential backoff later.
+- New-post detection depends on successful TikTok `video.list` and refresh, not a webhook. The next scheduled run discovers it.
+- Do not edit `state` without checking existing remote IDs and URLs. Never blindly retry a `publishing` state.
+- GitHub cron can be delayed or skipped under load; verify runs under Actions.
+- The token refresh step depends on `GH_PAT` having repository secrets write permission. If it expires, the workflow fails before publishing rather than relying on a stale token.
+- Instagram long-term token refresh and Snapchat API access still require follow-up.
+
+**Relevant commits:** `74cfe3e` (fresh priority + quota), `0f9f07d` (schedule + token refresh), `2656f18` (regression tests). Later commits update documentation and test results.
