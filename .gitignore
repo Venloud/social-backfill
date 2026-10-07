@@ -24,3 +24,6 @@ work/
 *.ytdl
 cookies*.txt
 connection_check.json
+
+# State branch worktree (Backfill Publish)
+.state/

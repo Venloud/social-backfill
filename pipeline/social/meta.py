@@ -116,6 +116,68 @@ def instagram_post(video: Path, post: dict, mode: str, chk: dict, public_url: st
     return {"mode": f"live Reel ({how})", "id": p["id"], "url": link}
 
 
+class PublishAttempted(Fail):
+    """media_publish was called (or may have been): the Reel may be live. Never retry blindly."""
+
+
+def _container_status(base: str, cid: str, tok: str, timeout_s: int = 600) -> str:
+    """Poll a container until FINISHED / ERROR / EXPIRED (or timeout). Returns the final status code."""
+    deadline = time.time() + timeout_s
+    st = ""
+    while time.time() < deadline:
+        d = http(f"{base}/{cid}?fields=status_code,status", headers={"Authorization": f"Bearer {tok}"})
+        st = d.get("status_code") or ""
+        if st in ("FINISHED", "PUBLISHED", "ERROR", "EXPIRED"):
+            return st if st != "ERROR" else f"ERROR ({str(d.get('status', ''))[:160]})"
+        time.sleep(5)
+    return f"TIMEOUT ({st or 'no status'})"
+
+
+def instagram_upload_container(video: Path, caption: str, chk: dict) -> tuple[str, str]:
+    """Create a Reels container by resumable upload (bytes go straight to Meta, no public URL) and wait for
+    processing. Returns (container_id, final_status). Nothing is published here."""
+    tok, = env("INSTAGRAM_ACCESS_TOKEN")
+    h = {"Authorization": f"Bearer {tok}"}
+    base, uid = chk["base"], chk["id"]
+    c = http(f"{base}/{uid}/media", "POST", headers=h, form={"media_type": "REELS", "upload_type": "resumable",
+                                                             "caption": caption, "share_to_feed": "true"})
+    cid = c.get("id")
+    if not cid:
+        raise Fail("Instagram returned no container id")
+    uri = c.get("uri") or f"https://rupload.facebook.com/ig-api-upload/{GRAPH_V}/{cid}"
+    size = video.stat().st_size
+    req = urllib.request.Request(uri, data=video.read_bytes(), method="POST",
+                                 headers={"Authorization": f"OAuth {tok}", "offset": "0", "file_size": str(size)})
+    try:
+        with urllib.request.urlopen(req, timeout=600):
+            pass
+    except Exception as e:  # noqa: BLE001
+        raise Fail(f"resumable upload failed: {type(e).__name__}: {str(e)[:160]}") from None
+    return cid, _container_status(base, cid, tok)
+
+
+def instagram_publish_container(cid: str, chk: dict) -> dict:
+    """Publish a FINISHED container and confirm the media id. Raises PublishAttempted on any failure."""
+    tok, = env("INSTAGRAM_ACCESS_TOKEN")
+    h = {"Authorization": f"Bearer {tok}"}
+    base, uid = chk["base"], chk["id"]
+    try:
+        p = http(f"{base}/{uid}/media_publish", "POST", headers=h, form={"creation_id": cid})
+    except Fail as e:
+        raise PublishAttempted(f"media_publish failed: {str(e)[:200]}") from None
+    mid = p.get("id")
+    if not mid:
+        raise PublishAttempted("media_publish answered without a media id")
+    try:
+        m = http(f"{base}/{mid}?fields=id,permalink,media_product_type,timestamp", headers=h)
+    except Fail as e:
+        raise PublishAttempted(f"published media {mid} could not be confirmed: {str(e)[:160]}") from None
+    if str(m.get("id")) != str(mid):
+        raise PublishAttempted(f"confirmation returned a different id for {mid}")
+    return {"id": str(mid), "url": m.get("permalink", ""), "product_type": m.get("media_product_type"),
+            "timestamp": m.get("timestamp")}
+
+
 # ------------------------------------------------------------------ Threads
 def threads_check() -> dict:
     tok, = env("THREADS_ACCESS_TOKEN")

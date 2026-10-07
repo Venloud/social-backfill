@@ -102,3 +102,26 @@ secrets only. Tokens are saved only to this repo (no mirroring), and via stdin, 
 - Optional secrets: `META_APP_ID`, `META_APP_SECRET` (automatic refresh of a Facebook-Login Instagram token, and
   Meta Token Refresh), `THREADS_ACCESS_TOKEN`, `FACEBOOK_PAGE_ID`, `FACEBOOK_PAGE_ACCESS_TOKEN`,
   `META_SHORT_USER_TOKEN` (temporary).
+
+## Backfill Publish (one)
+
+Manual workflow **Backfill Publish (one)** (`pipeline/publish_one.py`) posts exactly one TikTok video per run,
+the oldest that is not fully posted, as a **public** YouTube Short (not made for kids) and an Instagram Reel
+(also shown in the feed).
+
+- **State:** `state/manifest.json` on the `state` branch, committed with `GITHUB_TOKEN`. Each destination
+  records status, remote id, URL, timestamp and the format used.
+- **Write-ahead:** `publishing` is pushed before each upload; `published` (+ id, URL) after. If the state push
+  fails, nothing is uploaded. A destination stuck on `publishing` (interrupted run) is logged and the video is
+  skipped until someone checks the platform and edits the state branch by hand.
+- **Already posted / partial:** fully posted videos are logged as `already posted: <id> -> <yt> / <ig>`;
+  only missing destinations are posted, and a platform that already has the video is never uploaded again.
+- **Text:**
+  - YouTube title: first sentence of the TikTok caption (max 90 chars) + ` #shorts`.
+  - YouTube description: the caption with #fyp-style tags removed + a last line `tt:<video_id>`.
+  - Instagram caption: the same cleaned caption.
+- **Instagram upload:** resumable upload (the bytes go straight to Meta, no public URL). The original MP4
+  (HEVC) is tried first; if the container ends in ERROR, it is re-encoded to H.264 + AAC for Instagram only.
+  The container must reach FINISHED before media_publish, and the returned media id is confirmed.
+- **TikTok:** the run never refreshes or writes TikTok secrets. Discovery here is read-only with the stored
+  access token; if that has expired, the existing manifest is used.

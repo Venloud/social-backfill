@@ -1,0 +1,53 @@
+name: Backfill Publish (one)
+
+# Posts exactly ONE TikTok video (the oldest not fully posted) to YouTube (public Short) and Instagram (Reel,
+# also in the feed). State lives on the `state` branch (state/manifest.json), committed with GITHUB_TOKEN:
+# 'publishing' is pushed before each upload, 'published' + id + URL after. A destination stuck on
+# 'publishing' is never retried automatically. Never refreshes or writes TikTok secrets. Manual only.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write   # push the state branch
+
+# One group for every job that touches TikTok tokens or the state branch.
+concurrency:
+  group: tiktok-token
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: pip install -q -r requirements.txt
+      - name: Ensure ffmpeg / ffprobe
+        run: |
+          if ! command -v ffprobe >/dev/null || ! command -v ffmpeg >/dev/null; then
+            sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          fi
+      - name: Check out the state branch
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git fetch -q origin state 2>/dev/null; then
+            git worktree add -q -B state .state origin/state
+          else
+            git worktree add -q --orphan -b state .state
+            mkdir -p .state/state
+            echo "State branch: created (first run)"
+          fi
+      - name: Publish one video
+        env:
+          TIKTOK_ACCESS_TOKEN: ${{ secrets.TIKTOK_ACCESS_TOKEN }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+          INSTAGRAM_USER_ID: ${{ secrets.INSTAGRAM_USER_ID }}
+        run: python -m pipeline.publish_one --state-dir .state --discover

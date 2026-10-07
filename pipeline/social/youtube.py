@@ -37,8 +37,38 @@ def youtube_check() -> dict:
     return info
 
 
+class UploadStarted(Fail):
+    """The video bytes were (or may have been) sent: YouTube may hold a copy. Never retry blindly."""
+
+
+def youtube_upload(video: Path, title: str, description: str, tags: list[str], privacy: str = "public") -> dict:
+    """Resumable upload of one Short. Raises Fail before any byte is sent, UploadStarted after."""
+    tok, _ = youtube_token()
+    body = {"snippet": {"title": title[:100], "description": description[:4900], "tags": tags[:15],
+                        "categoryId": str(CONFIG.get("youtube_category", "22"))},
+            "status": {"privacyStatus": privacy, "selfDeclaredMadeForKids": False}}
+    init = http("https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status", "POST",
+                data=body, headers={"Authorization": f"Bearer {tok}", "X-Upload-Content-Type": "video/mp4",
+                                    "X-Upload-Content-Length": str(video.stat().st_size)})
+    loc = init["_headers"].get("Location") or init["_headers"].get("location")
+    if not loc:
+        raise Fail("YouTube gave no upload URL")
+    try:
+        req = urllib.request.Request(loc, data=video.read_bytes(), method="PUT",
+                                     headers={"Authorization": f"Bearer {tok}", "Content-Type": "video/mp4"})
+        with urllib.request.urlopen(req, timeout=900) as r:
+            d = json.loads(r.read().decode())
+    except Exception as e:  # noqa: BLE001
+        raise UploadStarted(f"upload interrupted after sending bytes ({type(e).__name__}: {str(e)[:160]})") from None
+    if not d.get("id"):
+        raise UploadStarted("YouTube answered without a video id")
+    return {"id": d["id"], "url": f"https://youtube.com/shorts/{d['id']}",
+            "privacy": (d.get("status") or {}).get("privacyStatus"),
+            "upload_status": (d.get("status") or {}).get("uploadStatus")}
+
+
 def youtube_post(video: Path, post: dict, mode: str, chk: dict) -> dict:
-    """NOT CALLED in this phase."""
+    """Kindled Iron-style entry point (kept for reference; the backfill uses youtube_upload)."""
     tok, _ = youtube_token()
     title = post["title"][:90]
     if "#shorts" not in title.lower():
