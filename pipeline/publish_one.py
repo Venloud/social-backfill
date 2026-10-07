@@ -13,6 +13,7 @@ Rules:
 from __future__ import annotations
 
 import argparse
+from datetime import datetime, timezone
 import os
 import subprocess
 import sys
@@ -42,7 +43,10 @@ def discover_readonly(m: dict) -> None:
         log(f"Discovery skipped ({str(e)[:160]}); using the manifest as it is. "
             "Run 'TikTok Backfill Test' or 'Platform Connection Check' to refresh the TikTok token.")
         return
+    old_ids = set(m.get("videos", {}))
     c = mf.merge(m, videos)
+    for vid in set(m["videos"]) - old_ids:
+        m["videos"][vid]["source"]["fresh_priority"] = True
     log(f"Discovery: {len(videos)} videos on TikTok, {c['added']} new, {c['total']} in the manifest")
 
 
@@ -54,32 +58,66 @@ def dest(entry: dict, name: str) -> dict:
     return d
 
 
-def pick_jobs(m: dict) -> dict[str, tuple[str, dict]]:
-    """Pick at most one oldest eligible video PER destination.
+def _day(iso: str | None) -> str | None:
+    return iso[:10] if iso else None
 
-    This is deliberately destination-scoped: a failed/stuck YouTube item must not stop Instagram from
-    advancing to its next missing item, and vice versa. Published destinations are immutable skips.
+
+def _fresh(entry: dict, day: str) -> bool:
+    """Newly discovered posts take priority for 24 hours; after that they join normal backfill."""
+    source = entry.get("source", {})
+    if not source.get("fresh_priority"):
+        return False
+    seen = source.get("first_seen_at")
+    if not seen:
+        return False
+    try:
+        age = datetime.now(timezone.utc) - datetime.fromisoformat(seen.replace("Z", "+00:00"))
+        return 0 <= age.total_seconds() < 86400
+    except ValueError:
+        return False
+
+
+def pick_jobs(m: dict, daily_limit: int | None = None) -> dict[str, tuple[str, dict]]:
+    """One eligible item per destination, fresh first, independent historical queues.
+
+    Daily historical quota is a global count of distinct source TikTok ids with a successful
+    destination publish today. A video already counted today can finish its other destinations
+    even after the quota is reached. Fresh posts are exempt from the historical quota.
     """
     jobs: dict[str, tuple[str, dict]] = {}
     ordered = mf.ordered(m)
+    day = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    counted = {
+        vid for vid, entry in ordered
+        if not _fresh(entry, day) and any(
+            d.get("status") == "published" and _day(d.get("published_at")) == day
+            for d in entry.get("destinations", {}).values()
+        )
+    }
+    reserved: set[str] = set()
     for name in DESTS:
-        for vid, entry in ordered:
+        fresh = [(vid, entry) for vid, entry in ordered if _fresh(entry, day)]
+        historical = [(vid, entry) for vid, entry in ordered if not _fresh(entry, day)]
+        for vid, entry in fresh + historical:
             d = dest(entry, name)
             if d["status"] == "published":
                 continue
             if d["status"] == "publishing":
-                log(f"STUCK {name}, skipped: {vid} is still 'publishing' from an interrupted run. "
-                    f"Check {name} by hand, then mark it 'published' (with remote_id/url) or 'failed'.")
+                log(f"STUCK {name}, skipped: {vid} is still 'publishing'. Verify on {name} before retry.")
                 continue
+            if daily_limit is not None and not _fresh(entry, day):
+                if vid not in counted and vid not in reserved and len(counted | reserved) >= daily_limit:
+                    continue
+                reserved.add(vid)
             jobs[name] = (vid, entry)
             break
-
+    log(f"Historical daily quota (UTC): {len(counted)} completed source IDs, "
+        f"{len(reserved - counted)} reserved this run / {daily_limit if daily_limit is not None else 'unlimited'}")
     for vid, entry in ordered:
         ds = {n: dest(entry, n) for n in DESTS}
         if all(d["status"] == "published" for d in ds.values()):
             log(f"already posted: {vid} -> {ds['youtube'].get('url')} / {ds['instagram'].get('url')}")
     return jobs
-
 
 def to_h264(src: Path) -> Path:
     out = src.with_name(src.stem + ".h264.mp4")
@@ -132,6 +170,8 @@ def main(argv=None) -> int:
     ap.add_argument("--state-dir", type=Path, required=True, help="worktree of the state branch")
     ap.add_argument("--discover", action="store_true", help="read-only discovery with the stored TikTok token")
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--daily-limit", type=int, default=None,
+                    help="Maximum distinct historical source TikToks per UTC day; fresh posts exempt")
     a = ap.parse_args(argv)
 
     store = StateStore(a.state_dir.resolve())
@@ -144,7 +184,9 @@ def main(argv=None) -> int:
         log("FAIL: the manifest on the state branch is empty (run with --discover)")
         return 1
 
-    jobs = pick_jobs(m)
+    if a.daily_limit is not None and a.daily_limit < 1:
+        ap.error("--daily-limit must be positive")
+    jobs = pick_jobs(m, daily_limit=a.daily_limit)
     if not jobs:
         log("Nothing to post: every destination is published or waiting on a manual check")
         return 0
