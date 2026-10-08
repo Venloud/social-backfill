@@ -1,13 +1,9 @@
 name: Backfill Publish (one)
 
-# Advances each destination independently: YouTube and Instagram each select their own oldest eligible TikTok.
-# A failed/stuck destination never blocks the healthy destination from continuing its backlog. State lives on the `state` branch (state/manifest.json), committed with GITHUB_TOKEN:
-# 'publishing' is pushed before each upload, 'published' + id + URL after. A destination stuck on
-# 'publishing' is never retried automatically. Scheduled runs refresh TikTok credentials in this repo, and cap historical sources at 20/day.
+# Manual loop: check new TikToks every 5 minutes, old videos every 72 minutes.
+# Consecutive hosted jobs resume one checkpointed loop, target 20 old source videos.
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '2-59/5 * * * *'
 
 permissions:
   contents: write   # push the state branch
@@ -20,7 +16,12 @@ concurrency:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 360
+    strategy:
+      max-parallel: 1
+      fail-fast: true
+      matrix:
+        segment: [1, 2, 3, 4, 5]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -51,7 +52,7 @@ jobs:
           TIKTOK_REFRESH_TOKEN: ${{ secrets.TIKTOK_REFRESH_TOKEN }}
           GH_TOKEN: ${{ secrets.GH_PAT }}
         run: python pipeline/tiktok_auth.py
-      - name: Publish one video
+      - name: Continue publishing loop
         env:
           GH_TOKEN: ${{ github.token }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
@@ -59,4 +60,19 @@ jobs:
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
           INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
           INSTAGRAM_USER_ID: ${{ secrets.INSTAGRAM_USER_ID }}
-        run: python -m pipeline.publish_one --state-dir .state --discover --daily-limit 20
+        run: python -m pipeline.publish_loop --state-dir .state --target 20
+
+  finish:
+    needs: publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Confirm the loop has ended
+        run: |
+          git fetch -q origin state
+          git worktree add -q -B state .state origin/state
+          python -m pipeline.publish_loop --state-dir .state --verify-only

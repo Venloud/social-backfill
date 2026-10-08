@@ -173,6 +173,7 @@ def main(argv=None) -> int:
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--daily-limit", type=int, default=None,
                     help="Maximum distinct historical source TikToks per UTC day; fresh posts exempt")
+    ap.add_argument("--video-id", help="Publish only this source id to unfinished destinations")
     a = ap.parse_args(argv)
 
     store = StateStore(a.state_dir.resolve())
@@ -187,7 +188,14 @@ def main(argv=None) -> int:
 
     if a.daily_limit is not None and a.daily_limit < 1:
         ap.error("--daily-limit must be positive")
-    jobs = pick_jobs(m, daily_limit=a.daily_limit)
+    if a.video_id:
+        entry = m["videos"].get(a.video_id)
+        if entry is None:
+            ap.error("Unknown --video-id")
+        jobs = {name: (a.video_id, entry) for name in DESTS
+                if dest(entry, name)["status"] in ("pending", "failed")}
+    else:
+        jobs = pick_jobs(m, daily_limit=a.daily_limit)
     if not jobs:
         log("Nothing to post: every destination is published or waiting on a manual check")
         return 0
@@ -231,6 +239,8 @@ def main(argv=None) -> int:
             store.push(m, f"state: {vid} {name} publishing")
         except StatePushError as e:
             log(f"FAIL: could not record 'publishing' for {name} ({e}); NOT uploading")
+            if a.video_id:
+                raise
             return 1
         try:
             r = post_youtube(vid, entry, video) if name == "youtube" else post_instagram(vid, entry, video, info)

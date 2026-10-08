@@ -6,6 +6,8 @@ on:
     branches: [main]
     paths:
       - "pipeline/publish_one.py"
+      - "pipeline/publish_loop.py"
+      - "tests/test_publish_loop.py"
       - "pipeline/manifest.py"
       - "tests/test_publish_queue.py"
 
@@ -22,4 +24,4 @@ jobs:
         with:
           python-version: "3.11"
       - name: Run independent queue regression tests
-        run: python -m unittest -v tests.test_publish_queue
+        run: python -m unittest discover -s tests -v
