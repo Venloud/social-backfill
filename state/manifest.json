@@ -39,7 +39,7 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-10-08T13:09:19Z",
+  "updated_at": "2026-10-08T13:09:20Z",
   "videos": {
     "7693026624211569934": {
       "destinations": {
@@ -600,12 +600,12 @@
           "status": "pending"
         },
         "youtube": {
-          "attempts": 31,
-          "last_error": "HTTP 400: {\"code\": 400, \"message\": \"The user has exceeded the number of videos they may upload.\", \"errors\": [{\"message\": \"The user has exceeded the number of videos they may upload.\", \"domain\": \"youtube.video\", \"reason\": \"uploadLimitExceeded\"}]}",
+          "attempts": 32,
+          "last_error": null,
           "published_at": null,
           "remote_id": null,
-          "started_at": "2026-10-08T13:04:19Z",
-          "status": "failed",
+          "started_at": "2026-10-08T13:09:20Z",
+          "status": "publishing",
           "url": null
         }
       },
