@@ -1,6 +1,17 @@
 {
+  "publish_loops": {
+    "37713862651": {
+      "active_old": null,
+      "completed_ids": [],
+      "fresh_ids": [],
+      "next_old_at": 1791423488.2601526,
+      "started_at": "2026-10-08T01:38:08Z",
+      "status": "running",
+      "target": 20
+    }
+  },
   "schema_version": 1,
-  "updated_at": "2026-10-08T01:20:39Z",
+  "updated_at": "2026-10-08T01:38:08Z",
   "videos": {
     "7693026624211569934": {
       "destinations": {
