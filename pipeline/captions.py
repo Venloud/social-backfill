@@ -42,9 +42,9 @@ def youtube_text(source: dict, video_id: str) -> tuple[str, str, list[str]]:
     clean = clean_caption(caption_of(source)).replace("<", "").replace(">", "")
     first = first_sentence(clean.split("\n")[0] if clean else "")
     if not first:
-        first = f"Video {(source.get('created_at') or '')[:10]}".strip()
+        first = "Just me yapping"
     title = f"{first} #shorts"
-    description = (clean + "\n\n" if clean else "") + f"tt:{video_id}"
+    description = clean
     tags = [w.lstrip("#") for w in clean.split() if w.startswith("#") and len(w) > 1][:15]
     return title, description, tags
 
