@@ -36,7 +36,7 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-10-08T03:19:15Z",
+  "updated_at": "2026-10-08T03:19:16Z",
   "videos": {
     "7693026624211569934": {
       "destinations": {
@@ -3371,11 +3371,12 @@
           "status": "pending"
         },
         "youtube": {
-          "attempts": 0,
+          "attempts": 1,
           "last_error": null,
           "published_at": null,
           "remote_id": null,
-          "status": "pending",
+          "started_at": "2026-10-08T03:19:16Z",
+          "status": "publishing",
           "url": null
         }
       },
