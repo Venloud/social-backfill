@@ -40,7 +40,7 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-10-08T14:03:36Z",
+  "updated_at": "2026-10-08T14:03:37Z",
   "videos": {
     "7693026624211569934": {
       "destinations": {
@@ -602,11 +602,11 @@
         },
         "youtube": {
           "attempts": 43,
-          "last_error": null,
+          "last_error": "HTTP 400: {\"code\": 400, \"message\": \"The user has exceeded the number of videos they may upload.\", \"errors\": [{\"message\": \"The user has exceeded the number of videos they may upload.\", \"domain\": \"youtube.video\", \"reason\": \"uploadLimitExceeded\"}]}",
           "published_at": null,
           "remote_id": null,
           "started_at": "2026-10-08T14:03:36Z",
-          "status": "publishing",
+          "status": "failed",
           "url": null
         }
       },
