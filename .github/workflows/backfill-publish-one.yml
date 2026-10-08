@@ -1,9 +1,10 @@
 name: Backfill Publish (one)
 
-# Manual loop: check new TikToks every 5 minutes, old videos every 72 minutes.
-# Consecutive hosted jobs resume one checkpointed loop, target 20 old source videos.
+# One batch every 6 hours. New and old posts share the 20-per-24-hour quota.
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '7 */6 * * *'
 
 permissions:
   contents: write   # push the state branch
@@ -16,12 +17,7 @@ concurrency:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 360
-    strategy:
-      max-parallel: 1
-      fail-fast: true
-      matrix:
-        segment: [1, 2, 3, 4, 5]
+    timeout-minutes: 345
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -60,19 +56,4 @@ jobs:
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
           INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
           INSTAGRAM_USER_ID: ${{ secrets.INSTAGRAM_USER_ID }}
-        run: python -m pipeline.publish_loop --state-dir .state --target 20
-
-  finish:
-    needs: publish
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-      - name: Confirm the loop has ended
-        run: |
-          git fetch -q origin state
-          git worktree add -q -B state .state origin/state
-          python -m pipeline.publish_loop --state-dir .state --verify-only
+        run: python -m pipeline.publish_loop --state-dir .state --target 20 --max-posts 5 --segment-seconds 18900
