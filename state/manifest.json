@@ -59,7 +59,7 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-10-08T20:05:52Z",
+  "updated_at": "2026-10-08T20:05:57Z",
   "videos": {
     "7693026624211569934": {
       "destinations": {
@@ -113,20 +113,20 @@
       "source": {
         "created_at": "2026-10-05T03:52:46Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 73,
-          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oQsEwm2QDDHwfSSDhIFDg8IERAwxAEMfEACqAx~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=67c3585f&x-expires=1791576000&x-signature=hGhP8LzBECod2%2FwE6G2wO8lf%2Fxs%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
+          "cover_image_url": "https://p19-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oQsEwm2QDDHwfSSDhIFDg8IERAwxAEMfEACqAx~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=843924c3&x-expires=1791576000&x-signature=SxcwkV0iLWmFsVfR5%2FeUOQorcmc%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&s=TIKTOK_FOR_DEVELOPER&sc=cover&biz_tag=tt_video",
           "create_time": 1791172366,
           "duration": 28,
           "embed_link": "https://www.tiktok.com/player/v1/7693026624211569934?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
           "height": 1920,
-          "like_count": 3423,
+          "like_count": 3424,
           "share_count": 76,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693026624211569934?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
           "title": "Antouka...",
           "video_description": "Antouka...",
-          "view_count": 20335,
+          "view_count": 20337,
           "width": 1080
         },
         "platform": "tiktok",
@@ -186,7 +186,7 @@
       "source": {
         "created_at": "2026-10-05T04:10:39Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 56,
           "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/o8vzjEBoP5AAA2MBD4gIIikWL7DWHanEMjsAi~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=0865e74e&x-expires=1791576000&x-signature=MBAxrcsquVbv%2FMngcj2IHWy4ADk%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
@@ -261,18 +261,18 @@
       "source": {
         "created_at": "2026-10-05T04:12:08Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 77,
-          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oIIGQADARRSwAeDqrFGPfBG6OO4EXEAgSoyyCC~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=e2204592&x-expires=1791576000&x-signature=SwSpzYJnRTWYZv8hnTQvmRgi9V4%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
+          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oIIGQADARRSwAeDqrFGPfBG6OO4EXEAgSoyyCC~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=e2204592&x-expires=1791576000&x-signature=SwSpzYJnRTWYZv8hnTQvmRgi9V4%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&s=TIKTOK_FOR_DEVELOPER&sc=cover&biz_tag=tt_video",
           "create_time": 1791173528,
           "duration": 23,
           "embed_link": "https://www.tiktok.com/player/v1/7693031599214005518?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
           "height": 1280,
-          "like_count": 1398,
+          "like_count": 1400,
           "share_count": 63,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693031599214005518?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 12912,
+          "view_count": 12917,
           "width": 720
         },
         "platform": "tiktok",
@@ -340,10 +340,10 @@
       "source": {
         "created_at": "2026-10-05T04:16:57Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 6,
-          "cover_image_url": "https://p19-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oUDSESEDAMfDExdAJqyDEZfILAFqVRAwE3CUwg~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=f41d386d&x-expires=1791576000&x-signature=O55a9HPdnSa4xqmjwxGDJ4i6GJk%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
+          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oUDSESEDAMfDExdAJqyDEZfILAFqVRAwE3CUwg~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=d889d7ef&x-expires=1791576000&x-signature=8nx%2FZ30pXjI0B%2F4wAbdW17g3FHs%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
           "create_time": 1791173817,
           "duration": 34,
           "embed_link": "https://www.tiktok.com/player/v1/7693032830582017294?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
@@ -419,10 +419,10 @@
       "source": {
         "created_at": "2026-10-05T04:26:26Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 25,
-          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oQeRswEDIA2pADSvEVbwJQgEDfAMFDAutCAqyI~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=94fe82b7&x-expires=1791576000&x-signature=HTt4Hbffdi3msA9BhamQmXrYEck%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
+          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oQeRswEDIA2pADSvEVbwJQgEDfAMFDAutCAqyI~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=94fe82b7&x-expires=1791576000&x-signature=HTt4Hbffdi3msA9BhamQmXrYEck%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&sc=cover&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER",
           "create_time": 1791174386,
           "duration": 56,
           "embed_link": "https://www.tiktok.com/player/v1/7693035239848922382?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
@@ -430,7 +430,7 @@
           "like_count": 591,
           "share_count": 33,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693035239848922382?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 6330,
+          "view_count": 6332,
           "width": 720
         },
         "platform": "tiktok",
@@ -498,7 +498,7 @@
       "source": {
         "created_at": "2026-10-05T04:29:14Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 41,
           "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oYiP5Am1YAoVBRMAi82ZDIJBJnDfIaiACBTwEB~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=b616dd6b&x-expires=1791576000&x-signature=L5YRTk0QexdK7LMWa%2BLfgGiIVDU%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
@@ -506,10 +506,10 @@
           "duration": 61,
           "embed_link": "https://www.tiktok.com/player/v1/7693036022157806862?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
           "height": 1280,
-          "like_count": 1376,
+          "like_count": 1377,
           "share_count": 72,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693036022157806862?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 10950,
+          "view_count": 10955,
           "width": 720
         },
         "platform": "tiktok",
@@ -577,7 +577,7 @@
       "source": {
         "created_at": "2026-10-05T14:24:45Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 32,
           "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oMBR5wEDTAWwvDSyEDMrsngEDfA6FDAVfCAq7I~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=aa08f2cc&x-expires=1791576000&x-signature=IqkXCRJJqppz%2BcGkRoT%2Fu5cxguA%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
@@ -585,10 +585,10 @@
           "duration": 42,
           "embed_link": "https://www.tiktok.com/player/v1/7693189370169396493?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
           "height": 1280,
-          "like_count": 1735,
+          "like_count": 1737,
           "share_count": 10,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693189370169396493?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 9774,
+          "view_count": 9782,
           "width": 720
         },
         "platform": "tiktok",
@@ -650,18 +650,18 @@
       "source": {
         "created_at": "2026-10-05T15:05:05Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
-          "comment_count": 25,
-          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/ogPAri8IBgADiRoIpCEKDa4vEyAsEDAkoBVOn~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=87117ec3&x-expires=1791576000&x-signature=61vUYOJwBhFYycNu%2Fb%2BOVeE8%2FHM%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&sc=cover&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER",
+          "comment_count": 26,
+          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/ogPAri8IBgADiRoIpCEKDa4vEyAsEDAkoBVOn~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=87117ec3&x-expires=1791576000&x-signature=61vUYOJwBhFYycNu%2Fb%2BOVeE8%2FHM%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
           "create_time": 1791212705,
           "duration": 14,
           "embed_link": "https://www.tiktok.com/player/v1/7693199838564846862?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
           "height": 1280,
-          "like_count": 713,
+          "like_count": 716,
           "share_count": 4,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693199838564846862?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 7962,
+          "view_count": 7977,
           "width": 720
         },
         "platform": "tiktok",
@@ -722,18 +722,18 @@
       "source": {
         "created_at": "2026-10-05T18:01:49Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 91,
-          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oYggEOivAnSFdU2DDABAIMw5RWqg5CDEAfiNfb~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=9fe44ee7&x-expires=1791576000&x-signature=52odVSgdnl8hX8awbmh6J0q429o%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&sc=cover&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER",
+          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oYggEOivAnSFdU2DDABAIMw5RWqg5CDEAfiNfb~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=9fe44ee7&x-expires=1791576000&x-signature=52odVSgdnl8hX8awbmh6J0q429o%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
           "create_time": 1791223309,
           "duration": 19,
           "embed_link": "https://www.tiktok.com/player/v1/7693245453369986317?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
           "height": 1280,
-          "like_count": 5890,
+          "like_count": 5893,
           "share_count": 85,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693245453369986317?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 43723,
+          "view_count": 43750,
           "width": 720
         },
         "platform": "tiktok",
@@ -794,10 +794,10 @@
       "source": {
         "created_at": "2026-10-05T18:05:33Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 1,
-          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/ogeZAeuD8VYhEAIw5orL7IBGE9AfhIjD3IkAAH~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=d6bddb73&x-expires=1791576000&x-signature=bNogR3PIi6U6O%2F8z%2BDdex1GEXbc%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
+          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/ogeZAeuD8VYhEAIw5orL7IBGE9AfhIjD3IkAAH~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=d6bddb73&x-expires=1791576000&x-signature=bNogR3PIi6U6O%2F8z%2BDdex1GEXbc%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&sc=cover&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER",
           "create_time": 1791223533,
           "duration": 16,
           "embed_link": "https://www.tiktok.com/player/v1/7693246283691199758?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
@@ -866,10 +866,10 @@
       "source": {
         "created_at": "2026-10-05T18:12:32Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 4,
-          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/osAAH4IIEHAVdnhee6LkD5DWeIE4MIAgGE9jAg~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=f107cebb&x-expires=1791576000&x-signature=n940cITjOayTqV%2Fox0HoaXeKWEg%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&s=TIKTOK_FOR_DEVELOPER&sc=cover&biz_tag=tt_video",
+          "cover_image_url": "https://p19-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/osAAH4IIEHAVdnhee6LkD5DWeIE4MIAgGE9jAg~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=d69b36a9&x-expires=1791576000&x-signature=O9TJM%2FWutB1WKG8Li9bzdJ9eRAc%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
           "create_time": 1791223952,
           "duration": 51,
           "embed_link": "https://www.tiktok.com/player/v1/7693248132649454862?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
@@ -923,7 +923,7 @@
       "source": {
         "created_at": "2026-10-05T18:16:06Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 4,
           "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/os4YiAa6BNAophD3sWk2EAiIB6ZPWPbEAPDSg~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=fd20ef7f&x-expires=1791576000&x-signature=BcyGMsmufoiX1kI0RPpkiP23%2BH4%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
@@ -980,10 +980,10 @@
       "source": {
         "created_at": "2026-10-05T18:23:24Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 2,
-          "cover_image_url": "https://p19-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/o8EKujEVmhD6sFdQ3eDDxAAIkmHfAbXAOIAlEe~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=423da01f&x-expires=1791576000&x-signature=suf1ODbT%2FEbyknhWKApyaW04whA%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&sc=cover&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER",
+          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/o8EKujEVmhD6sFdQ3eDDxAAIkmHfAbXAOIAlEe~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=a45d9d4e&x-expires=1791576000&x-signature=D982TPgFhxScYlFTvDAT0Joc0pE%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
           "create_time": 1791224604,
           "duration": 32,
           "embed_link": "https://www.tiktok.com/player/v1/7693250926274006286?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
@@ -1037,10 +1037,10 @@
       "source": {
         "created_at": "2026-10-05T18:28:35Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 4,
-          "cover_image_url": "https://p19-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oExhDfwPIEakQJ28sAVAFERHIMjeAA2KGHeADs~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=6caa31e8&x-expires=1791576000&x-signature=17CNo4sKD35Cd1IiHBXyME%2F9gBs%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&s=TIKTOK_FOR_DEVELOPER&sc=cover&biz_tag=tt_video",
+          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oExhDfwPIEakQJ28sAVAFERHIMjeAA2KGHeADs~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=84ce5efe&x-expires=1791576000&x-signature=DTt0p2Vx1QcNBKfEsr1GAg3pDt8%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
           "create_time": 1791224915,
           "duration": 30,
           "embed_link": "https://www.tiktok.com/player/v1/7693252264831618318?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
@@ -1096,7 +1096,7 @@
       "source": {
         "created_at": "2026-10-05T18:37:00Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 6,
           "cover_image_url": "https://p19-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/o0VAkpDiKEWEeAFj5HfIFkpAAhIbAEfDg57DEt~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=901eb00e&x-expires=1791576000&x-signature=8cM68XAkypkm6nG%2FofzIVi%2BXqzk%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
@@ -1153,10 +1153,10 @@
       "source": {
         "created_at": "2026-10-05T18:39:57Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 3,
-          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oMyVYx3hAAAnAjPeAQLshukG3euqUf9IHIEMPg~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=e6196fba&x-expires=1791576000&x-signature=imAgOmcL%2By9e8sJu4cUKV0s2e2E%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
+          "cover_image_url": "https://p19-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oMyVYx3hAAAnAjPeAQLshukG3euqUf9IHIEMPg~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=4a1e1fa7&x-expires=1791576000&x-signature=25DmLTSxMBU6EcpT2ejl6N1J9H8%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
           "create_time": 1791225597,
           "duration": 33,
           "embed_link": "https://www.tiktok.com/player/v1/7693255243097705741?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
@@ -1164,7 +1164,7 @@
           "like_count": 96,
           "share_count": 1,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693255243097705741?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 947,
+          "view_count": 948,
           "width": 720
         },
         "platform": "tiktok",
@@ -1210,10 +1210,10 @@
       "source": {
         "created_at": "2026-10-05T18:40:23Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 7,
-          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oUaIcDFh8EDXWeAA8cAAfPEPVDIZjlCHkAxe7E~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=ce24dd22&x-expires=1791576000&x-signature=PugW8mn%2BWEs8iBvth%2B1IJQaS4Wk%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
+          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oUaIcDFh8EDXWeAA8cAAfPEPVDIZjlCHkAxe7E~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=ce24dd22&x-expires=1791576000&x-signature=PugW8mn%2BWEs8iBvth%2B1IJQaS4Wk%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&s=TIKTOK_FOR_DEVELOPER&sc=cover&biz_tag=tt_video",
           "create_time": 1791225623,
           "duration": 42,
           "embed_link": "https://www.tiktok.com/player/v1/7693255331916401933?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
@@ -1267,7 +1267,7 @@
       "source": {
         "created_at": "2026-10-05T18:41:55Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 23,
           "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oQAfeF98A3HjLD6vIe7Hy7AADMEIhVLkAAEDE4~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=16b0aa48&x-expires=1791576000&x-signature=uFL2FRy7ZePegsfv8TiF8xWovm4%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
@@ -1278,7 +1278,7 @@
           "like_count": 715,
           "share_count": 23,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693255737975344398?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 5442,
+          "view_count": 5444,
           "width": 720
         },
         "platform": "tiktok",
@@ -1324,7 +1324,7 @@
       "source": {
         "created_at": "2026-10-05T18:46:03Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 13,
           "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/ookD0ogwfAEnNgDzABRqBGCy8iDSiEAbifAI7y~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=d811b10f&x-expires=1791576000&x-signature=0OhMAq2Cqog6en6owMVstzjyxaI%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
@@ -1337,7 +1337,7 @@
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693256815580122381?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
           "title": "#humour #collage ",
           "video_description": "#humour #collage ",
-          "view_count": 1917,
+          "view_count": 1920,
           "width": 720
         },
         "platform": "tiktok",
@@ -1383,10 +1383,10 @@
       "source": {
         "created_at": "2026-10-05T18:51:24Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 4,
-          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/owXvAiqAP2BgaD9sxaEqIk1EAiz8DYBErn4A6~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=50514b1d&x-expires=1791576000&x-signature=Ls2%2FF%2FLuGHqRg0eyBTHGAoAi0h0%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&sc=cover&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER",
+          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/owXvAiqAP2BgaD9sxaEqIk1EAiz8DYBErn4A6~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=50514b1d&x-expires=1791576000&x-signature=Ls2%2FF%2FLuGHqRg0eyBTHGAoAi0h0%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
           "create_time": 1791226284,
           "duration": 34,
           "embed_link": "https://www.tiktok.com/player/v1/7693258193153035533?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
@@ -1394,7 +1394,7 @@
           "like_count": 207,
           "share_count": 2,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693258193153035533?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 1789,
+          "view_count": 1793,
           "width": 720
         },
         "platform": "tiktok",
@@ -1440,7 +1440,7 @@
       "source": {
         "created_at": "2026-10-05T18:54:27Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 5,
           "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/osHpAVfEcsJEI7FjS0IA1EAk48Afeh3DADhEmD~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=8e4b90cc&x-expires=1791576000&x-signature=hX2d6yBnkzrvYM8WEbl3iYN539I%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
@@ -1451,7 +1451,7 @@
           "like_count": 227,
           "share_count": 25,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693258965446118669?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 1548,
+          "view_count": 1552,
           "width": 720
         },
         "platform": "tiktok",
@@ -1497,7 +1497,7 @@
       "source": {
         "created_at": "2026-10-05T19:06:29Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 3,
           "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oMrqcASBqC96mG5iiAAf2AEzEDEDfwNgnRITDZ~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=51a1c3c7&x-expires=1791576000&x-signature=I2ksgNkgDAQ%2F77tPyhJSCCeGxJE%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
@@ -1508,7 +1508,7 @@
           "like_count": 81,
           "share_count": 1,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693262034875583758?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 859,
+          "view_count": 862,
           "width": 720
         },
         "platform": "tiktok",
@@ -1554,10 +1554,10 @@
       "source": {
         "created_at": "2026-10-05T19:09:14Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 9,
-          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/ookwIOSRAEkfmDBzDAgiGwdoEf9kqsiCKAr4DA~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=a87e8c89&x-expires=1791576000&x-signature=o0nvxaUQ4R6eFV5RKoGhELVb6Z8%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
+          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/ookwIOSRAEkfmDBzDAgiGwdoEf9kqsiCKAr4DA~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=a87e8c89&x-expires=1791576000&x-signature=o0nvxaUQ4R6eFV5RKoGhELVb6Z8%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&sc=cover&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER",
           "create_time": 1791227354,
           "duration": 29,
           "embed_link": "https://www.tiktok.com/player/v1/7693262805025230094?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
@@ -1567,7 +1567,7 @@
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693262805025230094?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
           "title": "nou pa esclave ank\u00f2",
           "video_description": "nou pa esclave ank\u00f2",
-          "view_count": 3896,
+          "view_count": 3898,
           "width": 720
         },
         "platform": "tiktok",
@@ -1613,7 +1613,7 @@
       "source": {
         "created_at": "2026-10-05T19:15:31Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 4,
           "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oAfV6pjDIpDhJDGEC9FdQEA1HqAVIAExffAkMA~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=3e4de91a&x-expires=1791576000&x-signature=JXRqROOpYF3pR5irKS%2FUXC4RaGc%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
@@ -1624,7 +1624,7 @@
           "like_count": 132,
           "share_count": 7,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693264420377545997?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 1164,
+          "view_count": 1165,
           "width": 720
         },
         "platform": "tiktok",
@@ -1670,10 +1670,10 @@
       "source": {
         "created_at": "2026-10-05T19:16:32Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 13,
-          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/o07Ioa4IvPFsiAKidBBy3g4jEAkADD9gEWASE~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=7d7368eb&x-expires=1791576000&x-signature=enEa6CFMxGcl8Wfdn1pfkDwKBV8%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
+          "cover_image_url": "https://p19-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/o07Ioa4IvPFsiAKidBBy3g4jEAkADD9gEWASE~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=78ac8eec&x-expires=1791576000&x-signature=pCWgjGenQQTs0uhlY1CSAQLp6f0%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&s=TIKTOK_FOR_DEVELOPER&sc=cover&biz_tag=tt_video",
           "create_time": 1791227792,
           "duration": 12,
           "embed_link": "https://www.tiktok.com/player/v1/7693264642835090701?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
@@ -1681,7 +1681,7 @@
           "like_count": 359,
           "share_count": 94,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693264642835090701?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 5095,
+          "view_count": 5096,
           "width": 720
         },
         "platform": "tiktok",
@@ -1727,10 +1727,10 @@
       "source": {
         "created_at": "2026-10-05T19:22:30Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 10,
-          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oAzqQYkjAIXf0GDbHAAFWhPVIfe2V1EERAj0HA~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=da912ac5&x-expires=1791576000&x-signature=yr7zOqA4xbsWfrG5hqLJw5djxOk%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
+          "cover_image_url": "https://p19-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oAzqQYkjAIXf0GDbHAAFWhPVIfe2V1EERAj0HA~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=6ba08db0&x-expires=1791576000&x-signature=%2Fs3cWiCpjB65EVkVaDyBKLthGzI%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&sc=cover&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER",
           "create_time": 1791228150,
           "duration": 45,
           "embed_link": "https://www.tiktok.com/player/v1/7693266213631266062?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
@@ -1738,7 +1738,7 @@
           "like_count": 423,
           "share_count": 6,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693266213631266062?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 3486,
+          "view_count": 3489,
           "width": 720
         },
         "platform": "tiktok",
@@ -1784,10 +1784,10 @@
       "source": {
         "created_at": "2026-10-05T22:24:35Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 3,
-          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/okIeGDEAkLALJIEIDGjjgieeAdGVHEAIZA6VgE~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=1c38c036&x-expires=1791576000&x-signature=shXdIYf8IF49GKLYk2C8XwUxbpQ%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
+          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/okIeGDEAkLALJIEIDGjjgieeAdGVHEAIZA6VgE~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=1c38c036&x-expires=1791576000&x-signature=shXdIYf8IF49GKLYk2C8XwUxbpQ%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&sc=cover&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER",
           "create_time": 1791239075,
           "duration": 26,
           "embed_link": "https://www.tiktok.com/player/v1/7693313153983106318?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
@@ -1795,7 +1795,7 @@
           "like_count": 299,
           "share_count": 7,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693313153983106318?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 1949,
+          "view_count": 1950,
           "width": 720
         },
         "platform": "tiktok",
@@ -1841,7 +1841,7 @@
       "source": {
         "created_at": "2026-10-05T22:27:12Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 759,
           "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/o0fFE8fADACiAUgX54BVSqIDxEAQjJR3CiEEDN~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=63072e8f&x-expires=1791576000&x-signature=LKC1YgiQvD2R%2F%2F%2FsQZeY8sTTtK0%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
@@ -1849,10 +1849,10 @@
           "duration": 75,
           "embed_link": "https://www.tiktok.com/player/v1/7693313794331757838?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
           "height": 1280,
-          "like_count": 10861,
+          "like_count": 10866,
           "share_count": 1116,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693313794331757838?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 75379,
+          "view_count": 75416,
           "width": 720
         },
         "platform": "tiktok",
@@ -1898,10 +1898,10 @@
       "source": {
         "created_at": "2026-10-05T22:31:02Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 9,
-          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/ooAzEiPQFs4JBJBglkTaEaEAAZWQDJ6IAIiPS~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=30acfde7&x-expires=1791576000&x-signature=VQqhUh7PK0MQ8LLVKyKlM1bQzZQ%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
+          "cover_image_url": "https://p19-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/ooAzEiPQFs4JBJBglkTaEaEAAZWQDJ6IAIiPS~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=d9e5d02c&x-expires=1791576000&x-signature=kdP4KVM4YlN0U1JjNzcyYbZENNI%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
           "create_time": 1791239462,
           "duration": 31,
           "embed_link": "https://www.tiktok.com/player/v1/7693314810569624845?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
@@ -1909,7 +1909,7 @@
           "like_count": 289,
           "share_count": 14,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693314810569624845?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 2480,
+          "view_count": 2481,
           "width": 720
         },
         "platform": "tiktok",
@@ -1955,7 +1955,7 @@
       "source": {
         "created_at": "2026-10-06T03:36:14Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 17,
           "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oINEFDFx7EDGs1AAyfAgfjEVqEIxRPmDSAKGbC~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=fd6a8a09&x-expires=1791576000&x-signature=Ht5hKFqNn9nrMz95rn4g1tIi%2F04%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
@@ -1963,10 +1963,10 @@
           "duration": 34,
           "embed_link": "https://www.tiktok.com/player/v1/7693393443371945229?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
           "height": 1280,
-          "like_count": 1412,
+          "like_count": 1413,
           "share_count": 7,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693393443371945229?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 8043,
+          "view_count": 8047,
           "width": 720
         },
         "platform": "tiktok",
@@ -2012,18 +2012,18 @@
       "source": {
         "created_at": "2026-10-06T13:38:47Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 324,
-          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oseZIQFXAUSlj2TJDADAQnxgRxqg8CGEAPE1fP~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=c80c4274&x-expires=1791576000&x-signature=NlpFEvgsN0c7ybaSL7oHgiL4DVk%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
+          "cover_image_url": "https://p19-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oseZIQFXAUSlj2TJDADAQnxgRxqg8CGEAPE1fP~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=cc1c8d63&x-expires=1791576000&x-signature=4uwvb%2Fp2vx0DsjRzgmKgAqEN568%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
           "create_time": 1791293927,
           "duration": 29,
           "embed_link": "https://www.tiktok.com/player/v1/7693548635623066894?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
           "height": 1280,
-          "like_count": 5759,
-          "share_count": 469,
+          "like_count": 5761,
+          "share_count": 470,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693548635623066894?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 52239,
+          "view_count": 52249,
           "width": 720
         },
         "platform": "tiktok",
@@ -2069,7 +2069,7 @@
       "source": {
         "created_at": "2026-10-06T22:52:12Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 3,
           "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oUcJzA8fkiQAe9jGI1ALIEXQiTAGAVKzMeHvEY~tplv-tiktokx-dmt-logoccm:300:400:tos-useast5-i-0068-tx/o4iEsGFxiIDlZ6AAumAgfbEQqKQJRfUDSAzX9C.jpeg?dr=8595&refresh_token=5128c141&x-expires=1791576000&x-signature=K%2FcB8SjZkBsbYm%2BKiAz%2FyrS8eMk%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
@@ -2080,7 +2080,7 @@
           "like_count": 58,
           "share_count": 0,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693691387828636942?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 698,
+          "view_count": 699,
           "width": 720
         },
         "platform": "tiktok",
@@ -2126,7 +2126,7 @@
       "source": {
         "created_at": "2026-10-06T22:52:39Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 16,
           "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oAee7AAeWGcBLCfKSavgA7YXiKANWXAQI64gQe~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=678a075e&x-expires=1791576000&x-signature=f%2FdwHA%2FsjPvZZ%2F9BpMv2eO1l1k8%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
@@ -2137,7 +2137,7 @@
           "like_count": 1012,
           "share_count": 3,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693691475271388429?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 6214,
+          "view_count": 6218,
           "width": 720
         },
         "platform": "tiktok",
@@ -2183,7 +2183,7 @@
       "source": {
         "created_at": "2026-10-06T22:57:14Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 8,
           "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oYfIArMGXqydIgEgfi2FjEJDCQAixQRKzpSAAD~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=b944603b&x-expires=1791576000&x-signature=ia%2BxPTyoPa0xeskNZFMvPTUqD7o%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
@@ -2194,7 +2194,7 @@
           "like_count": 173,
           "share_count": 2,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693692640017075470?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 1848,
+          "view_count": 1849,
           "width": 720
         },
         "platform": "tiktok",
@@ -2240,10 +2240,10 @@
       "source": {
         "created_at": "2026-10-06T23:03:19Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 3,
-          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oojGiHteAnAQtAjVUvkLIx0iIEuedAaKEAGfIy~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=59d7bf7e&x-expires=1791576000&x-signature=bO7ijIfhHbMmsYA4hk%2F0qxEzTqI%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
+          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oojGiHteAnAQtAjVUvkLIx0iIEuedAaKEAGfIy~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=59d7bf7e&x-expires=1791576000&x-signature=bO7ijIfhHbMmsYA4hk%2F0qxEzTqI%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&s=TIKTOK_FOR_DEVELOPER&sc=cover&biz_tag=tt_video",
           "create_time": 1791327799,
           "duration": 36,
           "embed_link": "https://www.tiktok.com/player/v1/7693694227930172686?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
@@ -2251,7 +2251,7 @@
           "like_count": 68,
           "share_count": 4,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693694227930172686?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 692,
+          "view_count": 693,
           "width": 720
         },
         "platform": "tiktok",
@@ -2297,7 +2297,7 @@
       "source": {
         "created_at": "2026-10-06T23:08:26Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 4,
           "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/ooC6fADxUfGD2FRtqcHo9ASEgIcKC7hQAAvXEy~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=1e5c2b34&x-expires=1791576000&x-signature=RT9ZMWDmm97nZO%2FQo7jQLcjAq70%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
@@ -2308,7 +2308,7 @@
           "like_count": 91,
           "share_count": 1,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693695530651651342?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 934,
+          "view_count": 935,
           "width": 720
         },
         "platform": "tiktok",
@@ -2354,7 +2354,7 @@
       "source": {
         "created_at": "2026-10-06T23:10:52Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 38,
           "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/osQUrNSWMKVffLWwjgMGfAAiQtceA1MAFgAXIf~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=05e4c5ae&x-expires=1791576000&x-signature=FVadFarNLroDAQBCaXIUbPDteVQ%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
@@ -2365,7 +2365,7 @@
           "like_count": 602,
           "share_count": 9,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693696157515615502?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 4636,
+          "view_count": 4639,
           "width": 720
         },
         "platform": "tiktok",
@@ -2411,10 +2411,10 @@
       "source": {
         "created_at": "2026-10-06T23:19:33Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 9,
-          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oQfq15RDEcDxEFTENgFIDEAgDuAuIgCgYeASXA~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=921d63ff&x-expires=1791576000&x-signature=Py3cwTWwcWQ09yRSWcx%2B%2BfgSaA0%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
+          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oQfq15RDEcDxEFTENgFIDEAgDuAuIgCgYeASXA~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=921d63ff&x-expires=1791576000&x-signature=Py3cwTWwcWQ09yRSWcx%2B%2BfgSaA0%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&s=TIKTOK_FOR_DEVELOPER&sc=cover&biz_tag=tt_video",
           "create_time": 1791328773,
           "duration": 39,
           "embed_link": "https://www.tiktok.com/player/v1/7693698374826069262?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
@@ -2422,7 +2422,7 @@
           "like_count": 116,
           "share_count": 7,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693698374826069262?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 1054,
+          "view_count": 1055,
           "width": 720
         },
         "platform": "tiktok",
@@ -2468,10 +2468,10 @@
       "source": {
         "created_at": "2026-10-06T23:35:21Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 5,
-          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oU9ViAGKIHEIAGskeIAAQfALewLvv4Vt2FIjkC~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=15bd59c9&x-expires=1791576000&x-signature=B0DJBON82v2UaHAH%2BsfRPzX21G4%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&sc=cover&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER",
+          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oU9ViAGKIHEIAGskeIAAQfALewLvv4Vt2FIjkC~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=15bd59c9&x-expires=1791576000&x-signature=B0DJBON82v2UaHAH%2BsfRPzX21G4%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
           "create_time": 1791329721,
           "duration": 42,
           "embed_link": "https://www.tiktok.com/player/v1/7693702475966090510?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
@@ -2479,7 +2479,7 @@
           "like_count": 113,
           "share_count": 1,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693702475966090510?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 1044,
+          "view_count": 1045,
           "width": 720
         },
         "platform": "tiktok",
@@ -2525,10 +2525,10 @@
       "source": {
         "created_at": "2026-10-06T23:38:43Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 1,
-          "cover_image_url": "https://p19-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oEqxDeFhIAY1CZMEEBAFEDA6ARFoESfw4ghDaE~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=b9362474&x-expires=1791576000&x-signature=c%2BzZKyBt9ZY9RwkEwzwGlqXhz70%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&s=TIKTOK_FOR_DEVELOPER&sc=cover&biz_tag=tt_video",
+          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oEqxDeFhIAY1CZMEEBAFEDA6ARFoESfw4ghDaE~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=6a54a8b8&x-expires=1791576000&x-signature=cF5xvqVF8JBwdudA8pPMfY5rUhM%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
           "create_time": 1791329923,
           "duration": 30,
           "embed_link": "https://www.tiktok.com/player/v1/7693703332594027790?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
@@ -2536,7 +2536,7 @@
           "like_count": 142,
           "share_count": 1,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693703332594027790?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 1483,
+          "view_count": 1484,
           "width": 720
         },
         "platform": "tiktok",
@@ -2582,10 +2582,10 @@
       "source": {
         "created_at": "2026-10-07T00:04:55Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 13,
-          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/okjxVHINlAGNAfANEaDIEYSFjkLKjieIGAWLeA~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=e44b2015&x-expires=1791576000&x-signature=nR42FB%2B5KwS%2Fa%2BkHol35WuGPDu0%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
+          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/okjxVHINlAGNAfANEaDIEYSFjkLKjieIGAWLeA~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=e44b2015&x-expires=1791576000&x-signature=nR42FB%2B5KwS%2Fa%2BkHol35WuGPDu0%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&sc=cover&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER",
           "create_time": 1791331495,
           "duration": 42,
           "embed_link": "https://www.tiktok.com/player/v1/7693710106235587854?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
@@ -2593,7 +2593,7 @@
           "like_count": 223,
           "share_count": 2,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693710106235587854?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 2066,
+          "view_count": 2067,
           "width": 720
         },
         "platform": "tiktok",
@@ -2639,10 +2639,10 @@
       "source": {
         "created_at": "2026-10-07T04:17:08Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 5,
-          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oAAABC81JihAAIxIPjFfBixYDBdOLuExHway6w~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=37256eda&x-expires=1791576000&x-signature=8md3ZoguHwbDFZdvwRD3aqXxTk8%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&s=TIKTOK_FOR_DEVELOPER&sc=cover&biz_tag=tt_video",
+          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oAAABC81JihAAIxIPjFfBixYDBdOLuExHway6w~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=37256eda&x-expires=1791576000&x-signature=8md3ZoguHwbDFZdvwRD3aqXxTk8%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
           "create_time": 1791346628,
           "duration": 22,
           "embed_link": "https://www.tiktok.com/player/v1/7693775066894454030?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
@@ -2650,7 +2650,7 @@
           "like_count": 153,
           "share_count": 11,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693775066894454030?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 1564,
+          "view_count": 1565,
           "width": 720
         },
         "platform": "tiktok",
@@ -2696,7 +2696,7 @@
       "source": {
         "created_at": "2026-10-07T04:50:25Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 80,
           "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oMPjExFiAegjAEf4VAIDU9FqIYHFk5fzEqALDA~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=e7459e2e&x-expires=1791576000&x-signature=HD8owBEMBaedCr6q4mR2drSSAJU%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
@@ -2704,10 +2704,10 @@
           "duration": 13,
           "embed_link": "https://www.tiktok.com/player/v1/7693783609395776781?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
           "height": 1280,
-          "like_count": 1136,
+          "like_count": 1137,
           "share_count": 36,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693783609395776781?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 7317,
+          "view_count": 7319,
           "width": 720
         },
         "platform": "tiktok",
@@ -2753,10 +2753,10 @@
       "source": {
         "created_at": "2026-10-07T04:51:21Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 16,
-          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/osGIIAWwEFAMeiAAQjVDkHcA57nAfxVLyHVfE4~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=c52b9137&x-expires=1791576000&x-signature=UmstW25rNXhLLhntOQ0kZiK5kio%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&sc=cover&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER",
+          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/osGIIAWwEFAMeiAAQjVDkHcA57nAfxVLyHVfE4~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=c52b9137&x-expires=1791576000&x-signature=UmstW25rNXhLLhntOQ0kZiK5kio%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
           "create_time": 1791348681,
           "duration": 12,
           "embed_link": "https://www.tiktok.com/player/v1/7693783876774186254?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
@@ -2764,7 +2764,7 @@
           "like_count": 398,
           "share_count": 17,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693783876774186254?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 2728,
+          "view_count": 2734,
           "width": 720
         },
         "platform": "tiktok",
@@ -2810,18 +2810,18 @@
       "source": {
         "created_at": "2026-10-07T04:53:12Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 28,
-          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/osFEI4BsNA2g6Qmiq0Ta9kA3ADWDBXi1vAEZr~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=9ab91c20&x-expires=1791576000&x-signature=U820zU9FH6cuzDpLrkQFpezSYC4%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&s=TIKTOK_FOR_DEVELOPER&sc=cover&biz_tag=tt_video",
+          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/osFEI4BsNA2g6Qmiq0Ta9kA3ADWDBXi1vAEZr~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=9ab91c20&x-expires=1791576000&x-signature=U820zU9FH6cuzDpLrkQFpezSYC4%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&sc=cover&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER",
           "create_time": 1791348792,
           "duration": 57,
           "embed_link": "https://www.tiktok.com/player/v1/7693784431345011981?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
           "height": 1280,
-          "like_count": 932,
+          "like_count": 936,
           "share_count": 97,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693784431345011981?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 15900,
+          "view_count": 15942,
           "width": 720
         },
         "platform": "tiktok",
@@ -2867,7 +2867,7 @@
       "source": {
         "created_at": "2026-10-07T14:11:24Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 55,
           "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/osCCZETLBsAivzUATEAWiGDQBaIkEq4gwATik~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=f6f2211e&x-expires=1791576000&x-signature=4oJBl6uwNYid%2Bq3R3lXSzg2dOdQ%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
@@ -2878,7 +2878,7 @@
           "like_count": 1204,
           "share_count": 45,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693928146743151886?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 9491,
+          "view_count": 9492,
           "width": 720
         },
         "platform": "tiktok",
@@ -2924,10 +2924,10 @@
       "source": {
         "created_at": "2026-10-07T14:15:14Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 3,
-          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oMMqCAMERQQAfSAf6GIAbbDqA10FEDwlCgdPpx~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=0b853bca&x-expires=1791576000&x-signature=e3lzlPbtiwsw%2FY5SXnjGWDyF0qg%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&s=TIKTOK_FOR_DEVELOPER&sc=cover&biz_tag=tt_video",
+          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oMMqCAMERQQAfSAf6GIAbbDqA10FEDwlCgdPpx~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=0b853bca&x-expires=1791576000&x-signature=e3lzlPbtiwsw%2FY5SXnjGWDyF0qg%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
           "create_time": 1791382514,
           "duration": 44,
           "embed_link": "https://www.tiktok.com/player/v1/7693929137106390286?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
@@ -2935,7 +2935,7 @@
           "like_count": 91,
           "share_count": 1,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693929137106390286?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 741,
+          "view_count": 743,
           "width": 720
         },
         "platform": "tiktok",
@@ -2981,18 +2981,18 @@
       "source": {
         "created_at": "2026-10-07T14:18:41Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 8,
-          "cover_image_url": "https://p19-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/ogIIMFVpKEAbHTDeQfK2AkAAENqnojnfTGlAjX~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=aff5bcca&x-expires=1791576000&x-signature=YeWog084HoUfgoufkKTxefRuFfg%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
+          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/ogIIMFVpKEAbHTDeQfK2AkAAENqnojnfTGlAjX~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=1bd8b185&x-expires=1791576000&x-signature=RcUHHgo9ICv2HTk0wa%2BUfloXJ8E%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&s=TIKTOK_FOR_DEVELOPER&sc=cover&biz_tag=tt_video",
           "create_time": 1791382721,
           "duration": 90,
           "embed_link": "https://www.tiktok.com/player/v1/7693930008787586318?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
           "height": 1280,
-          "like_count": 1087,
+          "like_count": 1089,
           "share_count": 10,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693930008787586318?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 6220,
+          "view_count": 6231,
           "width": 720
         },
         "platform": "tiktok",
@@ -3038,7 +3038,7 @@
       "source": {
         "created_at": "2026-10-07T14:23:53Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 1,
           "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/osXxDfk4EEtSQfqEdAqgFCsMI3RlAAO6GDiA23~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=35cc8a98&x-expires=1791576000&x-signature=msAiXeMCvvYmxXhA77npTALNxKU%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
@@ -3049,7 +3049,7 @@
           "like_count": 129,
           "share_count": 2,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693931336926530829?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 1059,
+          "view_count": 1060,
           "width": 720
         },
         "platform": "tiktok",
@@ -3095,7 +3095,7 @@
       "source": {
         "created_at": "2026-10-07T14:41:19Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 3,
           "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oAAAGiPG0YagBWUAIfPBy0CzwJiuBDAI71SYEs~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=2ba5e21b&x-expires=1791576000&x-signature=GYjTu4QnO37sCsD0Wnu%2F4Q7%2FBSY%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
@@ -3106,7 +3106,7 @@
           "like_count": 213,
           "share_count": 1,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693935976359513358?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 2121,
+          "view_count": 2125,
           "width": 720
         },
         "platform": "tiktok",
@@ -3152,10 +3152,10 @@
       "source": {
         "created_at": "2026-10-07T15:01:36Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 4,
-          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oY0GLEa8LI4AfD2GEAAsIehbkXjDVIAeiHkjAG~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=10c2c3d2&x-expires=1791576000&x-signature=4GgeVbAJYtQBUGmpnjSHzBApuzs%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
+          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oY0GLEa8LI4AfD2GEAAsIehbkXjDVIAeiHkjAG~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=10c2c3d2&x-expires=1791576000&x-signature=4GgeVbAJYtQBUGmpnjSHzBApuzs%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&sc=cover&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER",
           "create_time": 1791385296,
           "duration": 24,
           "embed_link": "https://www.tiktok.com/player/v1/7693941087366434062?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
@@ -3163,7 +3163,7 @@
           "like_count": 147,
           "share_count": 5,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693941087366434062?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 1548,
+          "view_count": 1553,
           "width": 720
         },
         "platform": "tiktok",
@@ -3209,7 +3209,7 @@
       "source": {
         "created_at": "2026-10-07T16:54:22Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 13,
           "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/ogTIHj5klQAPhAz1fLeJMeAwyAIlcEGGVIUjAL~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=41bb7393&x-expires=1791576000&x-signature=12gMSV%2BjWu5wjjl5pUXFL07Bl9c%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
@@ -3217,10 +3217,10 @@
           "duration": 82,
           "embed_link": "https://www.tiktok.com/player/v1/7693970155247799565?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
           "height": 1280,
-          "like_count": 788,
+          "like_count": 789,
           "share_count": 32,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7693970155247799565?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 6549,
+          "view_count": 6559,
           "width": 720
         },
         "platform": "tiktok",
@@ -3266,7 +3266,7 @@
       "source": {
         "created_at": "2026-10-07T22:00:32Z",
         "first_seen_at": "2026-10-07T22:46:42Z",
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 18,
           "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oU9BiCnSsExAjDDGEAAPifzfSwxiqIAQUD7RgZ~tplv-tiktokx-dmt-logoccm:300:400:tos-useast5-i-0068-tx/ocQAbVNIIEYAeAjJZ4gAMLIHHAGcRjAwOeI9fk.jpeg?dr=8595&refresh_token=fd3ae495&x-expires=1791576000&x-signature=SyXakZoJGlJCFfYuCKvd8GsBWKQ%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
@@ -3274,10 +3274,10 @@
           "duration": 70,
           "embed_link": "https://www.tiktok.com/player/v1/7694048896544197902?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
           "height": 1280,
-          "like_count": 2104,
+          "like_count": 2110,
           "share_count": 9,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7694048896544197902?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 35710,
+          "view_count": 35827,
           "width": 720
         },
         "platform": "tiktok",
@@ -3338,10 +3338,10 @@
         "created_at": "2026-10-07T23:25:18Z",
         "first_seen_at": "2026-10-07T23:43:59Z",
         "fresh_priority": true,
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 3,
-          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oQDGASDcICJxREE4NfR1ExiDZTzAtgZeAIAAFq~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=70c7f17b&x-expires=1791576000&x-signature=4Lo0c78KuZRjAC2%2BZvdhzGUoccU%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
+          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oQDGASDcICJxREE4NfR1ExiDZTzAtgZeAIAAFq~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=70c7f17b&x-expires=1791576000&x-signature=4Lo0c78KuZRjAC2%2BZvdhzGUoccU%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&s=TIKTOK_FOR_DEVELOPER&sc=cover&biz_tag=tt_video",
           "create_time": 1791415518,
           "duration": 12,
           "embed_link": "https://www.tiktok.com/player/v1/7694071022114376973?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
@@ -3349,7 +3349,7 @@
           "like_count": 123,
           "share_count": 19,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7694071022114376973?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 1215,
+          "view_count": 1218,
           "width": 720
         },
         "platform": "tiktok",
@@ -3418,10 +3418,10 @@
         "created_at": "2026-10-08T03:08:26Z",
         "first_seen_at": "2026-10-08T03:14:11Z",
         "fresh_priority": true,
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 4,
-          "cover_image_url": "https://p19-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/o8mlAiB2kH4XgA6ADIPBSDKJPs0CEAniEiaci~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=e9a1bad2&x-expires=1791576000&x-signature=lE3gqJlRO6Im9jRCitoVD1dzGEU%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
+          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/o8mlAiB2kH4XgA6ADIPBSDKJPs0CEAniEiaci~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=1600f86d&x-expires=1791576000&x-signature=JqgOqfgNbZmSz%2Br99JfypUnyNTo%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
           "create_time": 1791428906,
           "duration": 8,
           "embed_link": "https://www.tiktok.com/player/v1/7694128477011774733?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
@@ -3429,7 +3429,7 @@
           "like_count": 90,
           "share_count": 0,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7694128477011774733?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 982,
+          "view_count": 987,
           "width": 720
         },
         "platform": "tiktok",
@@ -3498,18 +3498,18 @@
         "created_at": "2026-10-08T03:14:14Z",
         "first_seen_at": "2026-10-08T03:19:12Z",
         "fresh_priority": true,
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 41,
-          "cover_image_url": "https://p19-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/o8IDqxA8HYEwECtUKTqDHpAAEDSoHYAEfgfFRC~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=80316f0a&x-expires=1791576000&x-signature=HJJUZjUfP8%2BFQwISX4QrzTb%2FSHg%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
+          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/o8IDqxA8HYEwECtUKTqDHpAAEDSoHYAEfgfFRC~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=fad52830&x-expires=1791576000&x-signature=NMr4fW0Djk%2B%2FxZ8r2ZZ%2F4jS2PQc%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&s=TIKTOK_FOR_DEVELOPER&sc=cover&biz_tag=tt_video",
           "create_time": 1791429254,
           "duration": 33,
           "embed_link": "https://www.tiktok.com/player/v1/7694129932057840910?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
           "height": 1280,
-          "like_count": 831,
+          "like_count": 832,
           "share_count": 23,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7694129932057840910?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 5928,
+          "view_count": 5953,
           "width": 720
         },
         "platform": "tiktok",
@@ -3572,18 +3572,18 @@
         "created_at": "2026-10-08T16:52:44Z",
         "first_seen_at": "2026-10-08T16:54:02Z",
         "fresh_priority": true,
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 3,
-          "cover_image_url": "https://p19-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/okIlHA1OfJArxiI1DYivBBwQJySAKgEPIAB9CW~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=fb07f934&x-expires=1791576000&x-signature=5zpOWkExLzPSoLLrXiYfpZMaaE8%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
+          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/okIlHA1OfJArxiI1DYivBBwQJySAKgEPIAB9CW~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=a06005f9&x-expires=1791576000&x-signature=piHCGeck8k9ankvjhKm8%2BAybocc%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
           "create_time": 1791478364,
           "duration": 28,
           "embed_link": "https://www.tiktok.com/player/v1/7694340802151025933?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
           "height": 1280,
-          "like_count": 92,
+          "like_count": 95,
           "share_count": 1,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7694340802151025933?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 552,
+          "view_count": 565,
           "width": 720
         },
         "platform": "tiktok",
@@ -3645,18 +3645,18 @@
         "created_at": "2026-10-08T17:05:46Z",
         "first_seen_at": "2026-10-08T17:09:28Z",
         "fresh_priority": true,
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 2,
-          "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/okmGDIfDSEfGR9qEEz8cDx58HCWAaE1AFAApIg~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=b39bdfb6&x-expires=1791576000&x-signature=2iBlgblTR%2B%2Bn1x%2By0FNwT07jv3A%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
+          "cover_image_url": "https://p19-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/okmGDIfDSEfGR9qEEz8cDx58HCWAaE1AFAApIg~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=fa0862b5&x-expires=1791576000&x-signature=S0V7G2g7qGUT91fMAo%2B9F6WEN38%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&sc=cover&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER",
           "create_time": 1791479146,
           "duration": 70,
           "embed_link": "https://www.tiktok.com/player/v1/7694344211386076429?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
           "height": 1280,
-          "like_count": 72,
+          "like_count": 74,
           "share_count": 4,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7694344211386076429?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 624,
+          "view_count": 641,
           "width": 720
         },
         "platform": "tiktok",
@@ -3703,7 +3703,7 @@
         "created_at": "2026-10-08T18:47:47Z",
         "first_seen_at": "2026-10-08T18:58:11Z",
         "fresh_priority": true,
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
           "comment_count": 1,
           "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/owqIee8PlAPjGoAQACxIAjEkyHjLIGfGVsq9AG~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=c3df622c&x-expires=1791576000&x-signature=9keQQRxUCnGXk42C938JD9O%2BEtc%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
@@ -3711,10 +3711,10 @@
           "duration": 19,
           "embed_link": "https://www.tiktok.com/player/v1/7694370459122552077?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
           "height": 1280,
-          "like_count": 57,
+          "like_count": 58,
           "share_count": 0,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7694370459122552077?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 301,
+          "view_count": 313,
           "width": 720
         },
         "platform": "tiktok",
@@ -3761,18 +3761,18 @@
         "created_at": "2026-10-08T19:52:01Z",
         "first_seen_at": "2026-10-08T19:55:36Z",
         "fresh_priority": true,
-        "last_seen_at": "2026-10-08T20:00:46Z",
+        "last_seen_at": "2026-10-08T20:05:57Z",
         "metadata": {
-          "comment_count": 1,
+          "comment_count": 2,
           "cover_image_url": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oQBTIAB9YDfP0A7yHPiIJCYiAq9iEC1hBIwAG7~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=18000c1b&x-expires=1791576000&x-signature=YOzDzLaQH8mDACo%2FMAXWv6wfeqI%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=8aecc5ac&idc=useast5&biz_tag=tt_video&s=TIKTOK_FOR_DEVELOPER&sc=cover",
           "create_time": 1791489121,
           "duration": 18,
           "embed_link": "https://www.tiktok.com/player/v1/7694387041903185165?music_info=1&description=1&autoplay=1&loop=1&utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
           "height": 1280,
-          "like_count": 24,
+          "like_count": 35,
           "share_count": 0,
           "share_url": "https://www.tiktok.com/@pepitetalkalot/video/7694387041903185165?utm_campaign=tt4d_open_api&utm_source=sbawsigziq7u79m4vi",
-          "view_count": 85,
+          "view_count": 125,
           "width": 720
         },
         "platform": "tiktok",
