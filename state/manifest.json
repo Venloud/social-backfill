@@ -10,10 +10,22 @@
       "started_at": "2026-10-08T01:38:08Z",
       "status": "running",
       "target": 20
+    },
+    "scheduled": {
+      "active_old": null,
+      "completed_ids": [],
+      "fresh_ids": [],
+      "next_old_at": 1791424132.1399782,
+      "run_completed": {
+        "37714728959": []
+      },
+      "status": "running",
+      "target": 20,
+      "window_started": 1791424132.1399782
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-10-08T01:43:11Z",
+  "updated_at": "2026-10-08T01:48:52Z",
   "videos": {
     "7693026624211569934": {
       "destinations": {
