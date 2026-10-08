@@ -59,7 +59,7 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-10-08T19:55:36Z",
+  "updated_at": "2026-10-08T19:56:37Z",
   "videos": {
     "7693026624211569934": {
       "destinations": {
@@ -3729,7 +3729,8 @@
           "last_error": null,
           "published_at": null,
           "remote_id": null,
-          "status": "pending"
+          "status": "pending",
+          "url": null
         },
         "snapchat": {
           "attempts": 0,
@@ -3743,7 +3744,8 @@
           "last_error": null,
           "published_at": null,
           "remote_id": null,
-          "status": "pending"
+          "status": "pending",
+          "url": null
         }
       },
       "media": {
