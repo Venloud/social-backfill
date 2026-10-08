@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-08T00:56:22Z",
+  "updated_at": "2026-10-08T00:56:23Z",
   "videos": {
     "7693026624211569934": {
       "destinations": {
@@ -166,11 +166,12 @@
           "status": "pending"
         },
         "youtube": {
-          "attempts": 0,
+          "attempts": 1,
           "last_error": null,
           "published_at": null,
           "remote_id": null,
-          "status": "pending",
+          "started_at": "2026-10-08T00:56:23Z",
+          "status": "publishing",
           "url": null
         }
       },
