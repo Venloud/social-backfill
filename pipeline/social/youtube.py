@@ -41,11 +41,11 @@ class UploadStarted(Fail):
     """The video bytes were (or may have been) sent: YouTube may hold a copy. Never retry blindly."""
 
 
-def youtube_upload(video: Path, title: str, description: str, tags: list[str], privacy: str = "public") -> dict:
+def youtube_upload(video: Path, title: str, description: str, tags: list[str], privacy: str = "public", cover_path: Path | None = None) -> dict:
     """Resumable upload of one Short. Raises Fail before any byte is sent, UploadStarted after."""
     from pipeline.social.covers import COVER_PATH, youtube_cover
-    if not COVER_PATH.is_file():
-        raise Fail("Default cover image is missing")
+    if not (cover_path or COVER_PATH).is_file():
+        raise Fail("Cover image is missing")
     tok, _ = youtube_token()
     body = {"snippet": {"title": title[:100], "description": description[:4900], "tags": tags[:15],
                         "categoryId": str(CONFIG.get("youtube_category", "22"))},
@@ -66,7 +66,7 @@ def youtube_upload(video: Path, title: str, description: str, tags: list[str], p
     if not d.get("id"):
         raise UploadStarted("YouTube answered without a video id")
     try:
-        cover = youtube_cover(d["id"], tok)
+        cover = youtube_cover(d["id"], tok, cover_path)
     except Exception as e:
         # The video already exists. Record a cover failure without retrying the video.
         cover = {"status": "failed", "error": f"{type(e).__name__}: {str(e)[:300]}"}
