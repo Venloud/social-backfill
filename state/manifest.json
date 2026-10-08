@@ -12,12 +12,16 @@
       "target": 20
     },
     "scheduled": {
-      "active_old": "7693036022157806862",
-      "completed_ids": [],
+      "active_old": null,
+      "completed_ids": [
+        "7693036022157806862"
+      ],
       "fresh_ids": [],
       "next_old_at": 1791428456.972436,
       "run_completed": {
-        "37714728959": []
+        "37714728959": [
+          "7693036022157806862"
+        ]
       },
       "status": "running",
       "target": 20,
@@ -25,7 +29,7 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-10-08T01:49:41Z",
+  "updated_at": "2026-10-08T01:49:42Z",
   "videos": {
     "7693026624211569934": {
       "destinations": {
