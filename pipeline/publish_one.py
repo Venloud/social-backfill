@@ -138,7 +138,7 @@ def post_youtube(vid: str, entry: dict, video: Path) -> dict:
     if r.get("privacy") != "public":
         log(f"WARNING: YouTube reports privacy '{r.get('privacy')}' (an unverified Google Cloud project "
             "forces API uploads to private until the API audit passes)")
-    return {"remote_id": r["id"], "url": r["url"], "privacy": r.get("privacy"), "format": "original MP4"}
+    return {"remote_id": r["id"], "url": r["url"], "privacy": r.get("privacy"), "format": "original MP4", "cover": r.get("cover")}
 
 
 def post_instagram(vid: str, entry: dict, video: Path, info: dict) -> dict:
@@ -162,7 +162,8 @@ def post_instagram(vid: str, entry: dict, video: Path, info: dict) -> dict:
     if not cid:
         raise meta.Fail("Instagram could not process the video in any format")
     r = meta.instagram_publish_container(cid, chk)       # PublishAttempted from here on
-    return {"remote_id": r["id"], "url": r["url"], "format": fmt, "product_type": r.get("product_type")}
+    return {"remote_id": r["id"], "url": r["url"], "format": fmt, "product_type": r.get("product_type"),
+            "cover": {"status": "set", "asset": "assets/default-cover.jpg"}}
 
 
 def main(argv=None) -> int:
@@ -248,6 +249,11 @@ def main(argv=None) -> int:
             continue
         d.update(status="published", remote_id=r["remote_id"], url=r["url"], published_at=mf.now(),
                  last_error=None, format=r.get("format"))
+        if r.get("cover"):
+            d["cover"] = r["cover"]
+            if r["cover"]["status"] != "set":
+                log(f"{name}: cover failed, video remains published: {r['cover'].get('error')}")
+                failures += 1
         if r.get("privacy"):
             d["privacy"] = r["privacy"]
         store.push(m, f"state: {vid} {name} published")

@@ -43,6 +43,9 @@ class UploadStarted(Fail):
 
 def youtube_upload(video: Path, title: str, description: str, tags: list[str], privacy: str = "public") -> dict:
     """Resumable upload of one Short. Raises Fail before any byte is sent, UploadStarted after."""
+    from pipeline.social.covers import COVER_PATH, youtube_cover
+    if not COVER_PATH.is_file():
+        raise Fail("Default cover image is missing")
     tok, _ = youtube_token()
     body = {"snippet": {"title": title[:100], "description": description[:4900], "tags": tags[:15],
                         "categoryId": str(CONFIG.get("youtube_category", "22"))},
@@ -62,7 +65,12 @@ def youtube_upload(video: Path, title: str, description: str, tags: list[str], p
         raise UploadStarted(f"upload interrupted after sending bytes ({type(e).__name__}: {str(e)[:160]})") from None
     if not d.get("id"):
         raise UploadStarted("YouTube answered without a video id")
-    return {"id": d["id"], "url": f"https://youtube.com/shorts/{d['id']}",
+    try:
+        cover = youtube_cover(d["id"], tok)
+    except Exception as e:
+        # The video already exists. Record a cover failure without retrying the video.
+        cover = {"status": "failed", "error": f"{type(e).__name__}: {str(e)[:300]}"}
+    return {"cover": cover, "id": d["id"], "url": f"https://youtube.com/shorts/{d['id']}",
             "privacy": (d.get("status") or {}).get("privacyStatus"),
             "upload_status": (d.get("status") or {}).get("uploadStatus")}
 

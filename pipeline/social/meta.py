@@ -139,8 +139,11 @@ def instagram_upload_container(video: Path, caption: str, chk: dict) -> tuple[st
     tok, = env("INSTAGRAM_ACCESS_TOKEN")
     h = {"Authorization": f"Bearer {tok}"}
     base, uid = chk["base"], chk["id"]
+    from pipeline.social.covers import instagram_cover_url
+    cover_url = instagram_cover_url()
     c = http(f"{base}/{uid}/media", "POST", headers=h, form={"media_type": "REELS", "upload_type": "resumable",
-                                                             "caption": caption, "share_to_feed": "true"})
+                                                             "caption": caption, "share_to_feed": "true",
+                                                             "cover_url": cover_url})
     cid = c.get("id")
     if not cid:
         raise Fail("Instagram returned no container id")
