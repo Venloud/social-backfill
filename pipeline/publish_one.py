@@ -134,7 +134,14 @@ def post_youtube(vid: str, entry: dict, video: Path) -> dict:
     from pipeline.social import youtube
     title, description, tags = captions.youtube_text(entry["source"], vid)
     log(f"YouTube title: {title}")
-    r = youtube.youtube_upload(video, title, description, tags, privacy="public")
+    from pipeline.social.covers import tiktok_cover
+    try:
+        cover = tiktok_cover(entry, vid)
+        log(f"TikTok original cover downloaded: {cover.name}")
+    except Exception as exc:
+        log(f"WARNING TikTok cover unavailable for {vid}: {media.sanitize(exc)}")
+        cover = None
+    r = youtube.youtube_upload(video, title, description, tags, privacy="public", cover_path=cover)
     if r.get("privacy") != "public":
         log(f"WARNING: YouTube reports privacy '{r.get('privacy')}' (an unverified Google Cloud project "
             "forces API uploads to private until the API audit passes)")
