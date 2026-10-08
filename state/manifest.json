@@ -33,7 +33,7 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-10-08T03:14:18Z",
+  "updated_at": "2026-10-08T03:14:52Z",
   "videos": {
     "7693026624211569934": {
       "destinations": {
@@ -3274,12 +3274,17 @@
       "destinations": {
         "instagram": {
           "attempts": 1,
+          "cover": {
+            "asset": "assets/default-cover.jpg",
+            "status": "set"
+          },
+          "format": "h264 (original)",
           "last_error": null,
-          "published_at": null,
-          "remote_id": null,
+          "published_at": "2026-10-08T03:14:52Z",
+          "remote_id": "18197206462390791",
           "started_at": "2026-10-08T03:14:18Z",
-          "status": "publishing",
-          "url": null
+          "status": "published",
+          "url": "https://www.instagram.com/reel/DeN8ZFijqFn/"
         },
         "snapchat": {
           "attempts": 0,
