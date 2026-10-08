@@ -65,7 +65,7 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-10-08T22:51:35Z",
+  "updated_at": "2026-10-08T22:51:38Z",
   "videos": {
     "7693026624211569934": {
       "destinations": {
@@ -3548,12 +3548,18 @@
         },
         "youtube": {
           "attempts": 5,
+          "cover": {
+            "error": "Fail: HTTP 429: {\"code\": 429, \"message\": \"The user has uploaded too many thumbnails recently. Please try the request again later.\", \"errors\": [{\"message\": \"The user has uploaded too many thumbnails recently. Please try the request again later.\", \"domain\": \"youtube.thumbnail\", \"reason\": \"uploadRateLimitExc",
+            "status": "failed"
+          },
+          "format": "original MP4",
           "last_error": null,
-          "published_at": null,
-          "remote_id": null,
+          "privacy": "public",
+          "published_at": "2026-10-08T22:51:38Z",
+          "remote_id": "Ita0hrV4B6k",
           "started_at": "2026-10-08T22:51:35Z",
-          "status": "publishing",
-          "url": null
+          "status": "published",
+          "url": "https://youtube.com/shorts/Ita0hrV4B6k"
         }
       },
       "media": {
