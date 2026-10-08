@@ -252,8 +252,7 @@ def main(argv=None) -> int:
         if r.get("cover"):
             d["cover"] = r["cover"]
             if r["cover"]["status"] != "set":
-                log(f"{name}: cover failed, video remains published: {r['cover'].get('error')}")
-                failures += 1
+                log(f"WARNING {name}: cover failed, video remains published: {r['cover'].get('error')}")
         if r.get("privacy"):
             d["privacy"] = r["privacy"]
         store.push(m, f"state: {vid} {name} published")
