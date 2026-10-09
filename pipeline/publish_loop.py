@@ -63,7 +63,7 @@ def run(state_dir, run_id, target=20, segment_seconds=18900, interval=4320,
         m = store.load()
         session = session_for(m, run_id, time.time(), target)
         if max_posts == 1:
-            # The cron controls pacing for single-post runs. A previous run\x27s
+            # The cron controls pacing for single-post runs. A previous run's
             # saved next_old_at must never make this scheduled invocation idle.
             session["next_old_at"] = time.time()
         elif session["next_old_at"] > time.time() + interval:
