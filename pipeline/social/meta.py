@@ -133,14 +133,14 @@ def _container_status(base: str, cid: str, tok: str, timeout_s: int = 600) -> st
     return f"TIMEOUT ({st or 'no status'})"
 
 
-def instagram_upload_container(video: Path, caption: str, chk: dict) -> tuple[str, str]:
+def instagram_upload_container(video: Path, caption: str, chk: dict, cover_url: str) -> tuple[str, str]:
     """Create a Reels container by resumable upload (bytes go straight to Meta, no public URL) and wait for
     processing. Returns (container_id, final_status). Nothing is published here."""
     tok, = env("INSTAGRAM_ACCESS_TOKEN")
     h = {"Authorization": f"Bearer {tok}"}
     base, uid = chk["base"], chk["id"]
-    from pipeline.social.covers import instagram_cover_url
-    cover_url = instagram_cover_url()
+    if not cover_url.startswith("https://"):
+        raise Fail("Instagram requires a matching HTTPS TikTok cover URL")
     c = http(f"{base}/{uid}/media", "POST", headers=h, form={"media_type": "REELS", "upload_type": "resumable",
                                                              "caption": caption, "share_to_feed": "true",
                                                              "cover_url": cover_url})
