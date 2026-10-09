@@ -96,6 +96,22 @@ class LoopTests(unittest.TestCase):
         self.assertEqual(f[1]["publish_loops"]["scheduled"]["status"], "completed")
         self.assertEqual(f[1]["videos"]["2"]["destinations"]["instagram"]["status"], "pending")
 
+    def test_quota_reached_still_allows_youtube_to_catch_up(self):
+        f = self.fixture(n=2)
+        f[1]["videos"]["0"]["destinations"]["instagram"].update(
+            status="published", published_at="1970-01-01T00:20:00Z")
+        self.assertEqual(self.execute(f, run_id="catchup", target=1), 0)
+        self.assertEqual(len(f[2]), 1)
+
+    def test_single_post_waits_when_all_destinations_are_paced(self):
+        f = self.fixture()
+        f[1]["publish_pacing"] = {
+            "youtube": {"next_attempt_at": 2000.0},
+            "instagram": {"next_attempt_at": 2000.0},
+        }
+        self.assertEqual(self.execute(f), 0)
+        self.assertEqual(len(f[2]), 0)
+
     def test_quota_window_rollover_allows_pending_video(self):
         f = self.fixture()
         for i in range(2):
