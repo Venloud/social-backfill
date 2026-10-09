@@ -48,7 +48,8 @@ def reconcile(m, session, run_id):
         if published_in_window(entry, session["window_started"]):
             if vid not in session["completed_ids"]:
                 session["completed_ids"].append(vid)
-                session["run_completed"][run_id].append(vid)
+                # Reconciliation may discover posts from earlier runs. Do not credit
+                # them to this run or suppress an eligible YouTube catch-up upload.
     session["status"] = "completed" if len(session["completed_ids"]) >= session["target"] else "running"
     return session["status"] == "completed"
 
@@ -91,10 +92,14 @@ def run(state_dir, run_id, target=20, segment_seconds=18900, interval=4320,
             # Let publish_one select independent queues per platform. Do not pin
             # the entire scheduler to a source whose Instagram side is blocked.
             log(f"POST SLOT: {count}/{max_posts} this run; independent destination queues")
+            completed_before = set(session["completed_ids"])
             result = publish_one(["--state-dir", str(state_dir), "--daily-limit", str(target)])
             m = store.load()
             session = session_for(m, run_id, time.time(), target)
             reconcile(m, session, run_id)
+            for vid in session["completed_ids"]:
+                if vid not in completed_before and vid not in session["run_completed"][run_id]:
+                    session["run_completed"][run_id].append(vid)
             session["next_old_at"] = time.time() + interval
             store.push(m, "state: scheduled upload checkpoint")
             log(f"POST SLOT RESULT: {'success' if result == 0 else 'partial failure'}; "
