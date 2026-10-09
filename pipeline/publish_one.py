@@ -15,6 +15,7 @@ from __future__ import annotations
 import argparse
 from datetime import datetime, timezone
 import os
+import time
 import subprocess
 import sys
 from pathlib import Path
@@ -23,6 +24,35 @@ from pipeline import captions, manifest as mf, media
 from pipeline.state_store import StatePushError, StateStore
 
 DESTS = ("youtube", "instagram")
+
+# Conservative platform-specific pacing; checked on every scheduled invocation.
+# These limits are not YouTube's unpublished channel quota.
+PLATFORM_INTERVAL_SECONDS = {"youtube": 6 * 3600, "instagram": 3600}
+YOUTUBE_LIMIT_COOLDOWN_SECONDS = 24 * 3600
+
+
+def _timestamp(value):
+    if not isinstance(value, str) or not value:
+        return 0.0
+    try:
+        return datetime.fromisoformat(value.replace("Z", "+00:00")).timestamp()
+    except (ValueError, TypeError, OverflowError):
+        return 0.0
+
+
+def platform_due(m: dict, name: str, now: float | None = None) -> tuple[bool, float]:
+    """Persist scheduling across runs; migrate an existing YouTube upload-limit failure."""
+    now = time.time() if now is None else now
+    state = m.get("publish_pacing", {}).get(name, {})
+    due_at = max(float(state.get("next_attempt_at") or 0),
+                 float(state.get("cooldown_until") or 0))
+    if name == "youtube":
+        # Existing state predates the cooldown field. Don't hammer YouTube on deployment.
+        for entry in m.get("videos", {}).values():
+            d = entry.get("destinations", {}).get("youtube", {})
+            if "uploadlimitexceeded" in str(d.get("last_error") or "").lower():
+                due_at = max(due_at, _timestamp(d.get("started_at")) + YOUTUBE_LIMIT_COOLDOWN_SECONDS)
+    return now >= due_at, due_at
 
 
 def log(msg: str) -> None:
@@ -96,6 +126,11 @@ def pick_jobs(m: dict, daily_limit: int | None = None) -> dict[str, tuple[str, d
     }
     reserved: set[str] = set()
     for name in DESTS:
+        due, due_at = platform_due(m, name)
+        if not due:
+            log(f"{name}: paused by pacing/cooldown; next eligible at "
+                f"{datetime.fromtimestamp(due_at, timezone.utc).isoformat()}")
+            continue
         fresh = [(vid, entry) for vid, entry in ordered if _fresh(entry, day)]
         historical = [(vid, entry) for vid, entry in ordered if not _fresh(entry, day)]
         for vid, entry in fresh + historical:
@@ -248,6 +283,10 @@ def main(argv=None) -> int:
 
         d.update(status="publishing", attempts=int(d.get("attempts") or 0) + 1, last_error=None,
                  started_at=mf.now())
+        # Checkpoint platform pacing together with 'publishing' before attempting upload.
+        m.setdefault("publish_pacing", {}).setdefault(name, {})["next_attempt_at"] = (
+            time.time() + PLATFORM_INTERVAL_SECONDS[name]
+        )
         try:
             store.push(m, f"state: {vid} {name} publishing")
         except StatePushError as e:
@@ -267,6 +306,12 @@ def main(argv=None) -> int:
             else:
                 d.update(status="failed", last_error=msg)
                 log(f"{name}: FAILED before anything went live (retryable): {msg}")
+            if name == "youtube" and "uploadlimitexceeded" in msg.lower():
+                m.setdefault("publish_pacing", {}).setdefault("youtube", {})["cooldown_until"] = (
+                    time.time() + YOUTUBE_LIMIT_COOLDOWN_SECONDS
+                )
+                log("YouTube: upload limit reached, pausing new YouTube attempts for 24 hours; "
+                    "Instagram continues independently")
             failures += 1
             store.push(m, f"state: {vid} {name} {d['status']}")
             continue
