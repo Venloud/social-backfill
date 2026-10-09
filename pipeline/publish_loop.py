@@ -54,9 +54,10 @@ def reconcile(m, session, run_id):
 
 
 def run(state_dir, run_id, target=20, segment_seconds=18900, interval=4320,
-        poll_seconds=300, max_posts=5, upload_margin=900):
+        poll_seconds=300, max_posts=5, upload_margin=120):
     store = StateStore(state_dir.resolve())
     deadline = time.monotonic() + segment_seconds
+    log(f'SCHEDULER: segment={segment_seconds}s, upload_margin={upload_margin}s, interval={interval}s')
     next_poll = 0.0
     while time.monotonic() < deadline:
         m = store.load()
@@ -68,6 +69,7 @@ def run(state_dir, run_id, target=20, segment_seconds=18900, interval=4320,
             log(f"BATCH ENDED: {count}/{max_posts} this run; {len(session['completed_ids'])}/{target} in the 24-hour window")
             return 0
         if deadline - time.monotonic() < upload_margin:
+            log(f'SKIP: remaining run time below upload margin ({upload_margin}s)')
             break
         now = time.time()
         if now >= next_poll:
@@ -104,10 +106,11 @@ def main(argv=None):
     ap.add_argument("--target", type=int, default=20)
     ap.add_argument("--max-posts", type=int, default=5)
     ap.add_argument("--segment-seconds", type=int, default=18900)
+    ap.add_argument("--interval-seconds", type=int, default=780)
     a = ap.parse_args(argv)
     if not a.run_id or min(a.target, a.max_posts, a.segment_seconds) < 1:
         ap.error("run-id and positive limits are required")
-    return run(a.state_dir, a.run_id, a.target, a.segment_seconds, max_posts=a.max_posts)
+    return run(a.state_dir, a.run_id, a.target, a.segment_seconds, interval=a.interval_seconds, max_posts=a.max_posts)
 
 if __name__ == "__main__":
     raise SystemExit(main())
