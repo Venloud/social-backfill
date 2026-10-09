@@ -1,10 +1,11 @@
 name: Backfill Publish (one)
 
-# One publishing attempt per scheduled run. Shared 20-per-24-hour quota remains unchanged.
+# Check every 30 minutes; platform-specific pacing is persisted in the manifest.
+# Instagram: 1 hour; YouTube: 6 hours, with a 24-hour cooldown on uploadLimitExceeded.
 on:
   workflow_dispatch:
   schedule:
-    - cron: '9,21,33,45,57 * * * *'
+    - cron: '17,47 * * * *'
 
 permissions:
   contents: write   # push the state branch
