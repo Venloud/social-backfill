@@ -1,109 +1,134 @@
-"""Loop pacing and checkpoint tests; no network calls or real waits."""
+"""Scheduled backfill unit tests, no network, uploads, or real waiting.
+
+The scheduled workflow makes one publishing attempt per invocation; the cron
+provides pacing. These tests do not assume the retired per-video pinning system.
+"""
 import copy
 import unittest
+from datetime import datetime, timezone
 from pathlib import Path
 from unittest.mock import patch
 from pipeline import publish_loop as loop
 from pipeline import manifest as mf
 
+
 def entry(stamp):
     return {"source": {"created_at": stamp}, "destinations": {
         name: {**mf.DEST_TEMPLATE, "status": "pending"} for name in loop.DESTS}}
 
+
 class LoopTests(unittest.TestCase):
-    def simulate(self, target, interval=4320, segment=86400, inject=False, partial=False):
+    def fixture(self, n=3, failure=False):
         clock = [1000.0]
-        data = {"videos": {str(i): entry(f"2026-01-{i+1:02d}") for i in range(target)}}
-        posts = []
-        polls = []
+        data = {"videos": {str(i): entry(f"2026-01-{i+1:02d}") for i in range(n)}}
+        attempts = []
+        pushes = []
+
         class Store:
-            def __init__(self, path): pass
-            def load(self): return copy.deepcopy(data)
+            def __init__(self, path):
+                pass
+            def load(self):
+                return copy.deepcopy(data)
             def push(self, m, message):
+                pushes.append(message)
                 data.clear()
                 data.update(copy.deepcopy(m))
-        def publish(args):
-            vid = args[-1]
-            posts.append((vid, clock[0]))
-            data["videos"][vid]["destinations"]["youtube"]["status"] = "published"
-            if not partial or len([v for v, _ in posts if v == vid]) > 1:
-                data["videos"][vid]["destinations"]["instagram"]["status"] = "published"
-            return 0
-        def discover(m):
-            polls.append(clock[0])
-            if inject and clock[0] >= 1600 and "fresh" not in m["videos"]:
-                m["videos"]["fresh"] = entry("2026-12-01")
-        def sleep(seconds): clock[0] += seconds
-        return clock, data, posts, polls, Store, publish, discover, sleep
 
-    def execute(self, fixture, target, segment=86400, run_id="run", max_posts=None):
-        clock, data, posts, polls, Store, publish, discover, sleep = fixture
+        def publish(args):
+            self.assertEqual(args[-2:], ["--daily-limit", str(data["publish_loops"]["scheduled"]["target"])])
+            attempts.append((clock[0], tuple(args)))
+            if failure:
+                return 1
+            for vid, item in sorted(data["videos"].items()):
+                if item["destinations"]["youtube"]["status"] == "published":
+                    continue
+                timestamp = datetime.fromtimestamp(clock[0], timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+                for name in loop.DESTS:
+                    item["destinations"][name].update(status="published", published_at=timestamp)
+                break
+            return 0
+
+        def sleep(seconds):
+            clock[0] += seconds
+
+        return clock, data, attempts, pushes, Store, publish, sleep
+
+    def execute(self, fixture, *, run_id="run", target=20, max_posts=1, segment=600,
+                interval=780, upload_margin=120):
+        clock, data, attempts, pushes, Store, publish, sleep = fixture
         with patch.object(loop, "StateStore", Store), patch.object(loop, "publish_one", publish), \
-             patch.object(loop, "discover_readonly", discover), patch.object(loop, "log"), \
+             patch.object(loop, "discover_readonly", lambda m: None), patch.object(loop, "log"), \
              patch.object(loop.time, "time", side_effect=lambda: clock[0]), \
              patch.object(loop.time, "monotonic", side_effect=lambda: clock[0]), \
              patch.object(loop.time, "sleep", side_effect=sleep):
             return loop.run(Path("."), run_id, target=target, segment_seconds=segment,
-                            max_posts=max_posts or target, upload_margin=0)
+                            interval=interval, max_posts=max_posts, upload_margin=upload_margin)
 
-    def test_twenty_old_videos_are_72_minutes_apart(self):
-        f = self.simulate(20)
-        self.assertEqual(self.execute(f, 20), 0)
-        times = [t for _, t in f[2]]
-        self.assertEqual(len(times), 20)
-        self.assertTrue(all(b-a == 4320 for a,b in zip(times,times[1:])))
-        self.assertEqual(f[1]["publish_loops"]["scheduled"]["status"], "completed")
-        self.assertTrue(all(b-a == 300 for a,b in zip(f[3],f[3][1:])))
+    def test_single_post_ignores_legacy_saved_delay(self):
+        f = self.fixture()
+        f[1]["publish_loops"] = {"scheduled": {"window_started": 1000.0, "next_old_at": 6000.0}}
+        self.assertEqual(self.execute(f), 0)
+        self.assertEqual(len(f[2]), 1)
+        self.assertEqual(f[2][0][0], 1000.0)
 
-    def test_fresh_post_counts_toward_shared_quota(self):
-        f = self.simulate(2, inject=True)
-        self.execute(f, 2)
-        self.assertIn(("fresh", 1600), f[2])
-        self.assertEqual(f[1]["publish_loops"]["scheduled"]["completed_ids"], ["0", "fresh"])
-
-    def test_segment_resumes_count_and_pacing(self):
-        f = self.simulate(2)
-        self.execute(f, 2, segment=600)
+    def test_single_post_does_not_retry_failure_in_same_run(self):
+        f = self.fixture(failure=True)
+        self.assertEqual(self.execute(f), 1)
+        self.assertEqual(len(f[2]), 1)
         self.assertEqual(f[1]["publish_loops"]["scheduled"]["status"], "running")
-        self.execute(f, 2)
-        self.assertEqual(f[2], [("0", 1000), ("1", 5320)])
 
-    def test_partial_success_counts_only_after_both_destinations(self):
-        f = self.simulate(1, partial=True)
-        self.execute(f, 1, segment=200)
-        self.assertEqual(f[1]["publish_loops"]["scheduled"]["completed_ids"], [])
-        self.execute(f, 1)
-        self.assertEqual(f[1]["publish_loops"]["scheduled"]["completed_ids"], ["0"])
+    def test_consecutive_scheduled_invocations_publish_one_each(self):
+        f = self.fixture()
+        for i in range(3):
+            f[0][0] = 1000 + i * 780
+            self.assertEqual(self.execute(f, run_id=str(i)), 0)
+            self.assertEqual(len(f[2]), i + 1)
+        s = f[1]["publish_loops"]["scheduled"]
+        self.assertEqual(s["completed_ids"], ["0", "1", "2"])
+        self.assertEqual(s["status"], "running")
 
-    def test_five_per_run_shared_twenty_across_runs(self):
-        f = self.simulate(20)
-        for index in range(4):
-            f[0][0] = 1000 + index * 21600
-            self.execute(f, 20, segment=18900, run_id=str(index), max_posts=5)
-            self.assertEqual(len(f[2]), (index + 1) * 5)
-        session = f[1]["publish_loops"]["scheduled"]
-        self.assertEqual(session["status"], "completed")
-        self.assertEqual(len(session["completed_ids"]), 20)
-        self.assertEqual(len(set(v for v, _ in f[2])), 20)
+    def test_shared_target_blocks_additional_attempts(self):
+        f = self.fixture()
+        for i in range(3):
+            f[0][0] = 1000 + i * 780
+            self.assertEqual(self.execute(f, run_id=str(i), target=2), 0)
+        self.assertEqual(len(f[2]), 2)
+        self.assertEqual(f[1]["publish_loops"]["scheduled"]["status"], "completed")
+        self.assertEqual(f[1]["videos"]["2"]["destinations"]["instagram"]["status"], "pending")
 
-    def test_run_retry_keeps_five_post_limit(self):
-        f = self.simulate(10)
-        self.execute(f, 20, max_posts=5)
-        self.execute(f, 20, max_posts=5)
-        self.assertEqual(len(f[2]), 5)
+    def test_quota_window_rollover_allows_pending_video(self):
+        f = self.fixture()
+        for i in range(2):
+            f[0][0] = 1000 + i * 780
+            self.execute(f, run_id=str(i), target=2)
+        f[0][0] = 1000 + 86401
+        self.assertEqual(self.execute(f, run_id="new-day", target=2), 0)
+        self.assertEqual(len(f[2]), 3)
+        self.assertEqual(f[1]["publish_loops"]["scheduled"]["completed_ids"], ["2"])
 
-    def test_new_post_postpones_old_slot(self):
-        f = self.simulate(3, inject=True)
-        self.execute(f, 3)
-        self.assertEqual(f[2], [("0", 1000), ("fresh", 1600), ("1", 5920)])
+    def test_reconcile_counts_two_destinations_as_one_source(self):
+        m = {"videos": {"7": entry("2026-01-01")}}
+        for d in m["videos"]["7"]["destinations"].values():
+            d.update(status="published", published_at="1970-01-01T00:30:00Z")
+        s = loop.session_for(m, "run", 1000, 20)
+        self.assertFalse(loop.reconcile(m, s, "run"))
+        self.assertEqual(s["completed_ids"], ["7"])
 
-    def test_quota_rollover_keeps_pending_and_pacing(self):
-        m = {"videos": {}}
-        s = loop.session_for(m, "one", 1000, 20)
-        s["completed_ids"] = ["done"]
-        s["active_old"] = "partial"
-        s["next_old_at"] = 90000
-        resumed = loop.session_for(m, "two", 87400, 20)
-        self.assertEqual(resumed["completed_ids"], [])
-        self.assertEqual(resumed["active_old"], "partial")
-        self.assertEqual(resumed["next_old_at"], 90000)
+    def test_reconcile_excludes_publishes_outside_window(self):
+        m = {"videos": {"7": entry("2026-01-01")}}
+        m["videos"]["7"]["destinations"]["instagram"].update(
+            status="published", published_at="1970-01-01T00:10:00Z")
+        s = loop.session_for(m, "run", 1000, 20)
+        loop.reconcile(m, s, "run")
+        self.assertEqual(s["completed_ids"], [])
+
+    def test_multi_post_mode_retains_legacy_pacing(self):
+        f = self.fixture(n=2)
+        self.assertEqual(self.execute(f, max_posts=2, segment=10000,
+                                      interval=4320, upload_margin=0), 0)
+        self.assertEqual([t for t, _ in f[2]], [1000.0, 5320.0])
+
+    def test_too_short_window_does_not_attempt_upload(self):
+        f = self.fixture()
+        self.assertEqual(self.execute(f, segment=100, upload_margin=120), 0)
+        self.assertEqual(f[2], [])
