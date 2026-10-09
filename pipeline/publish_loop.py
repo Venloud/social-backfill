@@ -62,8 +62,11 @@ def run(state_dir, run_id, target=20, segment_seconds=18900, interval=4320,
     while time.monotonic() < deadline:
         m = store.load()
         session = session_for(m, run_id, time.time(), target)
-        # Migrate any slot saved by the previous 72-minute pacing configuration.
-        if session["next_old_at"] > time.time() + interval:
+        if max_posts == 1:
+            # The cron controls pacing for single-post runs. A previous run\x27s
+            # saved next_old_at must never make this scheduled invocation idle.
+            session["next_old_at"] = time.time()
+        elif session["next_old_at"] > time.time() + interval:
             session["next_old_at"] = time.time() + interval
         finished = reconcile(m, session, run_id)
         store.push(m, "state: scheduled loop progress")
@@ -94,6 +97,8 @@ def run(state_dir, run_id, target=20, segment_seconds=18900, interval=4320,
             log(f"POST SLOT RESULT: {'success' if result == 0 else 'partial failure'}; "
                 f"next slot in {interval // 60} minutes; "
                 f"{len(session['run_completed'][run_id])}/{max_posts} newly completed")
+            if max_posts == 1:
+                return result  # Exactly one attempt per cron trigger, even after a failure.
             continue
         wait = max(0, session["next_old_at"] - now)
         log(f"WAIT: next publishing slot in {int(wait)} seconds; "
