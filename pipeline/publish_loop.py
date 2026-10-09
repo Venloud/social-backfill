@@ -5,7 +5,7 @@ import os
 import time
 from pathlib import Path
 from pipeline import manifest as mf
-from pipeline.publish_one import DESTS, dest, discover_readonly, main as publish_one, log
+from pipeline.publish_one import DESTS, dest, discover_readonly, main as publish_one, pick_jobs, log
 from pipeline.state_store import StateStore
 
 def published_in_window(entry, started):
@@ -71,7 +71,7 @@ def run(state_dir, run_id, target=20, segment_seconds=18900, interval=4320,
         finished = reconcile(m, session, run_id)
         store.push(m, "state: scheduled loop progress")
         count = len(session["run_completed"][run_id])
-        if finished or count >= max_posts:
+        if count >= max_posts or (finished and max_posts != 1):
             log(f"BATCH ENDED: {count}/{max_posts} this run; {len(session['completed_ids'])}/{target} in the 24-hour window")
             return 0
         if deadline - time.monotonic() < upload_margin:
@@ -84,6 +84,9 @@ def run(state_dir, run_id, target=20, segment_seconds=18900, interval=4320,
             session["fresh_ids"] = sorted(set(session["fresh_ids"]) | (set(m["videos"]) - previous))
             store.push(m, "state: scheduled loop discovery")
             next_poll = now + poll_seconds
+        if max_posts == 1 and not pick_jobs(m, daily_limit=target):
+            log("SCHEDULE: no destination due or eligible; no upload attempted")
+            return 0
         if now >= session["next_old_at"]:
             # Let publish_one select independent queues per platform. Do not pin
             # the entire scheduler to a source whose Instagram side is blocked.
