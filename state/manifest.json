@@ -42,7 +42,7 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-10-09T04:37:15Z",
+  "updated_at": "2026-10-09T04:37:16Z",
   "videos": {
     "7693026624211569934": {
       "destinations": {
@@ -4119,11 +4119,12 @@
     "7694476632848960781": {
       "destinations": {
         "instagram": {
-          "attempts": 0,
+          "attempts": 1,
           "last_error": null,
           "published_at": null,
           "remote_id": null,
-          "status": "pending",
+          "started_at": "2026-10-09T04:37:16Z",
+          "status": "publishing",
           "url": null
         },
         "snapchat": {
