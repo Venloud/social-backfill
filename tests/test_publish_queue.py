@@ -84,6 +84,18 @@ class IndependentQueueTests(unittest.TestCase):
         self.assertEqual(jobs["youtube"][0], "next")
         self.assertEqual(jobs["instagram"][0], "next")
 
+    def test_youtube_can_catch_up_to_instagram_after_daily_cap(self):
+        from datetime import datetime, timezone
+        today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        m = {"videos": {
+            "old": entry("2026-01-01T00:00:00Z", youtube="pending", instagram="published"),
+            "next": entry("2026-01-02T00:00:00Z"),
+        }}
+        m["videos"]["old"]["destinations"]["instagram"]["published_at"] = today + "T08:00:00Z"
+        jobs = pick_jobs(m, daily_limit=1)
+        self.assertEqual(jobs["youtube"][0], "old")
+        self.assertNotIn("instagram", jobs)
+
     def test_platform_pacing_does_not_block_other_destination(self):
         import time
         m = {"videos": {"old": entry("2026-01-01T00:00:00Z")},
