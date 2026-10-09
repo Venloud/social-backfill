@@ -89,9 +89,15 @@ class LoopTests(unittest.TestCase):
 
     def test_shared_target_blocks_additional_attempts(self):
         f = self.fixture()
-        for i in range(3):
-            f[0][0] = 1000 + i * 780
-            self.assertEqual(self.execute(f, run_id=str(i), target=2), 0)
+        # The fake clock is in 1970 but the real queue uses the UTC calendar day.
+        # Model its exhausted eligibility separately from the loop's rolling window.
+        def queued(m, daily_limit):
+            completed = m.get("publish_loops", {}).get("scheduled", {}).get("completed_ids", [])
+            return {} if len(completed) >= daily_limit else {"youtube": ("0", {})}
+        with patch.object(loop, "pick_jobs", side_effect=queued):
+            for i in range(3):
+                f[0][0] = 1000 + i * 780
+                self.assertEqual(self.execute(f, run_id=str(i), target=2), 0)
         self.assertEqual(len(f[2]), 2)
         self.assertEqual(f[1]["publish_loops"]["scheduled"]["status"], "completed")
         self.assertEqual(f[1]["videos"]["2"]["destinations"]["instagram"]["status"], "pending")
@@ -100,7 +106,8 @@ class LoopTests(unittest.TestCase):
         f = self.fixture(n=2)
         f[1]["videos"]["0"]["destinations"]["instagram"].update(
             status="published", published_at="1970-01-01T00:20:00Z")
-        self.assertEqual(self.execute(f, run_id="catchup", target=1), 0)
+        with patch.object(loop, "pick_jobs", return_value={"youtube": ("0", {})}):
+            self.assertEqual(self.execute(f, run_id="catchup", target=1), 0)
         self.assertEqual(len(f[2]), 1)
 
     def test_single_post_waits_when_all_destinations_are_paced(self):
