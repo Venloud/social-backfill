@@ -151,13 +151,19 @@ def post_youtube(vid: str, entry: dict, video: Path) -> dict:
 def post_instagram(vid: str, entry: dict, video: Path, info: dict) -> dict:
     from pipeline.social import meta
     chk = meta.instagram_check()
+    from pipeline.social.covers import tiktok_cover
+    cover_path = tiktok_cover(entry, vid)
+    cover_url = (entry.get("source", {}).get("metadata") or {}).get("cover_image_url")
+    if not isinstance(cover_url, str) or not cover_url.startswith("https://"):
+        raise meta.Fail(f"No original TikTok cover URL for {vid}; refusing to reuse a generic cover")
+    log(f"Instagram: verified matching TikTok cover saved as {cover_path.name}")
     caption = captions.instagram_text(entry["source"])
     codec = info.get("video_codec")
     attempts = [(f"{codec} (original)", video)]
     cid = None
     for label, path in attempts:
         log(f"Instagram: uploading {label} by resumable upload")
-        cid, status = meta.instagram_upload_container(path, caption, chk)
+        cid, status = meta.instagram_upload_container(path, caption, chk, cover_url=cover_url)
         log(f"Instagram container {cid}: {status}")
         if status == "FINISHED":
             fmt = label
@@ -170,7 +176,7 @@ def post_instagram(vid: str, entry: dict, video: Path, info: dict) -> dict:
         raise meta.Fail("Instagram could not process the video in any format")
     r = meta.instagram_publish_container(cid, chk)       # PublishAttempted from here on
     return {"remote_id": r["id"], "url": r["url"], "format": fmt, "product_type": r.get("product_type"),
-            "cover": {"status": "set", "asset": "assets/default-cover.jpg"}}
+            "cover": {"status": "requested", "asset": str(cover_path.relative_to(mf.ROOT)), "source": "tiktok_original"}}
 
 
 def main(argv=None) -> int:
