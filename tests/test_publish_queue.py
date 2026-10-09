@@ -84,6 +84,30 @@ class IndependentQueueTests(unittest.TestCase):
         self.assertEqual(jobs["youtube"][0], "next")
         self.assertEqual(jobs["instagram"][0], "next")
 
+    def test_platform_pacing_does_not_block_other_destination(self):
+        import time
+        m = {"videos": {"old": entry("2026-01-01T00:00:00Z")},
+             "publish_pacing": {"youtube": {"next_attempt_at": time.time() + 3600}}}
+        jobs = pick_jobs(m)
+        self.assertNotIn("youtube", jobs)
+        self.assertEqual(jobs["instagram"][0], "old")
+
+    def test_existing_youtube_upload_limit_error_is_cooled_down(self):
+        m = {"videos": {"old": entry("2026-01-01T00:00:00Z", youtube="failed")}}
+        m["videos"]["old"]["destinations"]["youtube"].update(
+            last_error="HTTP 400: uploadLimitExceeded", started_at=mf.now())
+        jobs = pick_jobs(m)
+        self.assertNotIn("youtube", jobs)
+        self.assertEqual(jobs["instagram"][0], "old")
+
+    def test_cooldown_expiry_allows_youtube_again(self):
+        import time
+        m = {"videos": {"old": entry("2026-01-01T00:00:00Z", youtube="failed")},
+             "publish_pacing": {"youtube": {"next_attempt_at": time.time() - 1,
+                                            "cooldown_until": time.time() - 1}}}
+        jobs = pick_jobs(m)
+        self.assertEqual(jobs["youtube"][0], "old")
+
     def test_failed_destination_is_retryable(self):
         m = {"videos": {"old": entry("2026-01-01T00:00:00Z", youtube="failed", instagram="published")}}
         jobs = pick_jobs(m)
