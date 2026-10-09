@@ -4,7 +4,7 @@ name: Backfill Publish (one)
 on:
   workflow_dispatch:
   schedule:
-    - cron: '*/13 * * * *'
+    - cron: '7,20,33,46,59 * * * *'
 
 permissions:
   contents: write   # push the state branch
