@@ -4,7 +4,7 @@ name: Backfill Publish (one)
 on:
   workflow_dispatch:
   schedule:
-    - cron: '7,20,33,46,59 * * * *'
+    - cron: '9,21,33,45,57 * * * *'
 
 permissions:
   contents: write   # push the state branch
@@ -13,11 +13,12 @@ permissions:
 concurrency:
   group: tiktok-token
   cancel-in-progress: false
+  queue: max  # do not replace waiting scheduled runs with newer ones
 
 jobs:
   publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
