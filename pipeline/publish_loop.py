@@ -62,6 +62,9 @@ def run(state_dir, run_id, target=20, segment_seconds=18900, interval=4320,
     while time.monotonic() < deadline:
         m = store.load()
         session = session_for(m, run_id, time.time(), target)
+        # Migrate any slot saved by the previous 72-minute pacing configuration.
+        if session["next_old_at"] > time.time() + interval:
+            session["next_old_at"] = time.time() + interval
         finished = reconcile(m, session, run_id)
         store.push(m, "state: scheduled loop progress")
         count = len(session["run_completed"][run_id])
