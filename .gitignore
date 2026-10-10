@@ -1,4 +1,5 @@
 # Local secrets
+secretapi.env
 secretapi.env.local
 .env
 .env.*
