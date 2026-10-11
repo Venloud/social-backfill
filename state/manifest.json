@@ -14,9 +14,10 @@
     "scheduled": {
       "completed_ids": [],
       "fresh_ids": [],
-      "next_old_at": 1791700914.3471496,
+      "next_old_at": 1791725562.0287826,
       "run_completed": {
-        "38118143130": []
+        "38118143130": [],
+        "38143559480": []
       },
       "status": "running",
       "target": 20,
@@ -32,7 +33,7 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-10-11T06:28:54Z",
+  "updated_at": "2026-10-11T13:32:42Z",
   "videos": {
     "7693026624211569934": {
       "destinations": {
