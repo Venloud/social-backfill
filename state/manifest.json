@@ -33,7 +33,7 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-10-11T13:32:46Z",
+  "updated_at": "2026-10-11T13:32:49Z",
   "videos": {
     "7693026624211569934": {
       "destinations": {
@@ -683,8 +683,8 @@
         }
       },
       "media": {
-        "attempts": 3,
-        "downloaded_at": "2026-10-09T05:57:53Z",
+        "attempts": 4,
+        "downloaded_at": "2026-10-11T13:32:49Z",
         "info": {
           "audio": true,
           "audio_codec": "aac",
