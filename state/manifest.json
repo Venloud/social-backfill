@@ -58,7 +58,7 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-10-14T10:37:43Z",
+  "updated_at": "2026-10-14T10:37:46Z",
   "videos": {
     "7693026624211569934": {
       "destinations": {
@@ -5802,15 +5802,15 @@
         }
       },
       "media": {
-        "attempts": 1,
-        "downloaded_at": "2026-10-14T05:25:58Z",
+        "attempts": 2,
+        "downloaded_at": "2026-10-14T10:37:46Z",
         "info": {
           "audio": true,
           "audio_codec": "aac",
           "container": "mov,mp4,m4a,3gp,3g2,mj2",
           "duration": 13.582,
           "height": 1280,
-          "size_bytes": 513475,
+          "size_bytes": 586558,
           "video_codec": "hevc",
           "width": 720
         },
