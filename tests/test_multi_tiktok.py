@@ -17,7 +17,7 @@ def video(vid, created=1):
 
 class TwoSourceTests(unittest.TestCase):
     def test_source_attribution_and_legacy_migration(self):
-        m = mf.load(Path("/tmp/nonexistent-social-backfill-test-manifest"))
+        m = {"videos": {}}
         mf.merge(m, [video("101")])
         self.assertEqual(m["videos"]["101"]["source"]["account"], "primary")
         m["videos"]["101"]["source"].pop("account")
