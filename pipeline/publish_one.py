@@ -60,24 +60,32 @@ def log(msg: str) -> None:
 
 
 def discover_readonly(m: dict) -> None:
-    """Add new TikTok videos using the STORED access token (no refresh, no secret writes)."""
+    """Read both authorized TikTok sources and merge into one destination queue.
+
+    OAuth refresh happens in the workflow, not here. A failed source must not
+    stop discovery or posting from the other source.
+    """
     from pipeline import tiktok_auth, tiktok_discovery
-    tok = os.environ.get("TIKTOK_ACCESS_TOKEN", "")
-    if not tok:
-        log("Discovery skipped: TIKTOK_ACCESS_TOKEN not available; using the manifest as it is")
-        return
-    tiktok_auth.mask(tok)
-    try:
-        videos = tiktok_discovery.list_videos(tok)
-    except tiktok_auth.TikTokAuthError as e:
-        log(f"Discovery skipped ({str(e)[:160]}); using the manifest as it is. "
-            "Run 'TikTok Backfill Test' or 'Platform Connection Check' to refresh the TikTok token.")
-        return
     old_ids = set(m.get("videos", {}))
-    c = mf.merge(m, videos)
-    for vid in set(m["videos"]) - old_ids:
-        m["videos"][vid]["source"]["fresh_priority"] = True
-    log(f"Discovery: {len(videos)} videos on TikTok, {c['added']} new, {c['total']} in the manifest")
+    for account, token_env in (("primary", "TIKTOK_ACCESS_TOKEN"),
+                               ("secondary", "TIKTOK_ACCESS_TOKEN_2")):
+        tok = os.environ.get(token_env, "")
+        if not tok:
+            log(f"Discovery skipped for {account}: no refreshed TikTok token")
+            continue
+        tiktok_auth.mask(tok)
+        try:
+            videos = tiktok_discovery.list_videos(tok)
+            counts = mf.merge(m, videos, source_account=account)
+        except (tiktok_auth.TikTokAuthError, ValueError) as e:
+            log(f"Discovery failed for {account} ({str(e)[:160]}); keeping saved manifest")
+            continue
+        for vid in set(m["videos"]) - old_ids:
+            if m["videos"][vid]["source"].get("account") == account:
+                m["videos"][vid]["source"]["fresh_priority"] = True
+        log(f"Discovery {account}: {len(videos)} public videos, {counts['added']} new, "
+            f"{counts['total']} in shared manifest")
+    log(f"Discovery complete: {len(set(m.get('videos', {})) - old_ids)} new total")
 
 
 def dest(entry: dict, name: str) -> dict:
@@ -133,6 +141,12 @@ def pick_jobs(m: dict, daily_limit: int | None = None) -> dict[str, tuple[str, d
             continue
         fresh = [(vid, entry) for vid, entry in ordered if _fresh(entry, day)]
         historical = [(vid, entry) for vid, entry in ordered if not _fresh(entry, day)]
+        # Alternate sources when both have eligible videos while keeping
+        # oldest-first order within each account and prioritizing fresh posts.
+        last_source = m.get("publish_pacing", {}).get(name, {}).get("last_source_account")
+        if last_source in ("primary", "secondary"):
+            fresh = sorted(fresh, key=lambda item: item[1].get("source", {}).get("account", "primary") == last_source)
+            historical = sorted(historical, key=lambda item: item[1].get("source", {}).get("account", "primary") == last_source)
         for vid, entry in fresh + historical:
             d = dest(entry, name)
             if d["status"] == "published":
@@ -283,10 +297,10 @@ def main(argv=None) -> int:
 
         d.update(status="publishing", attempts=int(d.get("attempts") or 0) + 1, last_error=None,
                  started_at=mf.now())
-        # Checkpoint platform pacing together with 'publishing' before attempting upload.
-        m.setdefault("publish_pacing", {}).setdefault(name, {})["next_attempt_at"] = (
-            time.time() + PLATFORM_INTERVAL_SECONDS[name]
-        )
+        # Checkpoint platform pacing and source rotation before attempting upload.
+        pacing = m.setdefault("publish_pacing", {}).setdefault(name, {})
+        pacing["next_attempt_at"] = time.time() + PLATFORM_INTERVAL_SECONDS[name]
+        pacing["last_source_account"] = entry.get("source", {}).get("account", "primary")
         try:
             store.push(m, f"state: {vid} {name} publishing")
         except StatePushError as e:
