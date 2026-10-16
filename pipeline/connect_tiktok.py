@@ -61,8 +61,10 @@ def main() -> int:
     except tiktok_auth.TikTokAuthError as e:
         print(f"FAIL: {e}")
         return 1
-    print(f"Saved TIKTOK_REFRESH_TOKEN, TIKTOK_ACCESS_TOKEN, TIKTOK_OPEN_ID "
-          f"in {os.environ['GITHUB_REPOSITORY']}")
+    print(f"Saved {tiktok_auth.secret_name('TIKTOK_REFRESH_TOKEN')}, "
+          f"{tiktok_auth.secret_name('TIKTOK_ACCESS_TOKEN')}, "
+          f"{tiktok_auth.secret_name('TIKTOK_OPEN_ID')} "
+          f"in {os.environ['GITHUB_REPOSITORY']} ({tiktok_auth.account_slot()})")
 
     # Read-only check with the new token: video.list for 5 videos (user info was read above).
     try:

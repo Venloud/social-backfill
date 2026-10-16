@@ -45,6 +45,35 @@ The log shows only PASS/FAIL, the account, the granted scopes, the token lifetim
 
 TikTok access tokens last 24 h and refreshing can rotate the refresh token. Every later TikTok call must refresh first: use `tiktok_auth.get_user_info()` / `tiktok_auth.get_video_ids()` or call `tiktok_auth.access_token()` first, or add a workflow step `python pipeline/tiktok_auth.py` (env `TIKTOK_CLIENT_KEY`, `TIKTOK_CLIENT_SECRET`, `TIKTOK_REFRESH_TOKEN`, `GH_TOKEN: ${{ secrets.GH_PAT }}`). Each refresh saves the new access and refresh tokens back to the secrets and exports `TIKTOK_ACCESS_TOKEN` / `TIKTOK_OPEN_ID` to later steps. Use the `tiktok-token` concurrency group for such jobs.
 
+## Two TikTok accounts, one Instagram and YouTube destination
+
+The primary TikTok account keeps its existing credentials and publishing history.
+A second TikTok source can be authorized independently without needing its password.
+
+1. Open the existing [Night Files connection page](https://venloud.github.io/nightfiles/) on the second owner's device. They sign into their own TikTok account and approve TikTok's authorization prompt.
+2. The owner copies the **full callback URL** on the Night Files confirmation page and privately sends it to the repository operator. It contains a short-lived, single-use OAuth code, so treat it as sensitive and use it promptly.
+3. After the code changes are merged into main, open **Actions → Connect TikTok → Run workflow**. Select **secondary**, paste the callback URL, and run it.
+4. The workflow checks that GH_PAT can access the repository's secrets, exchanges the OAuth code, verifies `video.list`, and saves `TIKTOK_REFRESH_TOKEN_2`, `TIKTOK_ACCESS_TOKEN_2`, and `TIKTOK_OPEN_ID_2`. No existing primary credential is replaced.
+5. Run **Platform Connection Check** to verify both accounts, or select **secondary** in **TikTok Backfill Test** to discover and download a single video without publishing.
+
+Both accounts use the existing `TIKTOK_CLIENT_KEY` and `TIKTOK_CLIENT_SECRET` and `GH_PAT`.
+The second account must be allowed to authorize the TikTok developer app and grant `video.list`.
+The scheduled Backfill Publish workflow refreshes each connected token independently
+and merges public video IDs into the one `state` branch manifest. Each video now stores
+`source.account` as `primary` or `secondary`. Videos already in the manifest are
+treated as primary when migrated, with existing publishing state preserved.
+
+The Instagram and YouTube credentials are **shared**. Each destination has one queue,
+one pacing interval, and one published-record checkpoint; the queue rotates accounts
+when both have pending posts. Existing safeguards prevent duplicate publishing of the
+**same TikTok video ID** to the same destination. Two separately uploaded TikTok posts
+containing identical video content have different IDs and are **not** automatically
+detected as duplicate content.
+
+**Do not use primary as the account selection for a new second account**. Connecting
+primary deliberately replaces the original credentials. First merge these changes,
+then get a fresh callback code. Publishing remains disabled on the feature branch.
+
 ## TikTok backfill: discover → checkpoint → download → validate
 
 ```

@@ -3,6 +3,14 @@ name: Connect TikTok
 on:
   workflow_dispatch:
     inputs:
+      account:
+        description: "Which TikTok source to authorize, without replacing the other"
+        required: true
+        type: choice
+        default: secondary
+        options:
+          - secondary
+          - primary
       auth_code:
         description: "Paste the full URL you landed on after approving TikTok (or just the code)"
         required: true
@@ -29,6 +37,7 @@ jobs:
       - name: Exchange code and save TikTok secrets
         env:
           AUTH_CODE_OR_URL: ${{ inputs.auth_code }}
+          TIKTOK_ACCOUNT: ${{ inputs.account }}
           TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
           TIKTOK_CLIENT_SECRET: ${{ secrets.TIKTOK_CLIENT_SECRET }}
           GH_TOKEN: ${{ secrets.GH_PAT }}

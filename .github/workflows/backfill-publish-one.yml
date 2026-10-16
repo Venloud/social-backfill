@@ -43,13 +43,27 @@ jobs:
             mkdir -p .state/state
             echo "State branch: created (first run)"
           fi
-      - name: Refresh TikTok token for reliable scheduled discovery
+      - name: Refresh primary TikTok token for scheduled discovery
         env:
+          TIKTOK_ACCOUNT: primary
           TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
           TIKTOK_CLIENT_SECRET: ${{ secrets.TIKTOK_CLIENT_SECRET }}
           TIKTOK_REFRESH_TOKEN: ${{ secrets.TIKTOK_REFRESH_TOKEN }}
           GH_TOKEN: ${{ secrets.GH_PAT }}
         run: python pipeline/tiktok_auth.py
+      - name: Refresh secondary TikTok token when connected
+        env:
+          TIKTOK_ACCOUNT: secondary
+          TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
+          TIKTOK_CLIENT_SECRET: ${{ secrets.TIKTOK_CLIENT_SECRET }}
+          TIKTOK_REFRESH_TOKEN: ${{ secrets.TIKTOK_REFRESH_TOKEN_2 }}
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          if [ -z "$TIKTOK_REFRESH_TOKEN" ]; then
+            echo "Secondary TikTok not connected; primary continues."
+          elif ! python pipeline/tiktok_auth.py; then
+            echo "::warning::Secondary TikTok refresh failed; primary publishing continues."
+          fi
       - name: Continue publishing loop
         env:
           GH_TOKEN: ${{ github.token }}

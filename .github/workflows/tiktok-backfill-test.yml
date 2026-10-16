@@ -5,6 +5,14 @@ name: TikTok Backfill Test
 on:
   workflow_dispatch:
     inputs:
+      account:
+        description: "TikTok source account to test"
+        type: choice
+        required: true
+        default: primary
+        options:
+          - primary
+          - secondary
       video_id:
         description: "Optional: a discovered TikTok video id to download (default: oldest not yet downloaded)"
         required: false
@@ -25,7 +33,9 @@ jobs:
     env:
       TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
       TIKTOK_CLIENT_SECRET: ${{ secrets.TIKTOK_CLIENT_SECRET }}
-      TIKTOK_REFRESH_TOKEN: ${{ secrets.TIKTOK_REFRESH_TOKEN }}
+      TIKTOK_ACCOUNT: ${{ inputs.account }}
+      TIKTOK_REFRESH_TOKEN_PRIMARY: ${{ secrets.TIKTOK_REFRESH_TOKEN }}
+      TIKTOK_REFRESH_TOKEN_SECONDARY: ${{ secrets.TIKTOK_REFRESH_TOKEN_2 }}
       GH_TOKEN: ${{ secrets.GH_PAT }}
     steps:
       - uses: actions/checkout@v4
@@ -40,6 +50,19 @@ jobs:
             sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
           fi
           ffprobe -version | head -1
+      - name: Select account refresh token
+        run: |
+          if [ "$TIKTOK_ACCOUNT" = "secondary" ]; then
+            TOKEN="$TIKTOK_REFRESH_TOKEN_SECONDARY"
+          else
+            TOKEN="$TIKTOK_REFRESH_TOKEN_PRIMARY"
+          fi
+          if [ -z "$TOKEN" ]; then
+            echo "::error::Selected TikTok account is not connected."
+            exit 1
+          fi
+          echo "::add-mask::$TOKEN"
+          echo "TIKTOK_REFRESH_TOKEN=$TOKEN" >> "$GITHUB_ENV"
       - name: Secrets present
         run: |
           for n in TIKTOK_CLIENT_KEY TIKTOK_CLIENT_SECRET TIKTOK_REFRESH_TOKEN GH_TOKEN; do

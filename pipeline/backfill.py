@@ -26,7 +26,7 @@ def cmd_discover(a) -> int:
         print(f"FAIL: TikTok discovery: {e}")
         return 1
     m = mf.load(a.manifest)
-    counts = mf.merge(m, found)
+    counts = mf.merge(m, found, source_account=tiktok_auth.account_slot())
     print(f"TikTok discovery: PASS ({len(found)} public videos returned by video.list)")
     for v in sorted(found, key=lambda v: int(v.get("create_time") or 0)):
         print(f"  {v['id']}  {mf.iso(v.get('create_time'))}  {v.get('duration', '?')} s")

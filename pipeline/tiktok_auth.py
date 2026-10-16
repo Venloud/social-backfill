@@ -28,6 +28,20 @@ REQUIRED_SCOPE = "video.list"
 FORBIDDEN_REPOS = {"venloud/horror-shorts"}
 
 
+def account_slot() -> str:
+    """Identify which independent TikTok account is being connected or refreshed."""
+    slot = os.environ.get("TIKTOK_ACCOUNT", "primary").strip().lower()
+    if slot not in ("primary", "secondary"):
+        raise TikTokAuthError("TIKTOK_ACCOUNT must be primary or secondary")
+    return slot
+
+
+def secret_name(base: str) -> str:
+    """Primary secret names remain unchanged; secondary secrets have _2 suffix."""
+    return base + ("_2" if account_slot() == "secondary" else "")
+
+
+
 class TikTokAuthError(RuntimeError):
     pass
 
@@ -123,9 +137,9 @@ def save_secrets(data: dict) -> None:
     repo = target_repo()
     if not os.environ.get("GH_TOKEN"):
         raise TikTokAuthError(f"GH_PAT secret is missing or empty. {PAT_HELP}")
-    values = {"TIKTOK_REFRESH_TOKEN": data["refresh_token"],
-              "TIKTOK_ACCESS_TOKEN": data["access_token"],
-              "TIKTOK_OPEN_ID": data.get("open_id", "")}
+    values = {secret_name("TIKTOK_REFRESH_TOKEN"): data["refresh_token"],
+              secret_name("TIKTOK_ACCESS_TOKEN"): data["access_token"],
+              secret_name("TIKTOK_OPEN_ID"): data.get("open_id", "")}
     for name, value in values.items():
         if not value:
             raise TikTokAuthError(f"TikTok returned no value for {name}")
@@ -213,9 +227,9 @@ def main() -> int:
     env_file = os.environ.get("GITHUB_ENV")
     if env_file:
         with open(env_file, "a") as f:
-            f.write(f"TIKTOK_ACCESS_TOKEN={data['access_token']}\n"
-                    f"TIKTOK_OPEN_ID={data.get('open_id', '')}\n")
-    print(f"PASS: TikTok token refreshed and saved; access token lasts "
+            f.write(f"{secret_name('TIKTOK_ACCESS_TOKEN')}={data['access_token']}\n"
+                    f"{secret_name('TIKTOK_OPEN_ID')}={data.get('open_id', '')}\n")
+    print(f"PASS: TikTok {account_slot()} token refreshed and saved; access token lasts "
           f"{duration(data.get('expires_in'))}, refresh token "
           f"{duration(data.get('refresh_expires_in'))}")
     return 0
