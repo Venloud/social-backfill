@@ -65,14 +65,17 @@ def iso(ts) -> str | None:
         return None
 
 
-def merge(manifest: dict, videos: list[dict]) -> dict:
+def merge(manifest: dict, videos: list[dict], source_account: str = "primary") -> dict:
     """Add new videos, refresh metadata of known ones. Returns counts {'added', 'updated', 'total'}."""
+    if source_account not in ("primary", "secondary"):
+        raise ValueError("Unknown TikTok source account")
     added = updated = 0
     stamp = now()
     entries = manifest.setdefault("videos", {})
     for v in videos:
         vid = str(v["id"])
-        source = {"platform": "tiktok", "video_id": vid, "url": canonical_url(v),
+        source = {"platform": "tiktok", "account": source_account,
+                  "video_id": vid, "url": canonical_url(v),
                   "created_at": iso(v.get("create_time")), "metadata": {k: x for k, x in v.items() if k != "id"},
                   "last_seen_at": stamp}
         entry = entries.get(vid)
@@ -83,6 +86,9 @@ def merge(manifest: dict, videos: list[dict]) -> dict:
             added += 1
             continue
         old = entry.setdefault("source", {})
+        # Existing source entries predate multi-account support and belong to primary.
+        if old.get("account", "primary") != source_account:
+            raise ValueError(f"Video {vid} is already attributed to another TikTok account")
         source["first_seen_at"] = old.get("first_seen_at") or stamp
         if not source["url"]:
             source["url"] = old.get("url")      # keep a known URL if TikTok omitted it this time
