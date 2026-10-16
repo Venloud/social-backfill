@@ -33,7 +33,7 @@
         "7697388384808963341",
         "7697389261930253582"
       ],
-      "next_old_at": 1792188335.7988462,
+      "next_old_at": 1792189663.2773805,
       "run_completed": {
         "38818723143": [
           "7693691387828636942"
@@ -58,7 +58,8 @@
         ],
         "38968433350": [],
         "38969859832": [],
-        "38973573982": []
+        "38973573982": [],
+        "38975805157": []
       },
       "status": "running",
       "target": 20,
@@ -74,7 +75,7 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-10-16T22:05:40Z",
+  "updated_at": "2026-10-16T22:27:43Z",
   "videos": {
     "7693026624211569934": {
       "destinations": {
@@ -6882,7 +6883,8 @@
           "last_error": null,
           "published_at": null,
           "remote_id": null,
-          "status": "pending"
+          "status": "pending",
+          "url": null
         },
         "snapchat": {
           "attempts": 0,
@@ -6896,7 +6898,8 @@
           "last_error": null,
           "published_at": null,
           "remote_id": null,
-          "status": "pending"
+          "status": "pending",
+          "url": null
         }
       },
       "media": {
@@ -6938,7 +6941,8 @@
           "last_error": null,
           "published_at": null,
           "remote_id": null,
-          "status": "pending"
+          "status": "pending",
+          "url": null
         },
         "snapchat": {
           "attempts": 0,
@@ -6952,7 +6956,8 @@
           "last_error": null,
           "published_at": null,
           "remote_id": null,
-          "status": "pending"
+          "status": "pending",
+          "url": null
         }
       },
       "media": {
@@ -6994,7 +6999,8 @@
           "last_error": null,
           "published_at": null,
           "remote_id": null,
-          "status": "pending"
+          "status": "pending",
+          "url": null
         },
         "snapchat": {
           "attempts": 0,
@@ -7008,7 +7014,8 @@
           "last_error": null,
           "published_at": null,
           "remote_id": null,
-          "status": "pending"
+          "status": "pending",
+          "url": null
         }
       },
       "media": {
