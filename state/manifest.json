@@ -49,7 +49,7 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-10-16T05:08:28Z",
+  "updated_at": "2026-10-16T05:08:31Z",
   "videos": {
     "7693026624211569934": {
       "destinations": {
@@ -6382,11 +6382,11 @@
         },
         "youtube": {
           "attempts": 1,
-          "last_error": null,
+          "last_error": "HTTP 400: invalid_grant",
           "published_at": null,
           "remote_id": null,
           "started_at": "2026-10-16T05:08:28Z",
-          "status": "publishing",
+          "status": "failed",
           "url": null
         }
       },
