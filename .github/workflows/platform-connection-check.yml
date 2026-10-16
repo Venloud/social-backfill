@@ -41,3 +41,17 @@ jobs:
           META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
           GH_TOKEN: ${{ secrets.GH_PAT }}
         run: python -m pipeline.social.check --out connection_check.json
+
+      - name: Check second TikTok connection if configured
+        env:
+          TIKTOK_ACCOUNT: secondary
+          TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
+          TIKTOK_CLIENT_SECRET: ${{ secrets.TIKTOK_CLIENT_SECRET }}
+          TIKTOK_REFRESH_TOKEN: ${{ secrets.TIKTOK_REFRESH_TOKEN_2 }}
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          if [ -z "$TIKTOK_REFRESH_TOKEN" ]; then
+            echo "TikTok secondary: not connected"
+          else
+            python -c "from pipeline import tiktok_auth as t; d=t.access_token(); ids=t.video_list(d['access_token'], 5); print('TikTok secondary: PASS', t.username(d['access_token']), 'videos checked:', len(ids))"
+          fi
