@@ -170,3 +170,11 @@ Do NOT enable the daily schedule yet.
 - GitHub Actions [Publisher Queue Tests run 37701203268](https://github.com/Venloud/social-backfill/actions/runs/37701203268) passed all **7** regression tests (including fresh priority and historical quota). This is an offline logic test, not a live scheduled publishing run.
 - Commit `3f77939`: removed `TIKTOK_ACCESS_TOKEN` from the publishing step's explicit `env` so the newly refreshed token exported to `GITHUB_ENV` is actually used. Also simplified the identical manual/scheduled run commands. This prevents an old repository-secret value from shadowing the freshly refreshed access token.
 - No successful scheduled publishing run has been verified yet. Review the first scheduled run logs before assuming unattended reliability.
+
+## 2026-10-22 cleanup audit (Vandam repository cleanup)
+
+- Scheduled `Backfill Publish (one)` failed 4 of the last 8 runs (2026-10-21). Causes seen in logs:
+  - `youtube: HTTP 400: invalid_grant` (runs 39694709083, 39641518144). The YouTube refresh token is expired or revoked. **Owner action:** reconnect YouTube and replace the `YOUTUBE_REFRESH_TOKEN` secret. Code cannot fix this.
+  - Instagram resumable upload `HTTP 400` (run 39694709083), transient; the write-ahead state recorded it as retryable.
+  - `! [remote rejected] HEAD -> state (failed)` (run 39671931241): a transient GitHub push failure. Fixed in `pipeline/state_store.py` with 3 bounded attempts; a persistent failure still blocks the upload (`tests/test_state_store.py`).
+- `feature/two-tiktok-sources` has a tree identical to `main` (squash-merged as efea7e9). Safe to delete after owner approval; tip `16244afd`.
