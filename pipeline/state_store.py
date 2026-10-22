@@ -5,6 +5,7 @@ Every push is a hard requirement before an upload: if the state can't be pushed,
 from __future__ import annotations
 
 import subprocess
+import time
 from pathlib import Path
 
 from pipeline import manifest as mf
@@ -12,6 +13,12 @@ from pipeline import manifest as mf
 
 class StatePushError(RuntimeError):
     pass
+
+
+# GitHub occasionally answers "! [remote rejected] HEAD -> state (failed)" for a push that
+# succeeds moments later; retry the same commit before giving up (and blocking the upload).
+PUSH_ATTEMPTS = 3
+PUSH_BACKOFF_SECONDS = 5
 
 
 class StateStore:
@@ -33,6 +40,10 @@ class StateStore:
         c = self._git("commit", "-q", "-m", message)
         if c.returncode:
             raise StatePushError(f"git commit failed: {c.stderr.strip()[:200]}")
-        p = self._git("push", "-q", "origin", "HEAD:state")
-        if p.returncode:
-            raise StatePushError(f"git push to the state branch failed: {p.stderr.strip()[:200]}")
+        for attempt in range(1, PUSH_ATTEMPTS + 1):
+            p = self._git("push", "-q", "origin", "HEAD:state")
+            if not p.returncode:
+                return
+            if attempt < PUSH_ATTEMPTS:
+                time.sleep(PUSH_BACKOFF_SECONDS * attempt)
+        raise StatePushError(f"git push to the state branch failed: {p.stderr.strip()[:200]}")
