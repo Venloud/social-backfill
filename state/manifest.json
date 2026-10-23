@@ -49,11 +49,11 @@
     },
     "youtube": {
       "last_source_account": "primary",
-      "next_attempt_at": 1792713544.1548564
+      "next_attempt_at": 1792735890.9388611
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-10-23T00:11:29Z",
+  "updated_at": "2026-10-23T00:11:30Z",
   "videos": {
     "7693026624211569934": {
       "destinations": {
@@ -8412,11 +8412,12 @@
           "status": "pending"
         },
         "youtube": {
-          "attempts": 0,
+          "attempts": 1,
           "last_error": null,
           "published_at": null,
           "remote_id": null,
-          "status": "pending",
+          "started_at": "2026-10-23T00:11:30Z",
+          "status": "publishing",
           "url": null
         }
       },
