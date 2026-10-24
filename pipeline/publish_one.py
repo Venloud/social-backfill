@@ -236,7 +236,10 @@ def main(argv=None) -> int:
     ap.add_argument("--daily-limit", type=int, default=None,
                     help="Maximum distinct historical source TikToks per UTC day; fresh posts exempt")
     ap.add_argument("--video-id", help="Publish only this source id to unfinished destinations")
+    ap.add_argument("--youtube-only", action="store_true", help="Manual YouTube-only upload for --video-id")
     a = ap.parse_args(argv)
+    if a.youtube_only and not a.video_id:
+        ap.error("--youtube-only requires --video-id")
 
     store = StateStore(a.state_dir.resolve())
     m = store.load()
@@ -254,7 +257,7 @@ def main(argv=None) -> int:
         entry = m["videos"].get(a.video_id)
         if entry is None:
             ap.error("Unknown --video-id")
-        jobs = {name: (a.video_id, entry) for name in DESTS
+        jobs = {name: (a.video_id, entry) for name in (("youtube",) if a.youtube_only else DESTS)
                 if dest(entry, name)["status"] in ("pending", "failed")}
     else:
         jobs = pick_jobs(m, daily_limit=a.daily_limit)
