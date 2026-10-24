@@ -4,9 +4,10 @@ on:
   workflow_dispatch:
     inputs:
       video_id:
-        description: "TikTok video ID already in the state manifest"
-        required: true
+        description: "Optional TikTok ID, leave blank to post the next unpublished YouTube video"
+        required: false
         type: string
+        default: ""
 
 permissions:
   contents: write
@@ -44,4 +45,9 @@ jobs:
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
           VIDEO_ID: ${{ inputs.video_id }}
-        run: python -m pipeline.publish_one --state-dir .state --video-id "$VIDEO_ID" --youtube-only
+        run: |
+          args=(--state-dir .state --youtube-only)
+          if [ -n "$VIDEO_ID" ]; then
+            args+=(--video-id "$VIDEO_ID")
+          fi
+          python -m pipeline.publish_one "${args[@]}"
