@@ -1,0 +1,47 @@
+name: YouTube Upload Test (manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      video_id:
+        description: "TikTok video ID already in the state manifest"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tiktok-token
+  cancel-in-progress: false
+
+jobs:
+  youtube-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: pip install -q -r requirements.txt
+      - name: Ensure ffmpeg and ffprobe
+        run: |
+          if ! command -v ffprobe >/dev/null || ! command -v ffmpeg >/dev/null; then
+            sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          fi
+      - name: Check out state branch
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch -q origin state
+          git worktree add -q -B state .state origin/state
+      - name: Upload selected video to YouTube now
+        env:
+          GH_TOKEN: ${{ github.token }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          VIDEO_ID: ${{ inputs.video_id }}
+        run: python -m pipeline.publish_one --state-dir .state --video-id "$VIDEO_ID" --youtube-only
