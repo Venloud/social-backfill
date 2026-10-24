@@ -238,8 +238,6 @@ def main(argv=None) -> int:
     ap.add_argument("--video-id", help="Publish only this source id to unfinished destinations")
     ap.add_argument("--youtube-only", action="store_true", help="Manual YouTube-only upload for --video-id")
     a = ap.parse_args(argv)
-    if a.youtube_only and not a.video_id:
-        ap.error("--youtube-only requires --video-id")
 
     store = StateStore(a.state_dir.resolve())
     m = store.load()
@@ -259,6 +257,21 @@ def main(argv=None) -> int:
             ap.error("Unknown --video-id")
         jobs = {name: (a.video_id, entry) for name in (("youtube",) if a.youtube_only else DESTS)
                 if dest(entry, name)["status"] in ("pending", "failed")}
+    elif a.youtube_only:
+        # Manual test: choose the next eligible YouTube item without scheduled pacing.
+        day = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        ordered = mf.ordered(m)
+        fresh = [(vid, entry) for vid, entry in ordered if _fresh(entry, day)]
+        historical = [(vid, entry) for vid, entry in ordered if not _fresh(entry, day)]
+        last_source = m.get("publish_pacing", {}).get("youtube", {}).get("last_source_account")
+        if last_source in ("primary", "secondary"):
+            fresh.sort(key=lambda item: item[1].get("source", {}).get("account", "primary") == last_source)
+            historical.sort(key=lambda item: item[1].get("source", {}).get("account", "primary") == last_source)
+        jobs = {}
+        for vid, entry in fresh + historical:
+            if dest(entry, "youtube")["status"] in ("pending", "failed"):
+                jobs["youtube"] = (vid, entry)
+                break
     else:
         jobs = pick_jobs(m, daily_limit=a.daily_limit)
     if not jobs:
