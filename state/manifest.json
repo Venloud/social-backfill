@@ -48,7 +48,7 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-10-24T21:54:39Z",
+  "updated_at": "2026-10-24T21:54:41Z",
   "videos": {
     "7693026624211569934": {
       "destinations": {
@@ -9980,8 +9980,8 @@
         }
       },
       "media": {
-        "attempts": 1,
-        "downloaded_at": "2026-10-24T19:29:53Z",
+        "attempts": 2,
+        "downloaded_at": "2026-10-24T21:54:41Z",
         "info": {
           "audio": true,
           "audio_codec": "aac",
@@ -10854,7 +10854,8 @@
           "last_error": null,
           "published_at": null,
           "remote_id": null,
-          "status": "pending"
+          "status": "pending",
+          "url": null
         },
         "snapchat": {
           "attempts": 0,
@@ -10868,7 +10869,8 @@
           "last_error": null,
           "published_at": null,
           "remote_id": null,
-          "status": "pending"
+          "status": "pending",
+          "url": null
         }
       },
       "media": {
@@ -10911,7 +10913,8 @@
           "last_error": null,
           "published_at": null,
           "remote_id": null,
-          "status": "pending"
+          "status": "pending",
+          "url": null
         },
         "snapchat": {
           "attempts": 0,
@@ -10925,7 +10928,8 @@
           "last_error": null,
           "published_at": null,
           "remote_id": null,
-          "status": "pending"
+          "status": "pending",
+          "url": null
         }
       },
       "media": {
