@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "repository": "Venloud/social-backfill",
+  "skills": [
+    "automation-audit-ops",
+    "python-testing",
+    "api-connector-builder"
+  ],
+  "restrictions": "Never publish videos, dispatch workflows, alter schedules, reset posting history or change credentials.",
+  "upstream": "v2.2.3",
+  "memory": "Vandam canonical; no automatic observation or separate memory store"
+}
