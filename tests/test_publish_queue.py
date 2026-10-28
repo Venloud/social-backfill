@@ -96,6 +96,29 @@ class IndependentQueueTests(unittest.TestCase):
         self.assertEqual(jobs["youtube"][0], "old")
         self.assertNotIn("instagram", jobs)
 
+    def test_youtube_stops_after_four_published_today(self):
+        from datetime import datetime, timezone
+        today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        m = {"videos": {"pending": entry("2026-01-05T00:00:00Z")}}
+        for i in range(4):
+            name = f"done{i}"
+            m["videos"][name] = entry(f"2026-01-0{i+1}T00:00:00Z", youtube="published")
+            m["videos"][name]["destinations"]["youtube"]["published_at"] = today + "T08:00:00Z"
+        jobs = pick_jobs(m)
+        self.assertNotIn("youtube", jobs)
+        self.assertIn("instagram", jobs)
+
+    def test_youtube_older_posts_do_not_count_toward_today_cap(self):
+        from datetime import datetime, timedelta, timezone
+        yesterday = (datetime.now(timezone.utc) - timedelta(days=1)).strftime("%Y-%m-%d")
+        m = {"videos": {"pending": entry("2026-01-05T00:00:00Z")}}
+        for i in range(4):
+            name = f"done{i}"
+            m["videos"][name] = entry(f"2026-01-0{i+1}T00:00:00Z", youtube="published")
+            m["videos"][name]["destinations"]["youtube"]["published_at"] = yesterday + "T08:00:00Z"
+        jobs = pick_jobs(m)
+        self.assertEqual(jobs["youtube"][0], "pending")
+
     def test_platform_pacing_does_not_block_other_destination(self):
         import time
         m = {"videos": {"old": entry("2026-01-01T00:00:00Z")},
