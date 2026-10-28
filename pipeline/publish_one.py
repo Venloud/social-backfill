@@ -134,6 +134,17 @@ def pick_jobs(m: dict, daily_limit: int | None = None) -> dict[str, tuple[str, d
     }
     reserved: set[str] = set()
     for name in DESTS:
+        if name == "youtube":
+            # Scheduled uploads are limited to four published Shorts per UTC day.
+            # Manual youtube-only tests remain explicitly operator-controlled.
+            posted_today = sum(
+                dest(entry, "youtube")["status"] == "published"
+                and _day(dest(entry, "youtube").get("published_at")) == day
+                for _, entry in ordered
+            )
+            if posted_today >= 4:
+                log(f"youtube: daily publishing cap reached ({posted_today}/4 UTC); Instagram continues")
+                continue
         due, due_at = platform_due(m, name)
         if not due:
             log(f"{name}: paused by pacing/cooldown; next eligible at "
