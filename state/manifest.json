@@ -41,11 +41,11 @@
     },
     "youtube": {
       "last_source_account": "primary",
-      "next_attempt_at": 1793174897.0168748
+      "next_attempt_at": 1793175169.4903188
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-10-28T02:12:47Z",
+  "updated_at": "2026-10-28T02:12:49Z",
   "videos": {
     "7693026624211569934": {
       "destinations": {
@@ -12478,12 +12478,12 @@
           "status": "pending"
         },
         "youtube": {
-          "attempts": 3,
-          "last_error": "HTTP 401: invalid_client",
+          "attempts": 4,
+          "last_error": null,
           "published_at": null,
           "remote_id": null,
-          "started_at": "2026-10-28T02:08:17Z",
-          "status": "failed",
+          "started_at": "2026-10-28T02:12:49Z",
+          "status": "publishing",
           "url": null
         }
       },
