@@ -41,7 +41,7 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-10-30T05:47:20Z",
+  "updated_at": "2026-10-30T05:47:22Z",
   "videos": {
     "7693026624211569934": {
       "destinations": {
@@ -13157,13 +13157,22 @@
         }
       },
       "media": {
-        "attempts": 0,
-        "downloaded_at": null,
-        "info": null,
+        "attempts": 1,
+        "downloaded_at": "2026-10-30T05:47:22Z",
+        "info": {
+          "audio": true,
+          "audio_codec": "aac",
+          "container": "mov,mp4,m4a,3gp,3g2,mj2",
+          "duration": 120.44,
+          "height": 1024,
+          "size_bytes": 4334528,
+          "video_codec": "h264",
+          "width": 576
+        },
         "last_error": null,
-        "path": null,
-        "status": "pending",
-        "validated": false
+        "path": "media/7702089482480192782.mp4",
+        "status": "ready",
+        "validated": true
       },
       "source": {
         "account": "primary",
@@ -13255,7 +13264,8 @@
           "last_error": null,
           "published_at": null,
           "remote_id": null,
-          "status": "pending"
+          "status": "pending",
+          "url": null
         },
         "snapchat": {
           "attempts": 0,
@@ -13269,7 +13279,8 @@
           "last_error": null,
           "published_at": null,
           "remote_id": null,
-          "status": "pending"
+          "status": "pending",
+          "url": null
         }
       },
       "media": {
