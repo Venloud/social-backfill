@@ -56,7 +56,7 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-11-03T02:33:36Z",
+  "updated_at": "2026-11-03T02:33:37Z",
   "videos": {
     "7693026624211569934": {
       "destinations": {
@@ -14810,13 +14810,22 @@
         }
       },
       "media": {
-        "attempts": 0,
-        "downloaded_at": null,
-        "info": null,
+        "attempts": 1,
+        "downloaded_at": "2026-11-03T02:33:37Z",
+        "info": {
+          "audio": true,
+          "audio_codec": "aac",
+          "container": "mov,mp4,m4a,3gp,3g2,mj2",
+          "duration": 40.042,
+          "height": 832,
+          "size_bytes": 7081569,
+          "video_codec": "h264",
+          "width": 464
+        },
         "last_error": null,
-        "path": null,
-        "status": "pending",
-        "validated": false
+        "path": "media/drop-20261103-014154-00do4.mp4",
+        "status": "ready",
+        "validated": true
       },
       "source": {
         "account": "drop",
