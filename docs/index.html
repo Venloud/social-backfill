@@ -125,7 +125,7 @@ const PART_BYTES = 25 * 1024 * 1024, MAX_BYTES = 250 * 1024 * 1024;
 const $ = id => document.getElementById(id);
 let items = [];   // {file, cover, caption (textarea), el}
 let covers = Promise.resolve();
-const VERSION = "2026-11-03.6";
+const VERSION = "2026-11-03.7";
 
 $("version").textContent = "Version " + VERSION;
 // GitHub Pages lets phones cache this page for 10 minutes; if a newer version is live, reload into it once.
@@ -405,7 +405,7 @@ async function estimate(rows) {
     let at = Math.max(now, (pace.next_attempt_at || 0) * 1000, (pace.cooldown_until || 0) * 1000);
     for (const r of queue) {
       const d = ((videos["drop-" + r.id] || {}).destinations || {})[p];
-      if (d && d.status === "published") r.eta[p] = { live: true, url: d.url };
+      if (d && d.status === "published") r.eta[p] = { live: true, url: d.url, at: Date.parse(d.published_at) || null };
       else if (d && d.status === "cancelled") r.eta[p] = { text: "cancelled" };
       else if (d && d.status === "publishing") r.eta[p] = { text: "posting now" };
       else { r.eta[p] = { at }; at += gap * 1000; }
@@ -459,7 +459,7 @@ async function refresh() {
           const e = row.eta[p], line = document.createElement("small");
           if (!e) { line.textContent = label + ": checking…"; return line; }
           if (e.live) {
-            line.className = "ok"; line.append(label + ": live ✓ ");
+            line.className = "ok"; line.append(label + ": published " + (e.at ? fmtLocal(e.at) : "") + " ✓ ");
             if (e.url) line.append(Object.assign(document.createElement("a"), { href: e.url, target: "_blank", rel: "noopener", textContent: "open" }));
           } else line.textContent = label + ": " + (e.text || "about " + fmtLocal(e.at));
           return line;
