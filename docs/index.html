@@ -129,22 +129,44 @@ async function gh(path, opts = {}) {
   return r.status === 404 ? null : r.json();
 }
 
-// PUT a file with upload progress (fetch can't report it).
-function put(path, base64, message, onProgress) {
+// Upload a file as a git blob. Base64 is built in 3 MB slices into a Blob body, so a big video never
+// becomes one giant string in memory (that is what made pushes crawl on a full phone).
+async function blob(file, onProgress) {
+  const parts = ['{"encoding":"base64","content":"'], SLICE = 3 * 1024 * 1024;
+  for (let i = 0; i < file.size; i += SLICE) {
+    const bytes = new Uint8Array(await file.slice(i, i + SLICE).arrayBuffer());
+    let bin = "";
+    for (let j = 0; j < bytes.length; j += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(j, j + 0x8000));
+    parts.push(btoa(bin));
+  }
+  parts.push('"}');
   return new Promise((resolve, reject) => {
     const x = new XMLHttpRequest();
-    x.open("PUT", API + "/contents/" + path);
+    x.open("POST", API + "/git/blobs");
     x.setRequestHeader("Authorization", "Bearer " + token());
     x.setRequestHeader("Accept", "application/vnd.github+json");
+    x.setRequestHeader("Content-Type", "application/json");
     x.upload.onprogress = e => e.lengthComputable && onProgress && onProgress(e.loaded / e.total);
-    x.onload = () => x.status < 300 ? resolve() : reject(new Error("GitHub " + x.status + ": " + (JSON.parse(x.responseText || "{}").message || "")));
-    x.onerror = () => reject(new Error("Network error, check your connection"));
-    x.send(JSON.stringify({ message, content: base64, branch: BRANCH }));
+    x.onload = () => x.status < 300 ? resolve(JSON.parse(x.responseText).sha)
+      : reject(new Error("GitHub " + x.status + ": " + (JSON.parse(x.responseText || "{}").message || "")));
+    x.onerror = () => reject(new Error("Network error, check your connection."));
+    x.send(new Blob(parts, { type: "application/json" }));
   });
 }
 
-const b64 = blob => new Promise((res, rej) => { const f = new FileReader();
-  f.onload = () => res(String(f.result).split(",")[1]); f.onerror = rej; f.readAsDataURL(blob); });
+// One commit on the drops branch for the whole batch; retry if the branch moved meanwhile.
+async function commitDrops(tree, count) {
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const head = (await gh("/git/ref/heads/" + BRANCH)).object.sha;
+    const base = (await gh("/git/commits/" + head)).tree.sha;
+    const t = await gh("/git/trees", { method: "POST", body: JSON.stringify({ base_tree: base, tree }) });
+    const c = await gh("/git/commits", { method: "POST", body: JSON.stringify({
+      message: "drop: " + count + " video" + (count > 1 ? "s" : ""), tree: t.sha, parents: [head] }) });
+    try { return await gh("/git/refs/heads/" + BRANCH, { method: "PATCH", body: JSON.stringify({ sha: c.sha }) }); }
+    catch (e) { if (attempt === 2) throw e; }
+  }
+}
+
 const utf8b64 = s => btoa(unescape(encodeURIComponent(s)));
 
 async function ensureBranch() {
@@ -258,27 +280,38 @@ $("push").onclick = async () => {
   }
   $("push").disabled = true; $("pick").style.pointerEvents = "none"; $("bar").style.display = "block";
   const bar = p => $("bar").firstElementChild.style.width = Math.round(p * 100) + "%";
-  const total = items.length;
-  let done = 0;
+  const batch = items.slice(), total = batch.length, start = Date.now();
+  const sent = new Array(total).fill(0), sizes = batch.map(it => it.file.size);
+  const progress = () => bar(0.02 + 0.93 * sent.reduce((a, b) => a + b, 0) / sizes.reduce((a, b) => a + b, 0));
   try {
     say("Preparing…"); bar(0.02);
     await ensureBranch();
-    // Upload in the order picked; created_at keeps that order in the publish queue.
-    while (items.length) {
-      const it = items[0];
-      const id = new Date().toISOString().replace(/[-:]/g, "").replace("T", "-").slice(0, 15) + "-" + Math.random().toString(36).slice(2, 6);
-      say("Uploading video " + (done + 1) + " of " + total + "…");
-      await put("drops/" + id + ".mp4", await b64(it.file), "drop: " + id + " video", p => bar((done + p * 0.95) / total));
-      if (it.cover) await put("drops/" + id + ".jpg", await b64(it.cover), "drop: " + id + " cover");
-      // The caption file goes last: the publisher only picks up drops that have it.
-      await put("drops/" + id + ".json", utf8b64(JSON.stringify({ caption: it.caption.value.trim(), created_at: new Date().toISOString() }, null, 2)), "drop: " + id);
-      local[id] = URL.createObjectURL(it.file);   // play from the phone's copy, no re-download
-      items.shift(); it.el.remove(); done++; bar(done / total);
-    }
+    // Videos upload 2 at a time as git blobs; one commit at the end adds every drop at once,
+    // so the publisher never sees half a drop. created_at keeps the picked order.
+    const entries = [];
+    let next = 0, finished = 0;
+    const worker = async () => {
+      while (next < total) {
+        const n = next++, it = batch[n];
+        const id = new Date(start).toISOString().replace(/[-:]/g, "").replace("T", "-").slice(0, 15) + "-" + String(n).padStart(2, "0") + Math.random().toString(36).slice(2, 5);
+        const video = await blob(it.file, p => { sent[n] = p * sizes[n]; progress(); });
+        entries.push({ path: "drops/" + id + ".mp4", mode: "100644", type: "blob", sha: video });
+        if (it.cover) entries.push({ path: "drops/" + id + ".jpg", mode: "100644", type: "blob", sha: await blob(it.cover) });
+        entries.push({ path: "drops/" + id + ".json", mode: "100644", type: "blob",
+          content: JSON.stringify({ caption: it.caption.value.trim(), created_at: new Date(start + n).toISOString() }, null, 2) });
+        local[id] = URL.createObjectURL(it.file);   // play from the phone's copy, no re-download
+        say("Uploaded " + (++finished) + " of " + total + "…");
+      }
+    };
+    say(total > 1 ? "Uploading " + total + " videos…" : "Uploading…");
+    await Promise.all([worker(), worker()]);
+    say("Saving…");
+    await commitDrops(entries, total);
+    batch.forEach(it => it.el.remove()); items = items.filter(it => !batch.includes(it)); bar(1);
     say((total > 1 ? "All " + total + " queued" : "Queued") + ". They post one at a time (Instagram hourly, YouTube up to 4 per day).", "ok");
     refresh();
   } catch (e) {
-    say((done ? done + " of " + total + " went through. " : "") + "The rest didn't: " + e.message + " Press Push to retry.", "err");
+    say("Didn't go through: " + e.message + " Nothing was queued. Press Push to retry.", "err");
   } finally {
     $("pick").style.pointerEvents = "";
     setTimeout(() => { $("bar").style.display = "none"; bar(0); }, 1500);
