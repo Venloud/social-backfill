@@ -26,7 +26,7 @@
         "drop-20261103-014154-02jvs",
         "drop-20261103-014154-03mf0"
       ],
-      "next_old_at": 1793670544.9187107,
+      "next_old_at": 1793671044.2372189,
       "run_completed": {
         "41424892512": [
           "7694884685620464910",
@@ -36,7 +36,8 @@
           "drop-20261103-013010-00bhn"
         ],
         "41561469385": [],
-        "41562115501": []
+        "41562115501": [],
+        "41562970034": []
       },
       "status": "running",
       "target": 20,
@@ -54,7 +55,7 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-11-03T01:49:16Z",
+  "updated_at": "2026-11-03T01:57:24Z",
   "videos": {
     "7693026624211569934": {
       "destinations": {
@@ -14788,7 +14789,8 @@
           "last_error": null,
           "published_at": null,
           "remote_id": null,
-          "status": "pending"
+          "status": "pending",
+          "url": null
         },
         "snapchat": {
           "attempts": 0,
@@ -14802,7 +14804,8 @@
           "last_error": null,
           "published_at": null,
           "remote_id": null,
-          "status": "pending"
+          "status": "pending",
+          "url": null
         }
       },
       "media": {
@@ -14838,7 +14841,8 @@
           "last_error": null,
           "published_at": null,
           "remote_id": null,
-          "status": "pending"
+          "status": "pending",
+          "url": null
         },
         "snapchat": {
           "attempts": 0,
@@ -14852,7 +14856,8 @@
           "last_error": null,
           "published_at": null,
           "remote_id": null,
-          "status": "pending"
+          "status": "pending",
+          "url": null
         }
       },
       "media": {
@@ -14888,7 +14893,8 @@
           "last_error": null,
           "published_at": null,
           "remote_id": null,
-          "status": "pending"
+          "status": "pending",
+          "url": null
         },
         "snapchat": {
           "attempts": 0,
@@ -14902,7 +14908,8 @@
           "last_error": null,
           "published_at": null,
           "remote_id": null,
-          "status": "pending"
+          "status": "pending",
+          "url": null
         }
       },
       "media": {
@@ -14938,7 +14945,8 @@
           "last_error": null,
           "published_at": null,
           "remote_id": null,
-          "status": "pending"
+          "status": "pending",
+          "url": null
         },
         "snapchat": {
           "attempts": 0,
@@ -14952,7 +14960,8 @@
           "last_error": null,
           "published_at": null,
           "remote_id": null,
-          "status": "pending"
+          "status": "pending",
+          "url": null
         }
       },
       "media": {
