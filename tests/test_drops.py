@@ -91,6 +91,26 @@ class DropTests(unittest.TestCase):
             del os.environ["DROPS_DIR"]
         self.assertEqual(out.read_bytes(), b"aabbcc")
 
+    def test_cancelled_drop_is_never_picked_but_published_side_is_kept(self):
+        write_drop(self.root, "20261102-a")
+        m = {"videos": {"old": tiktok("2020-01-01T00:00:00Z")}}
+        drops.import_drops(m, self.root)
+        m["videos"]["drop-20261102-a"]["destinations"]["youtube"]["status"] = "published"
+        (self.root / "drops" / "20261102-a.json").unlink()      # Cancel button
+        self.assertEqual(drops.import_drops(m, self.root), 0)
+        ds = m["videos"]["drop-20261102-a"]["destinations"]
+        self.assertEqual(ds["instagram"]["status"], "cancelled")
+        self.assertEqual(ds["youtube"]["status"], "published")
+        jobs = pick_jobs(m)
+        self.assertEqual(jobs["instagram"][0], "old")
+
+    def test_missing_drops_checkout_cancels_nothing(self):
+        write_drop(self.root, "20261102-a")
+        m = {"videos": {}}
+        drops.import_drops(m, self.root)
+        drops.import_drops(m, self.root / "not-checked-out")
+        self.assertEqual(m["videos"]["drop-20261102-a"]["destinations"]["instagram"]["status"], "pending")
+
     def test_drops_bypass_historical_daily_quota(self):
         write_drop(self.root, "20261102-a")
         m = {"videos": {"old": tiktok("2020-01-01T00:00:00Z")}}

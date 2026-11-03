@@ -36,6 +36,7 @@
   li.drop { display:flex; gap:12px; align-items:flex-start; }
   li.drop video { width:64px; height:114px; object-fit:cover; border-radius:8px; background:#000; flex:none; }
   li.drop div { min-width:0; }
+  li.drop .link { display:block; padding:6px 0 0; color:var(--err); }
   li.drop .cap { display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; white-space:pre-line; }
   button { width:100%; border:0; border-radius:12px; padding:15px; font:600 17px/1 inherit; background:var(--accent); color:#fff; cursor:pointer; }
   button:disabled { opacity:.45; }
@@ -113,7 +114,7 @@ const PART_BYTES = 25 * 1024 * 1024, MAX_BYTES = 250 * 1024 * 1024;
 const $ = id => document.getElementById(id);
 let items = [];   // {file, cover, caption (textarea), el}
 let covers = Promise.resolve();
-const VERSION = "2026-11-03.2";
+const VERSION = "2026-11-03.3";
 
 $("version").textContent = "Version " + VERSION;
 // GitHub Pages lets phones cache this page for 10 minutes; if a newer version is live, reload into it once.
@@ -366,7 +367,7 @@ async function refresh() {
   try {
     const items = (await gh("/contents/drops?ref=" + BRANCH)) || [];
     const ids = items.filter(i => i.name.endsWith(".json")).map(i => i.name.slice(0, -5)).sort().reverse().slice(0, 10);
-    const names = new Set(items.map(i => i.name));
+    const names = new Set(items.map(i => i.name)), shas = Object.fromEntries(items.map(i => [i.name, i.sha]));
     const raw = "https://raw.githubusercontent.com/" + REPO + "/" + BRANCH + "/drops/";
     $("recent").replaceChildren(...(ids.length ? ids.map((id, n) => {
       const li = document.createElement("li"); li.className = "drop";
@@ -388,7 +389,18 @@ async function refresh() {
       const cap = document.createElement("span"); cap.className = "cap"; cap.textContent = "…";
       const when = document.createElement("small");
       when.textContent = id.slice(0, 4) + "-" + id.slice(4, 6) + "-" + id.slice(6, 8) + " " + id.slice(9, 11) + ":" + id.slice(11, 13) + " UTC";
-      body.append(cap, when); li.append(v, body);
+      // Cancel removes the caption file; the publisher then skips this drop on every platform not yet live.
+      const cancel = document.createElement("button"); cancel.className = "link"; cancel.textContent = "Cancel";
+      cancel.onclick = async () => {
+        if (!confirm("Cancel this video? It won't be posted anywhere it hasn't already gone live.")) return;
+        cancel.disabled = true; cancel.textContent = "Cancelling…";
+        try {
+          await gh("/contents/drops/" + id + ".json", { method: "DELETE", body: JSON.stringify({
+            message: "drop: cancel " + id, sha: shas[id + ".json"], branch: BRANCH }) });
+          li.remove();
+        } catch (e) { cancel.disabled = false; cancel.textContent = "Cancel"; alert("Couldn't cancel: " + e.message); }
+      };
+      body.append(cap, when, cancel); li.append(v, body);
       fetch(raw + id + ".json").then(r => r.json()).then(d => { cap.textContent = d.caption || "(no caption)"; })
         .catch(() => { cap.textContent = "drop-" + id; });
       return li;

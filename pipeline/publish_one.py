@@ -166,7 +166,7 @@ def pick_jobs(m: dict, daily_limit: int | None = None) -> dict[str, tuple[str, d
         fresh = sorted(fresh, key=lambda item: not drops.is_drop(item[1]))
         for vid, entry in fresh + historical:
             d = dest(entry, name)
-            if d["status"] == "published":
+            if d["status"] in ("published", "cancelled"):
                 continue
             if d["status"] == "publishing":
                 log(f"STUCK {name}, skipped: {vid} is still 'publishing'. Verify on {name} before retry.")

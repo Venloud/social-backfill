@@ -39,6 +39,12 @@ def import_drops(m: dict, root: Path | None = None) -> int:
     if not folder.is_dir():
         return 0
     videos = m.setdefault("videos", {})
+    # Cancel button: the page deletes drops/<id>.json. A destination not yet live or mid-upload stops for good.
+    for vid, entry in videos.items():
+        if is_drop(entry) and not (folder / f"{vid[len('drop-'):]}.json").is_file():
+            for d in entry.get("destinations", {}).values():
+                if d.get("status") in ("pending", "failed"):
+                    d["status"] = "cancelled"
     added = 0
     for meta in sorted(folder.glob("*.json")):
         did = meta.stem
