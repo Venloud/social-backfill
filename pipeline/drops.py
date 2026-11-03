@@ -2,7 +2,8 @@
 
 Branch layout (written by the page, read-only here):
     drops/<id>.mp4   the video
-    drops/<id>.json  {"caption": "...", "created_at": "..."}
+    drops/<id>.json  {"caption": "...", "created_at": "...", "parts": N (only for split videos)}
+    drops/<id>.part000.mp4 ...  a video too big for one GitHub request, split in order; rejoined here
     drops/<id>.jpg   optional cover frame grabbed by the page
 
 The workflow checks the branch out at .drops (or $DROPS_DIR). Each drop becomes one manifest entry
@@ -42,18 +43,25 @@ def import_drops(m: dict, root: Path | None = None) -> int:
     for meta in sorted(folder.glob("*.json")):
         did = meta.stem
         vid = f"drop-{did}"
-        if not DROP_ID.fullmatch(did) or vid in videos or not (folder / f"{did}.mp4").is_file():
+        if not DROP_ID.fullmatch(did) or vid in videos:
             continue
         try:
             data = json.loads(meta.read_text(encoding="utf-8"))
         except (OSError, ValueError):
+            continue
+        parts = data.get("parts")
+        if isinstance(parts, int) and not isinstance(parts, bool) and 0 < parts <= 100:
+            files = [f"drops/{did}.part{i:03d}.mp4" for i in range(parts)]
+        else:
+            files = [f"drops/{did}.mp4"]
+        if not all((folder.parent / f).is_file() for f in files):
             continue
         stamp = mf.now()
         has_cover = (folder / f"{did}.jpg").is_file()
         videos[vid] = {
             "source": {
                 "platform": "drop", "account": "drop", "video_id": vid, "url": None,
-                "file": f"drops/{did}.mp4", "cover": f"drops/{did}.jpg" if has_cover else None,
+                "file": files[0] if len(files) == 1 else None, "parts": files if len(files) > 1 else None, "cover": f"drops/{did}.jpg" if has_cover else None,
                 "created_at": str(data.get("created_at") or stamp), "first_seen_at": stamp, "last_seen_at": stamp,
                 "metadata": {
                     "video_description": str(data.get("caption") or ""),
@@ -69,11 +77,16 @@ def import_drops(m: dict, root: Path | None = None) -> int:
 
 
 def copy_media(entry: dict, dest: Path) -> Path:
-    src = worktree() / entry["source"]["file"]
-    if not src.is_file():
-        raise ValueError(f"drop file {entry['source']['file']} is not on this runner (drops branch not checked out?)")
+    files = entry["source"].get("parts") or [entry["source"]["file"]]
+    srcs = [worktree() / f for f in files]
+    for src, rel in zip(srcs, files):
+        if not src.is_file():
+            raise ValueError(f"drop file {rel} is not on this runner (drops branch not checked out?)")
     dest.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copyfile(src, dest)
+    with open(dest, "wb") as out:   # split uploads are rejoined in order into the original video
+        for src in srcs:
+            with open(src, "rb") as part:
+                shutil.copyfileobj(part, out)
     return dest
 
 

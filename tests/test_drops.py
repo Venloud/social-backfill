@@ -1,5 +1,6 @@
 """Phone drops jump ahead of TikTok backfill (CI-safe: no network, no ffmpeg)."""
 import json
+import os
 import tempfile
 import unittest
 from pathlib import Path
@@ -71,6 +72,24 @@ class DropTests(unittest.TestCase):
             d["status"] = "published"
         jobs = pick_jobs(m)
         self.assertEqual(jobs["instagram"][0], "old")
+
+    def test_split_video_is_imported_only_when_complete_and_rejoined_in_order(self):
+        folder = self.root / "drops"
+        folder.mkdir()
+        (folder / "big.json").write_text(json.dumps({"caption": "big", "parts": 3}))
+        (folder / "big.part000.mp4").write_bytes(b"aa")
+        (folder / "big.part001.mp4").write_bytes(b"bb")
+        m = {"videos": {}}
+        self.assertEqual(drops.import_drops(m, self.root), 0)      # last part still missing
+        (folder / "big.part002.mp4").write_bytes(b"cc")
+        self.assertEqual(drops.import_drops(m, self.root), 1)
+        entry = m["videos"]["drop-big"]
+        os.environ["DROPS_DIR"] = str(self.root)
+        try:
+            out = drops.copy_media(entry, self.root / "out" / "drop-big.mp4")
+        finally:
+            del os.environ["DROPS_DIR"]
+        self.assertEqual(out.read_bytes(), b"aabbcc")
 
     def test_drops_bypass_historical_daily_quota(self):
         write_drop(self.root, "20261102-a")

@@ -106,8 +106,9 @@
 </main>
 <script>
 const REPO = "Venloud/social-backfill", BRANCH = "drops", API = "https://api.github.com/repos/" + REPO;
-// GitHub drops requests over ~100 MB, and base64 adds a third, so the video itself must stay under ~70 MB.
-const MAX_BYTES = 70 * 1024 * 1024;
+// GitHub drops requests over ~100 MB and base64 adds a third, so videos over 45 MB upload as
+// ordered parts that the publisher rejoins. 250 MB stays under Instagram's 300 MB Reel limit.
+const PART_BYTES = 45 * 1024 * 1024, MAX_BYTES = 250 * 1024 * 1024;
 const $ = id => document.getElementById(id);
 let items = [];   // {file, cover, caption (textarea), el}
 
@@ -210,7 +211,7 @@ $("file").onchange = () => {
     items.push(it); $("list").append(el);
   }
   $("file").value = "";
-  say(skipped.length ? "Too big, skipped (limit 70 MB, try exporting at 1080p): " + skipped.join(", ") : "", skipped.length ? "err" : "");
+  say(skipped.length ? "Too big, skipped (limit 250 MB, try exporting at 1080p): " + skipped.join(", ") : "", skipped.length ? "err" : "");
   ready();
 };
 // The owner's token is stored in docs/key.json only encrypted with the shared passcode (PBKDF2 + AES-GCM).
@@ -295,11 +296,17 @@ $("push").onclick = async () => {
       while (next < total) {
         const n = next++, it = batch[n];
         const id = new Date(start).toISOString().replace(/[-:]/g, "").replace("T", "-").slice(0, 15) + "-" + String(n).padStart(2, "0") + Math.random().toString(36).slice(2, 5);
-        const video = await blob(it.file, p => { sent[n] = p * sizes[n]; progress(); });
-        entries.push({ path: "drops/" + id + ".mp4", mode: "100644", type: "blob", sha: video });
+        const parts = Math.ceil(it.file.size / PART_BYTES);
+        for (let k = 0; k < parts; k++) {
+          const from = k * PART_BYTES, piece = it.file.slice(from, from + PART_BYTES);
+          const sha = await blob(piece, p => { sent[n] = from + p * piece.size; progress(); });
+          const name = parts > 1 ? id + ".part" + String(k).padStart(3, "0") + ".mp4" : id + ".mp4";
+          entries.push({ path: "drops/" + name, mode: "100644", type: "blob", sha });
+        }
         if (it.cover) entries.push({ path: "drops/" + id + ".jpg", mode: "100644", type: "blob", sha: await blob(it.cover) });
         entries.push({ path: "drops/" + id + ".json", mode: "100644", type: "blob",
-          content: JSON.stringify({ caption: it.caption.value.trim(), created_at: new Date(start + n).toISOString() }, null, 2) });
+          content: JSON.stringify({ caption: it.caption.value.trim(), created_at: new Date(start + n).toISOString(),
+            ...(parts > 1 ? { parts } : {}) }, null, 2) });
         local[id] = URL.createObjectURL(it.file);   // play from the phone's copy, no re-download
         say("Uploaded " + (++finished) + " of " + total + "…");
       }
@@ -322,9 +329,9 @@ $("push").onclick = async () => {
 
 // GitHub serves .mp4 as octet-stream, so playback needs a typed blob. Cache one download per drop.
 const local = {}, fetching = {};
-function videoUrl(id, raw) {
-  return fetching[id] || (fetching[id] = fetch(raw + id + ".mp4").then(r => r.arrayBuffer())
-    .then(buf => local[id] = URL.createObjectURL(new Blob([buf], { type: "video/mp4" }))));
+function videoUrl(id, raw, files) {
+  return fetching[id] || (fetching[id] = Promise.all(files.map(f => fetch(raw + f).then(r => r.arrayBuffer())))
+    .then(bufs => local[id] = URL.createObjectURL(new Blob(bufs, { type: "video/mp4" }))));
 }
 
 async function refresh() {
@@ -341,12 +348,13 @@ async function refresh() {
       v.preload = "none"; v.playsInline = true;
       if (names.has(id + ".jpg")) v.poster = raw + id + ".jpg";
       // Instant: a video pushed from this phone plays from its local copy; the newest few prefetch.
+      const files = names.has(id + ".mp4") ? [id + ".mp4"] : [...names].filter(f => f.startsWith(id + ".part")).sort();
       if (local[id]) { v.src = local[id]; v.controls = true; }
-      else if (n < 3) videoUrl(id, raw).then(u => { if (!v.src) { v.src = u; v.controls = true; } }).catch(() => {});
+      else if (n < 3) videoUrl(id, raw, files).then(u => { if (!v.src) { v.src = u; v.controls = true; } }).catch(() => {});
       v.onclick = async () => {
         if (v.src) return;
         v.style.opacity = ".5";
-        try { v.src = await videoUrl(id, raw); v.controls = true; v.play().catch(() => {}); }
+        try { v.src = await videoUrl(id, raw, files); v.controls = true; v.play().catch(() => {}); }
         catch (e) {} finally { v.style.opacity = ""; }
       };
       const body = document.createElement("div");
