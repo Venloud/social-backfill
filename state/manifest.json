@@ -61,7 +61,7 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-11-03T03:35:57Z",
+  "updated_at": "2026-11-03T03:36:32Z",
   "videos": {
     "7693026624211569934": {
       "destinations": {
@@ -14860,11 +14860,11 @@
       "destinations": {
         "instagram": {
           "attempts": 1,
-          "last_error": null,
+          "last_error": "resumable upload failed: HTTPError: HTTP Error 400: Bad Request",
           "published_at": null,
           "remote_id": null,
           "started_at": "2026-11-03T03:35:57Z",
-          "status": "publishing",
+          "status": "failed",
           "url": null
         },
         "snapchat": {
