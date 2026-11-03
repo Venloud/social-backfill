@@ -26,6 +26,13 @@
   .pick span { padding:12px 16px; }
   .pick video { width:100%; max-height:360px; display:block; background:#000; }
   #file { display:none; }
+  .item { display:flex; gap:12px; padding-bottom:14px; margin-bottom:14px; border-bottom:1px solid var(--line); }
+  .item video { width:96px; height:170px; object-fit:cover; border-radius:10px; background:#000; flex:none; }
+  .item .body { flex:1; min-width:0; display:flex; flex-direction:column; gap:6px; }
+  .item textarea { flex:1; min-height:110px; }
+  .item .top { display:flex; justify-content:space-between; align-items:center; font-size:13px; color:var(--mute); }
+  .item .top .link { padding:0; }
+  textarea.missing { border-color:var(--err); }
   button { width:100%; border:0; border-radius:12px; padding:15px; font:600 17px/1 inherit; background:var(--accent); color:#fff; cursor:pointer; }
   button:disabled { opacity:.45; }
   .link { background:none; color:var(--mute); width:auto; padding:6px 0; font-size:13px; font-weight:400; text-decoration:underline; }
@@ -79,10 +86,9 @@
 
   <div class="card">
     <label>Video</label>
-    <div class="pick" id="pick"><span>Tap to choose a video</span></div>
-    <input id="file" type="file" accept="video/*">
-    <label for="caption" style="margin-top:14px">Caption</label>
-    <textarea id="caption" placeholder="Caption with #hashtags"></textarea>
+    <div id="list"></div>
+    <div class="pick" id="pick"><span>Tap to choose videos</span></div>
+    <input id="file" type="file" accept="video/*" multiple>
     <div style="margin-top:14px"><button id="push" disabled>Push</button></div>
     <div class="bar" id="bar"><i></i></div>
     <div id="msg"></div>
@@ -98,13 +104,19 @@
 const REPO = "Venloud/social-backfill", BRANCH = "drops", API = "https://api.github.com/repos/" + REPO;
 const MAX_BYTES = 95 * 1024 * 1024; // GitHub's contents API refuses files over 100 MB
 const $ = id => document.getElementById(id);
-let file = null, cover = null;
+let items = [];   // {file, cover, caption (textarea), el}
 
 function store(k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} }
 function load(k) { try { return localStorage.getItem(k) || ""; } catch (e) { return ""; } }
 function say(text, cls) { $("msg").textContent = text; $("msg").className = cls || ""; }
 function token() { return $("token").value.trim(); }
-function ready() { $("push").disabled = !(file && token() && $("caption").value.trim()); }
+function ready() {
+  $("push").disabled = !(items.length && token());
+  items.forEach(i => i.caption.value.trim() && i.caption.classList.remove("missing"));
+  $("push").textContent = items.length > 1 ? "Push " + items.length + " videos" : "Push";
+  $("pick").firstElementChild.textContent = items.length ? "Tap to add more videos" : "Tap to choose videos";
+  items.forEach((it, n) => it.el.querySelector(".num").textContent = "Video " + (n + 1));
+}
 
 async function gh(path, opts = {}) {
   const r = await fetch(API + path, { ...opts, headers: { Authorization: "Bearer " + token(),
@@ -154,16 +166,24 @@ function grabCover(video) {
 }
 
 $("pick").onclick = () => $("file").click();
-$("file").onchange = async () => {
-  file = $("file").files[0] || null; cover = null;
-  if (!file) return ready();
-  if (file.size > MAX_BYTES) { say("This video is " + (file.size / 1048576).toFixed(0) + " MB. The limit is 95 MB.", "err"); file = null; return ready(); }
-  const v = document.createElement("video");
-  v.src = URL.createObjectURL(file); v.muted = true; v.playsInline = true; v.controls = true; v.preload = "auto";
-  $("pick").replaceChildren(v);
-  say("");
+$("file").onchange = () => {
+  const skipped = [];
+  for (const file of $("file").files) {
+    if (file.size > MAX_BYTES) { skipped.push(file.name + " (" + (file.size / 1048576).toFixed(0) + " MB)"); continue; }
+    const el = document.createElement("div"); el.className = "item";
+    el.innerHTML = '<video muted playsinline preload="auto"></video><div class="body">' +
+      '<div class="top"><span class="num"></span><button class="link">Remove</button></div>' +
+      '<textarea placeholder="Caption with #hashtags"></textarea></div>';
+    const v = el.querySelector("video"); v.src = URL.createObjectURL(file);
+    const it = { file, cover: null, caption: el.querySelector("textarea"), el };
+    it.caption.oninput = ready;
+    el.querySelector(".link").onclick = () => { items = items.filter(x => x !== it); el.remove(); ready(); };
+    grabCover(v).then(b => { it.cover = b; });
+    items.push(it); $("list").append(el);
+  }
+  $("file").value = "";
+  say(skipped.length ? "Skipped (over 95 MB): " + skipped.join(", ") : "", skipped.length ? "err" : "");
   ready();
-  cover = await grabCover(v);
 };
 // The owner's token is stored in docs/key.json only encrypted with the shared passcode (PBKDF2 + AES-GCM).
 const KEY_PATH = "docs/key.json", enc = new TextEncoder();
@@ -222,29 +242,39 @@ $("copy").onclick = async () => {
   catch (e) { $("shareLink").select(); }
 };
 $("change").onclick = () => view("setup");
-$("caption").oninput = ready;
 
 $("push").onclick = async () => {
-  const id = new Date().toISOString().replace(/[-:]/g, "").replace("T", "-").slice(0, 15) + "-" + Math.random().toString(36).slice(2, 6);
-  const caption = $("caption").value.trim();
-  $("push").disabled = true; $("bar").style.display = "block";
+  // Every video needs a caption before anything uploads.
+  const missing = items.map((it, n) => it.caption.value.trim() ? 0 : n + 1).filter(Boolean);
+  if (missing.length) {
+    items.forEach(it => it.caption.classList.toggle("missing", !it.caption.value.trim()));
+    items.find(it => !it.caption.value.trim()).caption.focus();
+    return say("Add a caption to video " + missing.join(", ") + ". Nothing was uploaded.", "err");
+  }
+  $("push").disabled = true; $("pick").style.pointerEvents = "none"; $("bar").style.display = "block";
   const bar = p => $("bar").firstElementChild.style.width = Math.round(p * 100) + "%";
+  const total = items.length;
+  let done = 0;
   try {
     say("Preparing…"); bar(0.02);
     await ensureBranch();
-    say("Uploading video…");
-    await put("drops/" + id + ".mp4", await b64(file), "drop: " + id + " video", p => bar(0.02 + p * 0.9));
-    if (cover) await put("drops/" + id + ".jpg", await b64(cover), "drop: " + id + " cover");
-    // The caption file goes last: the publisher only picks up drops that have it.
-    await put("drops/" + id + ".json", utf8b64(JSON.stringify({ caption, created_at: new Date().toISOString() }, null, 2)), "drop: " + id);
-    bar(1);
-    say("Queued. It posts on the next run (every 30 min, Instagram hourly, YouTube up to 4 per day).", "ok");
-    file = null; cover = null; $("file").value = ""; $("caption").value = "";
-    $("pick").replaceChildren(Object.assign(document.createElement("span"), { textContent: "Tap to choose another video" }));
+    // Upload in the order picked; created_at keeps that order in the publish queue.
+    while (items.length) {
+      const it = items[0];
+      const id = new Date().toISOString().replace(/[-:]/g, "").replace("T", "-").slice(0, 15) + "-" + Math.random().toString(36).slice(2, 6);
+      say("Uploading video " + (done + 1) + " of " + total + "…");
+      await put("drops/" + id + ".mp4", await b64(it.file), "drop: " + id + " video", p => bar((done + p * 0.95) / total));
+      if (it.cover) await put("drops/" + id + ".jpg", await b64(it.cover), "drop: " + id + " cover");
+      // The caption file goes last: the publisher only picks up drops that have it.
+      await put("drops/" + id + ".json", utf8b64(JSON.stringify({ caption: it.caption.value.trim(), created_at: new Date().toISOString() }, null, 2)), "drop: " + id);
+      items.shift(); it.el.remove(); done++; bar(done / total);
+    }
+    say((total > 1 ? "All " + total + " queued" : "Queued") + ". They post one at a time (Instagram hourly, YouTube up to 4 per day).", "ok");
     refresh();
   } catch (e) {
-    say("Didn't go through: " + e.message, "err");
+    say((done ? done + " of " + total + " went through. " : "") + "The rest didn't: " + e.message + " Press Push to retry.", "err");
   } finally {
+    $("pick").style.pointerEvents = "";
     setTimeout(() => { $("bar").style.display = "none"; bar(0); }, 1500);
     ready();
   }
