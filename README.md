@@ -156,3 +156,9 @@ the oldest that is not fully posted, as a **public** YouTube Short (not made for
   The container must reach FINISHED before media_publish, and the returned media id is confirmed.
 - **TikTok:** the run never refreshes or writes TikTok secrets. Discovery here is read-only with the stored
   access token; if that has expired, the existing manifest is used.
+
+## Phone drops (priority lane)
+
+Open **https://venloud.github.io/social-backfill/** on your phone, paste a fine-grained GitHub token once (this repository only, **Contents: Read and write**; it is stored only in that phone's browser), pick a video, write the caption and press **Push**.
+
+The page writes `drops/<id>.mp4`, a cover frame `drops/<id>.jpg` and the caption `drops/<id>.json` to the `drops` branch. Every Backfill Publish run checks that branch out at `.drops`, adds new drops to the manifest as `drop-<id>`, and posts them to YouTube and Instagram before any TikTok item. Normal pacing, the 4-per-day YouTube cap and write-ahead duplicate protection still apply. Videos must be under 95 MB.

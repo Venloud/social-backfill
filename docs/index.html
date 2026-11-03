@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Social Drop</title>
+<style>
+  :root { --bg:#0e0f12; --card:#17191e; --line:#2a2d35; --text:#f2f3f5; --mute:#9aa0ab; --accent:#ff3d6e; --ok:#3ecf8e; --err:#ff6b6b; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+  main { max-width:520px; margin:0 auto; padding:20px 16px 48px; }
+  h1 { font-size:22px; margin:4px 0 2px; }
+  .sub { color:var(--mute); font-size:14px; margin:0 0 18px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px; margin-bottom:14px; }
+  label { display:block; font-size:13px; color:var(--mute); margin-bottom:6px; }
+  input[type=password], textarea { width:100%; background:#0b0c0f; color:var(--text); border:1px solid var(--line); border-radius:10px; padding:12px; font:inherit; }
+  textarea { min-height:120px; resize:vertical; }
+  .pick { display:flex; align-items:center; justify-content:center; min-height:150px; border:2px dashed var(--line); border-radius:12px; color:var(--mute); text-align:center; cursor:pointer; overflow:hidden; }
+  .pick video { width:100%; max-height:360px; display:block; background:#000; }
+  #file { display:none; }
+  button { width:100%; border:0; border-radius:12px; padding:15px; font:600 17px/1 inherit; background:var(--accent); color:#fff; cursor:pointer; }
+  button:disabled { opacity:.45; }
+  .link { background:none; color:var(--mute); width:auto; padding:6px 0; font-size:13px; font-weight:400; text-decoration:underline; }
+  .bar { height:6px; background:var(--line); border-radius:3px; overflow:hidden; margin-top:12px; display:none; }
+  .bar i { display:block; height:100%; width:0; background:var(--accent); transition:width .2s; }
+  #msg { margin-top:10px; font-size:14px; min-height:20px; }
+  .ok { color:var(--ok); } .err { color:var(--err); }
+  ul { list-style:none; padding:0; margin:0; }
+  li { padding:9px 0; border-top:1px solid var(--line); font-size:14px; }
+  li:first-child { border-top:0; }
+  li small { color:var(--mute); display:block; }
+  .hint { font-size:12px; color:var(--mute); margin-top:8px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Social Drop</h1>
+  <p class="sub">Drop a video + caption. It posts to Instagram and YouTube next, ahead of the TikTok backfill.</p>
+
+  <div class="card" id="tokenCard">
+    <label for="token">GitHub token (saved on this phone only)</label>
+    <input id="token" type="password" autocomplete="off" placeholder="github_pat_…">
+    <p class="hint">Fine-grained token → repository <b>Venloud/social-backfill</b> only → Contents: Read and write.</p>
+  </div>
+
+  <div class="card">
+    <label>Video</label>
+    <div class="pick" id="pick"><span>Tap to choose a video</span></div>
+    <input id="file" type="file" accept="video/*">
+    <label for="caption" style="margin-top:14px">Caption</label>
+    <textarea id="caption" placeholder="Caption with #hashtags"></textarea>
+    <div style="margin-top:14px"><button id="push" disabled>Push</button></div>
+    <div class="bar" id="bar"><i></i></div>
+    <div id="msg"></div>
+  </div>
+
+  <div class="card">
+    <label>Recent drops</label>
+    <ul id="recent"><li><small>Add your token to see drops.</small></li></ul>
+    <button class="link" id="forget">Forget token on this phone</button>
+  </div>
+</main>
+<script>
+const REPO = "Venloud/social-backfill", BRANCH = "drops", API = "https://api.github.com/repos/" + REPO;
+const MAX_BYTES = 95 * 1024 * 1024; // GitHub's contents API refuses files over 100 MB
+const $ = id => document.getElementById(id);
+let file = null, cover = null;
+
+function store(k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} }
+function load(k) { try { return localStorage.getItem(k) || ""; } catch (e) { return ""; } }
+function say(text, cls) { $("msg").textContent = text; $("msg").className = cls || ""; }
+function token() { return $("token").value.trim(); }
+function ready() { $("push").disabled = !(file && token() && $("caption").value.trim()); }
+
+async function gh(path, opts = {}) {
+  const r = await fetch(API + path, { ...opts, headers: { Authorization: "Bearer " + token(),
+    Accept: "application/vnd.github+json", ...(opts.body ? { "Content-Type": "application/json" } : {}) } });
+  if (!r.ok && r.status !== 404) throw new Error("GitHub " + r.status + ": " + ((await r.json().catch(() => ({}))).message || ""));
+  return r.status === 404 ? null : r.json();
+}
+
+// PUT a file with upload progress (fetch can't report it).
+function put(path, base64, message, onProgress) {
+  return new Promise((resolve, reject) => {
+    const x = new XMLHttpRequest();
+    x.open("PUT", API + "/contents/" + path);
+    x.setRequestHeader("Authorization", "Bearer " + token());
+    x.setRequestHeader("Accept", "application/vnd.github+json");
+    x.upload.onprogress = e => e.lengthComputable && onProgress && onProgress(e.loaded / e.total);
+    x.onload = () => x.status < 300 ? resolve() : reject(new Error("GitHub " + x.status + ": " + (JSON.parse(x.responseText || "{}").message || "")));
+    x.onerror = () => reject(new Error("Network error, check your connection"));
+    x.send(JSON.stringify({ message, content: base64, branch: BRANCH }));
+  });
+}
+
+const b64 = blob => new Promise((res, rej) => { const f = new FileReader();
+  f.onload = () => res(String(f.result).split(",")[1]); f.onerror = rej; f.readAsDataURL(blob); });
+const utf8b64 = s => btoa(unescape(encodeURIComponent(s)));
+
+async function ensureBranch() {
+  if (await gh("/branches/" + BRANCH)) return;
+  const main = await gh("/git/ref/heads/main");
+  await gh("/git/refs", { method: "POST", body: JSON.stringify({ ref: "refs/heads/" + BRANCH, sha: main.object.sha }) });
+}
+
+function grabCover(video) {
+  return new Promise(res => {
+    const seek = () => { video.currentTime = Math.min(1, (video.duration || 2) / 2); };
+    video.addEventListener("seeked", () => {
+      try {
+        const c = document.createElement("canvas");
+        c.width = video.videoWidth; c.height = video.videoHeight;
+        c.getContext("2d").drawImage(video, 0, 0);
+        c.toBlob(b => res(b), "image/jpeg", 0.9);
+      } catch (e) { res(null); }
+    }, { once: true });
+    video.readyState >= 1 ? seek() : video.addEventListener("loadedmetadata", seek, { once: true });
+    setTimeout(() => res(null), 8000);
+  });
+}
+
+$("pick").onclick = () => $("file").click();
+$("file").onchange = async () => {
+  file = $("file").files[0] || null; cover = null;
+  if (!file) return ready();
+  if (file.size > MAX_BYTES) { say("This video is " + (file.size / 1048576).toFixed(0) + " MB. The limit is 95 MB.", "err"); file = null; return ready(); }
+  const v = document.createElement("video");
+  v.src = URL.createObjectURL(file); v.muted = true; v.playsInline = true; v.controls = true; v.preload = "auto";
+  $("pick").replaceChildren(v);
+  say("");
+  ready();
+  cover = await grabCover(v);
+};
+$("token").oninput = () => { store("drop_token", token() || null); ready(); refresh(); };
+$("caption").oninput = ready;
+$("forget").onclick = () => { store("drop_token", null); $("token").value = ""; ready(); };
+
+$("push").onclick = async () => {
+  const id = new Date().toISOString().replace(/[-:]/g, "").replace("T", "-").slice(0, 15) + "-" + Math.random().toString(36).slice(2, 6);
+  const caption = $("caption").value.trim();
+  $("push").disabled = true; $("bar").style.display = "block";
+  const bar = p => $("bar").firstElementChild.style.width = Math.round(p * 100) + "%";
+  try {
+    say("Preparing…"); bar(0.02);
+    await ensureBranch();
+    say("Uploading video…");
+    await put("drops/" + id + ".mp4", await b64(file), "drop: " + id + " video", p => bar(0.02 + p * 0.9));
+    if (cover) await put("drops/" + id + ".jpg", await b64(cover), "drop: " + id + " cover");
+    // The caption file goes last: the publisher only picks up drops that have it.
+    await put("drops/" + id + ".json", utf8b64(JSON.stringify({ caption, created_at: new Date().toISOString() }, null, 2)), "drop: " + id);
+    bar(1);
+    say("Queued. It posts on the next run (every 30 min, Instagram hourly, YouTube up to 4 per day).", "ok");
+    file = null; cover = null; $("file").value = ""; $("caption").value = "";
+    $("pick").replaceChildren(Object.assign(document.createElement("span"), { textContent: "Tap to choose another video" }));
+    refresh();
+  } catch (e) {
+    say("Didn't go through: " + e.message, "err");
+  } finally {
+    setTimeout(() => { $("bar").style.display = "none"; bar(0); }, 1500);
+    ready();
+  }
+};
+
+async function refresh() {
+  if (!token()) return;
+  try {
+    const items = (await gh("/contents/drops?ref=" + BRANCH)) || [];
+    const ids = items.filter(i => i.name.endsWith(".json")).map(i => i.name.slice(0, -5)).sort().reverse().slice(0, 10);
+    $("recent").replaceChildren(...(ids.length ? ids.map(id => {
+      const li = document.createElement("li");
+      li.textContent = id.slice(0, 4) + "-" + id.slice(4, 6) + "-" + id.slice(6, 8) + " " + id.slice(9, 11) + ":" + id.slice(11, 13) + " UTC";
+      const s = document.createElement("small"); s.textContent = "drop-" + id; li.append(s);
+      return li;
+    }) : [Object.assign(document.createElement("li"), { textContent: "No drops yet." })]));
+  } catch (e) { $("recent").replaceChildren(Object.assign(document.createElement("li"), { textContent: e.message })); }
+}
+
+$("token").value = load("drop_token");
+ready(); refresh();
+</script>
+</body>
+</html>
