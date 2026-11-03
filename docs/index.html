@@ -43,7 +43,10 @@
     <label for="token">GitHub token (saved on this phone only)</label>
     <input id="token" type="password" autocomplete="off" placeholder="github_pat_…">
     <p class="hint">Fine-grained token → repository <b>Venloud/social-backfill</b> only → Contents: Read and write.</p>
+    <div style="margin-top:12px"><button id="save">Save token</button></div>
+    <div id="tokenMsg" class="hint"></div>
   </div>
+  <p class="hint" id="saved" style="display:none">Token saved on this phone. <button class="link" id="change">Change</button></p>
 
   <div class="card">
     <label>Video</label>
@@ -133,9 +136,22 @@ $("file").onchange = async () => {
   ready();
   cover = await grabCover(v);
 };
-$("token").oninput = () => { store("drop_token", token() || null); ready(); refresh(); };
+function showToken(show) { $("tokenCard").style.display = show ? "" : "none"; $("saved").style.display = show ? "none" : ""; }
+$("token").oninput = ready;
+$("save").onclick = async () => {
+  // Read-only check: confirms the token can write to this repo; uploads nothing.
+  $("tokenMsg").textContent = "Checking…";
+  try {
+    const repo = token() && await gh("");
+    if (!repo || !repo.permissions || !repo.permissions.push) throw new Error("This token can't write to Venloud/social-backfill.");
+    store("drop_token", token());
+    $("tokenMsg").textContent = "";
+    showToken(false); ready(); refresh();
+  } catch (e) { $("tokenMsg").textContent = e.message; $("tokenMsg").className = "hint err"; }
+};
+$("change").onclick = () => showToken(true);
 $("caption").oninput = ready;
-$("forget").onclick = () => { store("drop_token", null); $("token").value = ""; ready(); };
+$("forget").onclick = () => { store("drop_token", null); $("token").value = ""; showToken(true); ready(); };
 
 $("push").onclick = async () => {
   const id = new Date().toISOString().replace(/[-:]/g, "").replace("T", "-").slice(0, 15) + "-" + Math.random().toString(36).slice(2, 6);
@@ -178,6 +194,7 @@ async function refresh() {
 }
 
 $("token").value = load("drop_token");
+showToken(!token());
 ready(); refresh();
 </script>
 </body>
