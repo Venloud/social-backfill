@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>Social Drop</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Drop">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="theme-color" content="#0e0f12">
 <style>
   :root { --bg:#0e0f12; --card:#17191e; --line:#2a2d35; --text:#f2f3f5; --mute:#9aa0ab; --accent:#d81f52; --ok:#3ecf8e; --err:#ff6b6b; }
   * { box-sizing:border-box; }
@@ -31,6 +37,11 @@
   li { padding:9px 0; border-top:1px solid var(--line); font-size:14px; }
   li:first-child { border-top:0; }
   li small { color:var(--mute); display:block; }
+  .install { border-color:var(--accent); }
+  .install p { margin:0 0 12px; font-size:15px; }
+  .install .row { display:flex; gap:10px; }
+  .install .row button { flex:1; }
+  .install .link { flex:0 0 auto; }
   .hint { font-size:12px; color:var(--mute); margin-top:8px; }
 </style>
 </head>
@@ -38,6 +49,11 @@
 <main>
   <h1>Social Drop</h1>
   <p class="sub">Drop a video + caption. It posts to Instagram and YouTube next, ahead of the TikTok backfill.</p>
+
+  <div class="card install" id="installCard" style="display:none">
+    <p id="installText"></p>
+    <div class="row"><button id="installBtn" style="display:none">Install app</button><button class="link" id="installLater">Not now</button></div>
+  </div>
 
   <div class="card" id="unlockCard" style="display:none">
     <label for="pass">Passcode</label>
@@ -256,6 +272,34 @@ $("token").value = load("drop_token");
   if (!token() && lockedKey && linkPass) { $("pass").value = linkPass; $("unlock").click(); }   // share link: no typing
   ready(); refresh();
 })();
+
+// "Save as app" prompt on first visit. iPhone can't open the Add to Home Screen sheet for us, so point at Share.
+let installEvent = null;
+(() => {
+  const standalone = matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+  const ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  if (standalone || load("install_dismissed")) return;
+  const show = text => { $("installText").innerHTML = text; $("installCard").style.display = ""; };
+  if (ios) {
+    const safari = /Safari/.test(navigator.userAgent) && !/CriOS|FxiOS|EdgiOS|Instagram|FBAN|FBAV|GSA/.test(navigator.userAgent);
+    show(safari
+      ? "Save this as an app: tap <b>Share</b> <span aria-hidden=\"true\">⬆︎</span> at the bottom, then <b>Add to Home Screen</b>."
+      : "Open this link in <b>Safari</b>, then tap <b>Share</b> → <b>Add to Home Screen</b> to save it as an app.");
+  }
+  addEventListener("beforeinstallprompt", e => {
+    e.preventDefault(); installEvent = e;
+    $("installBtn").style.display = "";
+    show("Save this as an app on your phone.");
+  });
+})();
+$("installBtn").onclick = async () => {
+  if (!installEvent) return;
+  installEvent.prompt();
+  await installEvent.userChoice.catch(() => {});
+  installEvent = null; $("installCard").style.display = "none";
+};
+$("installLater").onclick = () => { store("install_dismissed", "1"); $("installCard").style.display = "none"; };
+addEventListener("appinstalled", () => { $("installCard").style.display = "none"; });
 </script>
 </body>
 </html>
