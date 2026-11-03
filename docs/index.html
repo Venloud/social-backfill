@@ -27,7 +27,13 @@
   .pick video { width:100%; max-height:360px; display:block; background:#000; }
   #file { display:none; }
   .item { display:flex; gap:12px; padding-bottom:14px; margin-bottom:14px; border-bottom:1px solid var(--line); }
-  .item video { width:96px; height:170px; object-fit:cover; border-radius:10px; background:#000; flex:none; }
+  .thumb { position:relative; width:96px; height:170px; flex:none; padding:0; border-radius:10px; overflow:hidden; background:#000; }
+  .thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+  .thumb img:not([src]) { visibility:hidden; }
+  .thumb .play { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:26px; color:#fff; text-shadow:0 1px 6px #000; }
+  #player { position:fixed; inset:0; z-index:10; background:#000; display:none; flex-direction:column; }
+  #player video { flex:1; width:100%; min-height:0; background:#000; }
+  #player button { border-radius:0; background:#17191e; padding:18px; padding-bottom:max(18px, env(safe-area-inset-bottom)); }
   .item .body { flex:1; min-width:0; display:flex; flex-direction:column; gap:6px; }
   .item textarea { flex:1; min-height:110px; }
   .item .top { display:flex; justify-content:space-between; align-items:center; font-size:13px; color:var(--mute); }
@@ -108,6 +114,7 @@
   </div>
   <p class="hint" id="version" style="text-align:center"></p>
 </main>
+<div id="player"><video controls playsinline></video><button id="closePlayer">Close</button></div>
 <script>
 const REPO = "Venloud/social-backfill", BRANCH = "drops", API = "https://api.github.com/repos/" + REPO;
 // The git blobs API answers 422 "input too large" for a 45 MB part (40 MB passed in a probe), so videos
@@ -116,7 +123,7 @@ const PART_BYTES = 25 * 1024 * 1024, MAX_BYTES = 250 * 1024 * 1024;
 const $ = id => document.getElementById(id);
 let items = [];   // {file, cover, caption (textarea), el}
 let covers = Promise.resolve();
-const VERSION = "2026-11-03.4";
+const VERSION = "2026-11-03.5";
 
 $("version").textContent = "Version " + VERSION;
 // GitHub Pages lets phones cache this page for 10 minutes; if a newer version is live, reload into it once.
@@ -221,23 +228,36 @@ function grabCover(url) {
   });
 }
 
+// Full-screen player, started inside the tap so iPhone allows playback with sound.
+function player(url) {
+  const v = $("player").querySelector("video");
+  v.src = url; $("player").style.display = "flex";
+  v.play().catch(() => {});
+}
+$("closePlayer").onclick = () => {
+  const v = $("player").querySelector("video");
+  v.pause(); v.removeAttribute("src"); v.load(); $("player").style.display = "none";
+};
+
 $("pick").onclick = () => $("file").click();
 $("file").onchange = () => {
   const skipped = [];
   for (const file of $("file").files) {
     if (file.size > MAX_BYTES) { skipped.push(file.name + " (" + (file.size / 1048576).toFixed(0) + " MB)"); continue; }
     const el = document.createElement("div"); el.className = "item";
-    el.innerHTML = '<video muted playsinline preload="auto"></video><div class="body">' +
+    el.innerHTML = '<button class="thumb" aria-label="Play video"><img alt=""><span class="play" aria-hidden="true">▶</span></button><div class="body">' +
       '<div class="top"><span class="num"></span><button class="link">Remove</button></div>' +
       '<textarea placeholder="Caption with #hashtags"></textarea></div>';
     // "#t=0.1" makes iPhone Safari draw the first frame instead of a black box; tap to play.
     const url = URL.createObjectURL(file);
-    const v = el.querySelector("video"); v.src = url + "#t=0.1"; v.controls = true;
+    // Tap the thumbnail to watch it full screen before writing its caption.
+    const img = el.querySelector("img");
+    el.querySelector(".thumb").onclick = () => player(url);
     const it = { file, cover: null, caption: el.querySelector("textarea"), el };
     it.caption.oninput = ready;
     el.querySelector(".link").onclick = () => { items = items.filter(x => x !== it); el.remove(); ready(); };
     // One cover at a time so several picked videos don't all decode at once.
-    covers = covers.then(() => grabCover(url)).then(b => { it.cover = b; if (b) v.poster = URL.createObjectURL(b); });
+    covers = covers.then(() => grabCover(url)).then(b => { it.cover = b; if (b) img.src = URL.createObjectURL(b); });
     items.push(it); $("list").append(el);
   }
   $("file").value = "";
