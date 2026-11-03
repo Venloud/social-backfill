@@ -43,6 +43,13 @@ jobs:
             mkdir -p .state/state
             echo "State branch: created (first run)"
           fi
+      - name: Check out phone drops (priority lane)
+        run: |
+          if git fetch -q origin drops 2>/dev/null; then
+            git worktree add -q --detach .drops origin/drops
+          else
+            echo "No drops branch yet; TikTok backfill only."
+          fi
       - name: Refresh primary TikTok token for scheduled discovery
         env:
           TIKTOK_ACCOUNT: primary

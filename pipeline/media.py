@@ -129,7 +129,11 @@ def acquire(entry: dict, force: bool = False) -> str:
     media["attempts"] = int(media.get("attempts") or 0) + 1
     media["status"] = "downloading"
     try:
-        path = download(entry["source"].get("url"), vid)
+        if entry["source"].get("platform") == "drop":
+            from pipeline import drops
+            path = drops.copy_media(entry, path)
+        else:
+            path = download(entry["source"].get("url"), vid)
         media["downloaded_at"] = now()
         media["info"] = probe(path)
     except Exception as e:  # noqa: BLE001 - recorded in the manifest, retryable

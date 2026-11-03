@@ -20,7 +20,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from pipeline import captions, manifest as mf, media
+from pipeline import captions, drops, manifest as mf, media
 from pipeline.state_store import StatePushError, StateStore
 
 DESTS = ("youtube", "instagram")
@@ -66,6 +66,7 @@ def discover_readonly(m: dict) -> None:
     stop discovery or posting from the other source.
     """
     from pipeline import tiktok_auth, tiktok_discovery
+    log(f"Phone drops: {drops.import_drops(m)} new")
     old_ids = set(m.get("videos", {}))
     for account, token_env in (("primary", "TIKTOK_ACCESS_TOKEN"),
                                ("secondary", "TIKTOK_ACCESS_TOKEN_2")):
@@ -101,7 +102,10 @@ def _day(iso: str | None) -> str | None:
 
 
 def _fresh(entry: dict, day: str) -> bool:
-    """Newly discovered posts take priority for 24 hours; after that they join normal backfill."""
+    """Newly discovered posts take priority for 24 hours; after that they join normal backfill.
+    Phone drops always stay in the priority lane until posted."""
+    if drops.is_drop(entry):
+        return True
     source = entry.get("source", {})
     if not source.get("fresh_priority"):
         return False
@@ -158,6 +162,8 @@ def pick_jobs(m: dict, daily_limit: int | None = None) -> dict[str, tuple[str, d
         if last_source in ("primary", "secondary"):
             fresh = sorted(fresh, key=lambda item: item[1].get("source", {}).get("account", "primary") == last_source)
             historical = sorted(historical, key=lambda item: item[1].get("source", {}).get("account", "primary") == last_source)
+        # Phone drops lead the queue, oldest drop first.
+        fresh = sorted(fresh, key=lambda item: not drops.is_drop(item[1]))
         for vid, entry in fresh + historical:
             d = dest(entry, name)
             if d["status"] == "published":
@@ -195,12 +201,16 @@ def post_youtube(vid: str, entry: dict, video: Path) -> dict:
     title, description, tags = captions.youtube_text(entry["source"], vid)
     log(f"YouTube title: {title}")
     from pipeline.social.covers import tiktok_cover
-    try:
-        cover = tiktok_cover(entry, vid)
-        log(f"TikTok original cover downloaded: {cover.name}")
-    except Exception as exc:
-        log(f"WARNING TikTok cover unavailable for {vid}: {media.sanitize(exc)}")
-        cover = None
+    if drops.is_drop(entry):
+        cover = drops.cover_file(entry)
+        log(f"Drop cover: {cover.name if cover else 'none (YouTube picks a frame)'}")
+    else:
+        try:
+            cover = tiktok_cover(entry, vid)
+            log(f"TikTok original cover downloaded: {cover.name}")
+        except Exception as exc:
+            log(f"WARNING TikTok cover unavailable for {vid}: {media.sanitize(exc)}")
+            cover = None
     r = youtube.youtube_upload(video, title, description, tags, privacy="public", cover_path=cover)
     if r.get("privacy") != "public":
         log(f"WARNING: YouTube reports privacy '{r.get('privacy')}' (an unverified Google Cloud project "
@@ -211,12 +221,20 @@ def post_youtube(vid: str, entry: dict, video: Path) -> dict:
 def post_instagram(vid: str, entry: dict, video: Path, info: dict) -> dict:
     from pipeline.social import meta
     chk = meta.instagram_check()
-    from pipeline.social.covers import tiktok_cover
-    cover_path = tiktok_cover(entry, vid)
+    from pipeline.social.covers import instagram_cover_url, tiktok_cover
     cover_url = (entry.get("source", {}).get("metadata") or {}).get("cover_image_url")
-    if not isinstance(cover_url, str) or not cover_url.startswith("https://"):
-        raise meta.Fail(f"No original TikTok cover URL for {vid}; refusing to reuse a generic cover")
-    log(f"Instagram: verified matching TikTok cover saved as {cover_path.name}")
+    if drops.is_drop(entry):
+        # The page uploads a frame of the video as the cover; fall back to the default cover.
+        cover_info = {"status": "requested", "asset": entry["source"].get("cover") or "assets/default-cover.jpg",
+                      "source": "drop_frame" if cover_url else "default"}
+        cover_url = cover_url or instagram_cover_url()
+        log(f"Instagram: drop cover {cover_info['source']}")
+    else:
+        cover_path = tiktok_cover(entry, vid)
+        if not isinstance(cover_url, str) or not cover_url.startswith("https://"):
+            raise meta.Fail(f"No original TikTok cover URL for {vid}; refusing to reuse a generic cover")
+        log(f"Instagram: verified matching TikTok cover saved as {cover_path.name}")
+        cover_info = {"status": "requested", "asset": str(cover_path.relative_to(mf.ROOT)), "source": "tiktok_original"}
     caption = captions.instagram_text(entry["source"])
     codec = info.get("video_codec")
     attempts = [(f"{codec} (original)", video)]
@@ -236,7 +254,7 @@ def post_instagram(vid: str, entry: dict, video: Path, info: dict) -> dict:
         raise meta.Fail("Instagram could not process the video in any format")
     r = meta.instagram_publish_container(cid, chk)       # PublishAttempted from here on
     return {"remote_id": r["id"], "url": r["url"], "format": fmt, "product_type": r.get("product_type"),
-            "cover": {"status": "requested", "asset": str(cover_path.relative_to(mf.ROOT)), "source": "tiktok_original"}}
+            "cover": cover_info}
 
 
 def main(argv=None) -> int:

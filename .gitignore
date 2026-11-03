@@ -28,3 +28,6 @@ connection_check.json
 
 # State branch worktree (Backfill Publish)
 .state/
+
+# Phone drops branch worktree
+.drops/
