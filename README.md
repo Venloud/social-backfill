@@ -1,4 +1,4 @@
-# Social Backfill
+﻿# Social Backfill
 
 GitHub Actions based cross posting tool for backfilling existing short videos and later publishing new videos to supported social platforms.
 
@@ -21,10 +21,10 @@ The Instagram Login setup supports Creator and Business accounts without linking
 
 The manual workflow is [Publish Instagram Reel](.github/workflows/publish-instagram-reel.yml). It needs these GitHub Actions repository secrets:
 
-- `INSTAGRAM_ACCESS_TOKEN` — Instagram User access token granted `instagram_business_basic` and `instagram_business_content_publish`
-- `INSTAGRAM_USER_ID` — the professional Instagram account ID returned for the authorized account
+- `INSTAGRAM_ACCESS_TOKEN` â€” Instagram User access token granted `instagram_business_basic` and `instagram_business_content_publish`
+- `INSTAGRAM_USER_ID` â€” the professional Instagram account ID returned for the authorized account
 
-Keep the actual values in **Settings → Secrets and variables → Actions**. The tracked `secretapi.env` file is a names-only template.
+Keep the actual values in **Settings â†’ Secrets and variables â†’ Actions**. The tracked `secretapi.env` file is a names-only template.
 
 To publish, open the repository's **Actions** tab, choose **Publish Instagram Reel**, and select **Run workflow**. Enter a publicly accessible HTTPS video URL and caption, then choose whether the Reel should also appear in the feed. Each run publishes immediately and publishes a new Reel; rerunning a successful job can create a duplicate.
 
@@ -39,7 +39,7 @@ Required repository secrets: `TIKTOK_CLIENT_KEY`, `TIKTOK_CLIENT_SECRET`, and `G
 1. Open the authorize link (it must request `video.list` and use the redirect URI above):
    `https://www.tiktok.com/v2/auth/authorize/?client_key=sbawsigziq7u79m4vi&scope=user.info.basic%2Cuser.info.profile%2Cvideo.list&response_type=code&redirect_uri=https%3A%2F%2Fvenloud.github.io%2Fnightfiles%2Ftiktok-callback.html&state=social-backfill`
 2. Approve, copy the URL of the page you land on.
-3. Within a few minutes: Actions → **Connect TikTok** → Run workflow → paste the URL.
+3. Within a few minutes: Actions â†’ **Connect TikTok** â†’ Run workflow â†’ paste the URL.
 
 The log shows only PASS/FAIL, the account, the granted scopes, the token lifetimes and the video ids. It fails if `video.list` is missing or if `GH_PAT` cannot write secrets (checked before the code is used).
 
@@ -52,7 +52,7 @@ A second TikTok source can be authorized independently without needing its passw
 
 1. Open the existing [Night Files connection page](https://venloud.github.io/nightfiles/) on the second owner's device. They sign into their own TikTok account and approve TikTok's authorization prompt.
 2. The owner copies the **full callback URL** on the Night Files confirmation page and privately sends it to the repository operator. It contains a short-lived, single-use OAuth code, so treat it as sensitive and use it promptly.
-3. After the code changes are merged into main, open **Actions → Connect TikTok → Run workflow**. Select **secondary**, paste the callback URL, and run it.
+3. After the code changes are merged into main, open **Actions â†’ Connect TikTok â†’ Run workflow**. Select **secondary**, paste the callback URL, and run it.
 4. The workflow checks that GH_PAT can access the repository's secrets, exchanges the OAuth code, verifies `video.list`, and saves `TIKTOK_REFRESH_TOKEN_2`, `TIKTOK_ACCESS_TOKEN_2`, and `TIKTOK_OPEN_ID_2`. No existing primary credential is replaced.
 5. Run **Platform Connection Check** to verify both accounts, or select **secondary** in **TikTok Backfill Test** to discover and download a single video without publishing.
 
@@ -74,10 +74,10 @@ detected as duplicate content.
 primary deliberately replaces the original credentials. First merge these changes,
 then get a fresh callback code. Publishing remains disabled on the feature branch.
 
-## TikTok backfill: discover → checkpoint → download → validate
+## TikTok backfill: discover â†’ checkpoint â†’ download â†’ validate
 
 ```
-TikTok API video.list  →  state/manifest.json  →  yt-dlp (one post URL)  →  media/<id>.mp4  →  ffprobe
+TikTok API video.list  â†’  state/manifest.json  â†’  yt-dlp (one post URL)  â†’  media/<id>.mp4  â†’  ffprobe
    (DISCOVERY)              (CHECKPOINT)            (MEDIA ACQUISITION)                     (VALIDATION)
 ```
 
@@ -161,4 +161,4 @@ the oldest that is not fully posted, as a **public** YouTube Short (not made for
 
 Open **https://venloud.github.io/social-backfill/** on your phone, paste a fine-grained GitHub token once (this repository only, **Contents: Read and write**; it is stored only in that phone's browser), pick a video, write the caption and press **Push**.
 
-The page writes `drops/<id>.mp4`, a cover frame `drops/<id>.jpg` and the caption `drops/<id>.json` to the `drops` branch. Every Backfill Publish run checks that branch out at `.drops`, adds new drops to the manifest as `drop-<id>`, and posts them to YouTube and Instagram before any TikTok item. Normal pacing, the 4-per-day YouTube cap and write-ahead duplicate protection still apply. Videos must be under 95 MB.
+The page writes `drops/<id>.mp4`, a cover frame `drops/<id>.jpg` and the caption `drops/<id>.json` to the `drops` branch. Every Backfill Publish run checks that branch out at `.drops`, adds new drops to the manifest as `drop-<id>`, and posts them to YouTube and Instagram before any TikTok item. Normal pacing, the 4-per-day YouTube cap and write-ahead duplicate protection still apply. Videos must be under 70 MB.
