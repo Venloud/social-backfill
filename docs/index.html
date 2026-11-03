@@ -70,7 +70,7 @@
 <body>
 <main>
   <h1>Social Drop</h1>
-  <p class="sub">Upload videos + captions, check them, then tap Publish now. They post to Instagram and YouTube ahead of the TikTok backfill.</p>
+  <p class="sub">Drop videos + captions and push. They post to Instagram and YouTube ahead of the TikTok backfill. Changed your mind? Tap Cancel before it goes live.</p>
 
   <div class="card install" id="installCard" style="display:none">
     <p id="installText"></p>
@@ -125,7 +125,7 @@ const PART_BYTES = 25 * 1024 * 1024, MAX_BYTES = 250 * 1024 * 1024;
 const $ = id => document.getElementById(id);
 let items = [];   // {file, cover, caption (textarea), el}
 let covers = Promise.resolve();
-const VERSION = "2026-11-03.7";
+const VERSION = "2026-11-03.8";
 
 $("version").textContent = "Version " + VERSION;
 // GitHub Pages lets phones cache this page for 10 minutes; if a newer version is live, reload into it once.
@@ -185,13 +185,13 @@ async function blob(file, onProgress) {
 }
 
 // One commit on the drops branch for the whole batch; retry if the branch moved meanwhile.
-async function commitDrops(tree, count) {
+async function commitDrops(tree, count, message) {
   for (let attempt = 0; attempt < 3; attempt++) {
     const head = (await gh("/git/ref/heads/" + BRANCH)).object.sha;
     const base = (await gh("/git/commits/" + head)).tree.sha;
     const t = await gh("/git/trees", { method: "POST", body: JSON.stringify({ base_tree: base, tree }) });
     const c = await gh("/git/commits", { method: "POST", body: JSON.stringify({
-      message: "drop: " + count + " video" + (count > 1 ? "s" : ""), tree: t.sha, parents: [head] }) });
+      message: message || "drop: " + count + " video" + (count > 1 ? "s" : ""), tree: t.sha, parents: [head] }) });
     try { return await gh("/git/refs/heads/" + BRANCH, { method: "PATCH", body: JSON.stringify({ sha: c.sha }) }); }
     catch (e) { if (attempt === 2) throw e; }
   }
@@ -358,7 +358,7 @@ $("push").onclick = async () => {
         if (it.cover) entries.push({ path: "drops/" + id + ".jpg", mode: "100644", type: "blob", sha: await blob(it.cover) });
         entries.push({ path: "drops/" + id + ".json", mode: "100644", type: "blob",
           content: JSON.stringify({ caption: it.caption.value.trim(), created_at: new Date(start + n).toISOString(),
-            ...(parts > 1 ? { parts } : {}), hold: true }, null, 2) });
+            ...(parts > 1 ? { parts } : {}) }, null, 2) });
         local[id] = URL.createObjectURL(it.file);   // play from the phone's copy, no re-download
         say("Uploaded " + (++finished) + " of " + total + "…");
       }
@@ -368,7 +368,7 @@ $("push").onclick = async () => {
     say("Saving…");
     await commitDrops(entries, total);
     batch.forEach(it => it.el.remove()); items = items.filter(it => !batch.includes(it)); bar(1);
-    say((total > 1 ? "All " + total + " uploaded" : "Uploaded") + ". Nothing posts yet: tap Publish now under Recent drops when you're ready.", "ok");
+    say((total > 1 ? "All " + total + " uploaded" : "Uploaded") + ". Publishing has started; see the times under Recent drops. Tap Cancel there to stop one.", "ok");
     refresh();
   } catch (e) {
     say("Didn't go through: " + e.message + " Nothing was queued. Press Push to retry.", "err");
@@ -399,7 +399,12 @@ async function estimate(rows) {
   const now = Date.now(), videos = (m && m.videos) || {};
   const queue = rows.filter(r => r.meta && !r.meta.hold)
     .sort((a, b) => String(a.meta.created_at).localeCompare(String(b.meta.created_at)));
-  queue.forEach((r, i) => { r.pos = i; });
+  const live = r => Object.keys(PLATFORMS).every(p => {
+    const d = ((videos["drop-" + r.id] || {}).destinations || {})[p];
+    return d && ["published", "cancelled"].includes(d.status);
+  });
+  queue.forEach(r => { r.done = live(r); });
+  queue.filter(r => !r.done).forEach((r, i) => { r.pos = i; });
   for (const [p, [, gap]] of Object.entries(PLATFORMS)) {
     const pace = ((m && m.publish_pacing) || {})[p] || {};
     let at = Math.max(now, (pace.next_attempt_at || 0) * 1000, (pace.cooldown_until || 0) * 1000);
@@ -453,8 +458,10 @@ async function refresh() {
         meta = row.meta || meta;
         publish.style.display = meta && meta.hold ? "" : "none";
         const place = !row.pos ? "next in line" : (row.pos + 1) + (["", "", "nd", "rd"][row.pos + 1] || "th") + " in line";
-        status.textContent = !meta ? "" : meta.hold ? "Waiting — not posted until you publish" : "Publishing: " + place;
+        status.textContent = !meta ? "" : meta.hold ? "Waiting — not posted until you publish"
+          : row.done ? "Published ✓" : "Publishing: " + place;
         status.className = meta && !meta.hold ? "ok" : "";
+        cancel.style.display = row.done ? "none" : "";
         etaBox.replaceChildren(...(meta && !meta.hold ? Object.entries(PLATFORMS).map(([p, [label]]) => {
           const e = row.eta[p], line = document.createElement("small");
           if (!e) { line.textContent = label + ": checking…"; return line; }
@@ -477,10 +484,13 @@ async function refresh() {
         publish.disabled = false; publish.textContent = "Publish now";
       };
       cancel.onclick = async () => {
-        if (!confirm("Cancel this video? It won't be posted anywhere it hasn't already gone live.")) return;
+        if (!confirm("Cancel and delete this video? It won't be posted anywhere it hasn't already gone live.")) return;
         cancel.disabled = true; cancel.textContent = "Cancelling…";
         try {
-          await gh(path, { method: "DELETE", body: JSON.stringify({ message: "drop: cancel " + id, sha, branch: BRANCH }) });
+          // One commit removes the caption, video (or its parts) and cover; sha null deletes a path.
+          const gone = [...names].filter(f => f.startsWith(id + "."))
+            .map(f => ({ path: "drops/" + f, mode: "100644", type: "blob", sha: null }));
+          await commitDrops(gone, 0, "drop: cancel " + id);
           li.remove();
         } catch (e) { cancel.disabled = false; cancel.textContent = "Cancel"; alert("Couldn't cancel: " + e.message); }
       };
