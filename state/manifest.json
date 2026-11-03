@@ -45,7 +45,7 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-11-03T01:31:13Z",
+  "updated_at": "2026-11-03T01:31:15Z",
   "videos": {
     "7693026624211569934": {
       "destinations": {
@@ -14586,7 +14586,8 @@
           "last_error": null,
           "published_at": null,
           "remote_id": null,
-          "status": "pending"
+          "status": "pending",
+          "url": null
         },
         "snapchat": {
           "attempts": 0,
@@ -14600,7 +14601,8 @@
           "last_error": null,
           "published_at": null,
           "remote_id": null,
-          "status": "pending"
+          "status": "pending",
+          "url": null
         }
       },
       "media": {
@@ -14643,7 +14645,8 @@
           "last_error": null,
           "published_at": null,
           "remote_id": null,
-          "status": "pending"
+          "status": "pending",
+          "url": null
         },
         "snapchat": {
           "attempts": 0,
@@ -14657,7 +14660,8 @@
           "last_error": null,
           "published_at": null,
           "remote_id": null,
-          "status": "pending"
+          "status": "pending",
+          "url": null
         }
       },
       "media": {
@@ -14700,7 +14704,8 @@
           "last_error": null,
           "published_at": null,
           "remote_id": null,
-          "status": "pending"
+          "status": "pending",
+          "url": null
         },
         "snapchat": {
           "attempts": 0,
@@ -14714,17 +14719,27 @@
           "last_error": null,
           "published_at": null,
           "remote_id": null,
-          "status": "pending"
+          "status": "pending",
+          "url": null
         }
       },
       "media": {
-        "attempts": 0,
-        "downloaded_at": null,
-        "info": null,
+        "attempts": 1,
+        "downloaded_at": "2026-11-03T01:31:14Z",
+        "info": {
+          "audio": true,
+          "audio_codec": "aac",
+          "container": "mov,mp4,m4a,3gp,3g2,mj2",
+          "duration": 90.65,
+          "height": 832,
+          "size_bytes": 11514085,
+          "video_codec": "h264",
+          "width": 464
+        },
         "last_error": null,
-        "path": null,
-        "status": "pending",
-        "validated": false
+        "path": "media/drop-20261103-013010-00bhn.mp4",
+        "status": "ready",
+        "validated": true
       },
       "source": {
         "account": "drop",
