@@ -103,6 +103,7 @@
     <ul id="recent"><li><small>Add your token to see drops.</small></li></ul>
     <button class="link" id="change">Owner setup</button>
   </div>
+  <p class="hint" id="version" style="text-align:center"></p>
 </main>
 <script>
 const REPO = "Venloud/social-backfill", BRANCH = "drops", API = "https://api.github.com/repos/" + REPO;
@@ -111,6 +112,21 @@ const REPO = "Venloud/social-backfill", BRANCH = "drops", API = "https://api.git
 const PART_BYTES = 25 * 1024 * 1024, MAX_BYTES = 250 * 1024 * 1024;
 const $ = id => document.getElementById(id);
 let items = [];   // {file, cover, caption (textarea), el}
+let covers = Promise.resolve();
+const VERSION = "2026-11-03.2";
+
+$("version").textContent = "Version " + VERSION;
+// GitHub Pages lets phones cache this page for 10 minutes; if a newer version is live, reload into it once.
+(async () => {
+  try {
+    const live = await (await fetch(location.pathname + "?v=" + Date.now(), { cache: "no-store" })).text();
+    const m = live.match(/const VERSION = "([^"]+)"/);
+    if (m && m[1] !== VERSION && sessionStorage.getItem("reloaded_for") !== m[1]) {
+      sessionStorage.setItem("reloaded_for", m[1]);
+      location.replace(location.pathname + "?r=" + Date.now() + location.hash);
+    }
+  } catch (e) {}
+})();
 
 function store(k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} }
 function load(k) { try { return localStorage.getItem(k) || ""; } catch (e) { return ""; } }
@@ -212,11 +228,13 @@ $("file").onchange = () => {
       '<div class="top"><span class="num"></span><button class="link">Remove</button></div>' +
       '<textarea placeholder="Caption with #hashtags"></textarea></div>';
     // "#t=0.1" makes iPhone Safari draw the first frame instead of a black box; tap to play.
-    const v = el.querySelector("video"); v.src = URL.createObjectURL(file) + "#t=0.1"; v.controls = true;
+    const url = URL.createObjectURL(file);
+    const v = el.querySelector("video"); v.src = url + "#t=0.1"; v.controls = true;
     const it = { file, cover: null, caption: el.querySelector("textarea"), el };
     it.caption.oninput = ready;
     el.querySelector(".link").onclick = () => { items = items.filter(x => x !== it); el.remove(); ready(); };
-    grabCover(v).then(b => { it.cover = b; if (b) v.poster = URL.createObjectURL(b); });
+    // One cover at a time so several picked videos don't all decode at once.
+    covers = covers.then(() => grabCover(url)).then(b => { it.cover = b; if (b) v.poster = URL.createObjectURL(b); });
     items.push(it); $("list").append(el);
   }
   $("file").value = "";
