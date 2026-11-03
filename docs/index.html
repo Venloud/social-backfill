@@ -106,9 +106,9 @@
 </main>
 <script>
 const REPO = "Venloud/social-backfill", BRANCH = "drops", API = "https://api.github.com/repos/" + REPO;
-// GitHub drops requests over ~100 MB and base64 adds a third, so videos over 45 MB upload as
-// ordered parts that the publisher rejoins. 250 MB stays under Instagram's 300 MB Reel limit.
-const PART_BYTES = 45 * 1024 * 1024, MAX_BYTES = 250 * 1024 * 1024;
+// The git blobs API answers 422 "input too large" for a 45 MB part (40 MB passed in a probe), so videos
+// over 25 MB upload as ordered parts that the publisher rejoins. 250 MB stays under Instagram's 300 MB limit.
+const PART_BYTES = 25 * 1024 * 1024, MAX_BYTES = 250 * 1024 * 1024;
 const $ = id => document.getElementById(id);
 let items = [];   // {file, cover, caption (textarea), el}
 
