@@ -272,6 +272,7 @@ $("push").onclick = async () => {
       if (it.cover) await put("drops/" + id + ".jpg", await b64(it.cover), "drop: " + id + " cover");
       // The caption file goes last: the publisher only picks up drops that have it.
       await put("drops/" + id + ".json", utf8b64(JSON.stringify({ caption: it.caption.value.trim(), created_at: new Date().toISOString() }, null, 2)), "drop: " + id);
+      local[id] = URL.createObjectURL(it.file);   // play from the phone's copy, no re-download
       items.shift(); it.el.remove(); done++; bar(done / total);
     }
     say((total > 1 ? "All " + total + " queued" : "Queued") + ". They post one at a time (Instagram hourly, YouTube up to 4 per day).", "ok");
@@ -285,6 +286,13 @@ $("push").onclick = async () => {
   }
 };
 
+// GitHub serves .mp4 as octet-stream, so playback needs a typed blob. Cache one download per drop.
+const local = {}, fetching = {};
+function videoUrl(id, raw) {
+  return fetching[id] || (fetching[id] = fetch(raw + id + ".mp4").then(r => r.arrayBuffer())
+    .then(buf => local[id] = URL.createObjectURL(new Blob([buf], { type: "video/mp4" }))));
+}
+
 async function refresh() {
   if (!token()) return;
   try {
@@ -292,20 +300,20 @@ async function refresh() {
     const ids = items.filter(i => i.name.endsWith(".json")).map(i => i.name.slice(0, -5)).sort().reverse().slice(0, 10);
     const names = new Set(items.map(i => i.name));
     const raw = "https://raw.githubusercontent.com/" + REPO + "/" + BRANCH + "/drops/";
-    $("recent").replaceChildren(...(ids.length ? ids.map(id => {
+    $("recent").replaceChildren(...(ids.length ? ids.map((id, n) => {
       const li = document.createElement("li"); li.className = "drop";
       // Tap the thumbnail to play. GitHub serves .mp4 as octet-stream, so load it as a typed blob first.
       const v = document.createElement("video");
       v.preload = "none"; v.playsInline = true;
       if (names.has(id + ".jpg")) v.poster = raw + id + ".jpg";
+      // Instant: a video pushed from this phone plays from its local copy; the newest few prefetch.
+      if (local[id]) { v.src = local[id]; v.controls = true; }
+      else if (n < 3) videoUrl(id, raw).then(u => { if (!v.src) { v.src = u; v.controls = true; } }).catch(() => {});
       v.onclick = async () => {
         if (v.src) return;
         v.style.opacity = ".5";
-        try {
-          const buf = await (await fetch(raw + id + ".mp4")).arrayBuffer();
-          v.src = URL.createObjectURL(new Blob([buf], { type: "video/mp4" }));
-          v.controls = true; v.play().catch(() => {});
-        } catch (e) {} finally { v.style.opacity = ""; }
+        try { v.src = await videoUrl(id, raw); v.controls = true; v.play().catch(() => {}); }
+        catch (e) {} finally { v.style.opacity = ""; }
       };
       const body = document.createElement("div");
       const cap = document.createElement("span"); cap.className = "cap"; cap.textContent = "…";
