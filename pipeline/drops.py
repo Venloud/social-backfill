@@ -2,7 +2,8 @@
 
 Branch layout (written by the page, read-only here):
     drops/<id>.mp4   the video
-    drops/<id>.json  {"caption": "...", "created_at": "...", "parts": N (only for split videos)}
+    drops/<id>.json  {"caption": "...", "created_at": "...", "parts": N (only for split videos),
+                      "hold": true until the owner taps Publish now}
     drops/<id>.part000.mp4 ...  a video too big for one GitHub request, split in order; rejoined here
     drops/<id>.jpg   optional cover frame grabbed by the page
 
@@ -54,6 +55,8 @@ def import_drops(m: dict, root: Path | None = None) -> int:
         try:
             data = json.loads(meta.read_text(encoding="utf-8"))
         except (OSError, ValueError):
+            continue
+        if data.get("hold"):   # pushed but not released: waits for the page's Publish now button
             continue
         parts = data.get("parts")
         if isinstance(parts, int) and not isinstance(parts, bool) and 0 < parts <= 100:

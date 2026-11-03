@@ -111,6 +111,15 @@ class DropTests(unittest.TestCase):
         drops.import_drops(m, self.root / "not-checked-out")
         self.assertEqual(m["videos"]["drop-20261102-a"]["destinations"]["instagram"]["status"], "pending")
 
+    def test_held_drop_waits_until_released(self):
+        write_drop(self.root, "20261102-a")
+        meta = self.root / "drops" / "20261102-a.json"
+        meta.write_text(json.dumps({"caption": "x", "hold": True}))
+        m = {"videos": {}}
+        self.assertEqual(drops.import_drops(m, self.root), 0)
+        meta.write_text(json.dumps({"caption": "x", "hold": False}))     # Publish now
+        self.assertEqual(drops.import_drops(m, self.root), 1)
+
     def test_drops_bypass_historical_daily_quota(self):
         write_drop(self.root, "20261102-a")
         m = {"videos": {"old": tiktok("2020-01-01T00:00:00Z")}}
