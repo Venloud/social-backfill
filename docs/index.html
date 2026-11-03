@@ -50,12 +50,16 @@
     <label for="token">Owner setup: GitHub token</label>
     <input id="token" type="password" autocomplete="off" placeholder="github_pat_…">
     <p class="hint">Fine-grained token → repository <b>Venloud/social-backfill</b> only → Contents: Read and write.</p>
-    <label for="newPass" style="margin-top:12px">Passcode to share (8+ characters)</label>
-    <input id="newPass" type="password" autocomplete="new-password" placeholder="Passcode">
     <div style="margin-top:12px"><button id="save">Submit</button></div>
     <div id="tokenMsg" class="hint"></div>
   </div>
-  <p class="hint" id="saved" style="display:none">Unlocked on this phone. <button class="link" id="change">Owner setup</button></p>
+
+  <div class="card" id="shareCard" style="display:none">
+    <label for="shareLink">Send this link. Opening it is all they need.</label>
+    <textarea id="shareLink" readonly style="min-height:90px;font-size:13px"></textarea>
+    <div style="margin-top:12px"><button id="copy">Copy link</button></div>
+  </div>
+  <p id="saved" style="display:none"></p>
 
   <div class="card">
     <label>Video</label>
@@ -71,7 +75,7 @@
   <div class="card">
     <label>Recent drops</label>
     <ul id="recent"><li><small>Add your token to see drops.</small></li></ul>
-    <button class="link" id="forget">Forget token on this phone</button>
+    <button class="link" id="change">Owner setup</button>
   </div>
 </main>
 <script>
@@ -179,8 +183,8 @@ $("unlock").onclick = async () => {
 $("save").onclick = async () => {
   $("tokenMsg").className = "hint"; $("tokenMsg").textContent = "Checking…";
   try {
-    const pass = $("newPass").value;
-    if (pass.length < 8) throw new Error("Use a passcode of at least 8 characters.");
+    // A long random passcode goes in the share link's #fragment (never sent to any server).
+    const pass = toB64(crypto.getRandomValues(new Uint8Array(18))).replace(/\+/g, "-").replace(/\//g, "_");
     const repo = token() && await gh("");
     if (!repo || !repo.permissions || !repo.permissions.push) throw new Error("This token can't write to Venloud/social-backfill.");
     const salt = crypto.getRandomValues(new Uint8Array(16)), iv = crypto.getRandomValues(new Uint8Array(12));
@@ -190,14 +194,19 @@ $("save").onclick = async () => {
     await gh("/contents/" + KEY_PATH, { method: "PUT", body: JSON.stringify({ message: "Drop page: update locked key",
       content: utf8b64(JSON.stringify(lockedKey)), branch: "main", ...(existing ? { sha: existing.sha } : {}) }) });
     store("drop_token", token());
-    $("newPass").value = ""; $("tokenMsg").textContent = "";
+    $("tokenMsg").textContent = "";
     view("ready"); ready(); refresh();
-    say("Saved. Share the link and passcode; the page updates within a couple of minutes.", "ok");
+    $("shareLink").value = location.origin + location.pathname + "#p=" + pass;
+    $("shareCard").style.display = "";
+    say("Saved. The link works after GitHub updates the page (about 2 minutes).", "ok");
   } catch (e) { fail("tokenMsg", e); }
+};
+$("copy").onclick = async () => {
+  try { await navigator.clipboard.writeText($("shareLink").value); $("copy").textContent = "Copied"; }
+  catch (e) { $("shareLink").select(); }
 };
 $("change").onclick = () => view("setup");
 $("caption").oninput = ready;
-$("forget").onclick = () => { store("drop_token", null); $("token").value = ""; view(lockedKey ? "unlock" : "setup"); ready(); };
 
 $("push").onclick = async () => {
   const id = new Date().toISOString().replace(/[-:]/g, "").replace("T", "-").slice(0, 15) + "-" + Math.random().toString(36).slice(2, 6);
@@ -242,7 +251,9 @@ async function refresh() {
 $("token").value = load("drop_token");
 (async () => {
   try { const r = await fetch("key.json", { cache: "no-store" }); if (r.ok) lockedKey = await r.json(); } catch (e) {}
+  const linkPass = new URLSearchParams(location.hash.slice(1)).get("p");
   view(token() ? "ready" : lockedKey ? "unlock" : "setup");
+  if (!token() && lockedKey && linkPass) { $("pass").value = linkPass; $("unlock").click(); }   // share link: no typing
   ready(); refresh();
 })();
 </script>
