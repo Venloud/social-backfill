@@ -311,10 +311,11 @@ let installEvent = null;
   if (standalone || load("install_dismissed")) return;
   const show = text => { $("installText").innerHTML = text; $("installCard").style.display = ""; };
   if (ios) {
-    const safari = /Safari/.test(navigator.userAgent) && !/CriOS|FxiOS|EdgiOS|Instagram|FBAN|FBAV|GSA/.test(navigator.userAgent);
+    const shareIcon = '<svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" style="vertical-align:-4px" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M8 10H6.5A1.5 1.5 0 0 0 5 11.5v8A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5v-8A1.5 1.5 0 0 0 17.5 10H16"/></svg>';
+    const safari =/Safari/.test(navigator.userAgent) && !/CriOS|FxiOS|EdgiOS|Instagram|FBAN|FBAV|GSA/.test(navigator.userAgent);
     show(safari
-      ? "Save this as an app: tap <b>Share</b> <span aria-hidden=\"true\">⬆︎</span> at the bottom → <b>View More</b> → <b>Add to Home Screen</b> <span aria-hidden=\"true\">⊕</span>."
-      : "Open this link in <b>Safari</b>, then tap <b>Share</b> → <b>View More</b> → <b>Add to Home Screen</b> <span aria-hidden=\"true\">⊕</span> to save it as an app.");
+      ? "Save this as an app: tap <b>Share</b> " + shareIcon + " at the bottom → <b>View More</b> → <b>Add to Home Screen</b> <span aria-hidden=\"true\">⊕</span>."
+      : "Open this link in <b>Safari</b>, then tap <b>Share</b> " + shareIcon + " → <b>View More</b> → <b>Add to Home Screen</b> <span aria-hidden=\"true\">⊕</span> to save it as an app.");
   }
   addEventListener("beforeinstallprompt", e => {
     e.preventDefault(); installEvent = e;
