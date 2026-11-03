@@ -120,6 +120,29 @@ class DropTests(unittest.TestCase):
         meta.write_text(json.dumps({"caption": "x", "hold": False}))     # Publish now
         self.assertEqual(drops.import_drops(m, self.root), 1)
 
+    def test_next_due_follows_pacing_and_ignores_finished_or_stuck(self):
+        write_drop(self.root, "20261102-a")
+        m = {"videos": {}, "publish_pacing": {"instagram": {"next_attempt_at": 5000}, "youtube": {"next_attempt_at": 9000}}}
+        self.assertIsNone(drops.next_due(m, 1000))                       # nothing imported yet
+        drops.import_drops(m, self.root)
+        self.assertEqual(drops.next_due(m, 1000), 5000)                  # Instagram opens first
+        ds = m["videos"]["drop-20261102-a"]["destinations"]
+        ds["instagram"]["status"] = "published"
+        self.assertEqual(drops.next_due(m, 1000), 9000)
+        ds["youtube"].update(status="failed", attempts=3)                 # leave repeated failures to the cron
+        self.assertIsNone(drops.next_due(m, 1000))
+
+    def test_next_due_waits_for_utc_midnight_after_four_youtube_posts(self):
+        write_drop(self.root, "20261102-a")
+        m = {"videos": {}}
+        drops.import_drops(m, self.root)
+        m["videos"]["drop-20261102-a"]["destinations"]["instagram"]["status"] = "published"
+        now = 1793664000 + 3600                                           # 2026-11-03 01:00 UTC
+        for i in range(4):
+            m["videos"][f"v{i}"] = tiktok("2020-01-01T00:00:00Z")
+            m["videos"][f"v{i}"]["destinations"]["youtube"].update(status="published", published_at="2026-11-03T00:30:00Z")
+        self.assertEqual(drops.next_due(m, now), 1793664000 + 86400)
+
     def test_drops_bypass_historical_daily_quota(self):
         write_drop(self.root, "20261102-a")
         m = {"videos": {"old": tiktok("2020-01-01T00:00:00Z")}}

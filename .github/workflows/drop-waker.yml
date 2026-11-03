@@ -1,0 +1,38 @@
+name: Drop waker
+
+# Started by Backfill Publish when a released phone drop is still waiting on platform pacing.
+# Sleeps until that slot opens, then starts Backfill Publish, so drops don't depend on GitHub's
+# irregular cron. Only the newest waker survives (cancel-in-progress).
+on:
+  workflow_dispatch:
+    inputs:
+      wait:
+        description: Seconds to wait before starting Backfill Publish
+        required: true
+
+permissions:
+  actions: write
+
+concurrency:
+  group: drop-waker
+  cancel-in-progress: true
+
+jobs:
+  wake:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - name: Wait for the next posting slot
+        env:
+          WAIT: ${{ inputs.wait }}
+        run: |
+          case "$WAIT" in ''|*[!0-9]*) echo "wait must be whole seconds"; exit 1 ;; esac
+          # At least 10 minutes so a drop that keeps failing before upload can't spin the loop;
+          # jobs stop at 6 hours, and a longer wait re-arms from the next publish run.
+          s=$(( WAIT + 60 )); [ "$s" -lt 600 ] && s=600; [ "$s" -gt 20700 ] && s=20700
+          echo "Sleeping ${s}s (until $(date -u -d "+${s} seconds" +%H:%MZ))"
+          sleep "$s"
+      - name: Start Backfill Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run backfill-publish-one.yml --repo "$GITHUB_REPOSITORY" --ref main

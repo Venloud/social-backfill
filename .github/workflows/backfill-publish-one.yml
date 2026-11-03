@@ -9,6 +9,7 @@ on:
 
 permissions:
   contents: write   # push the state branch
+  actions: write    # arm the Drop waker for the next posting slot
 
 # One group for every job that touches TikTok tokens or the state branch.
 concurrency:
@@ -80,3 +81,16 @@ jobs:
           INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
           INSTAGRAM_USER_ID: ${{ secrets.INSTAGRAM_USER_ID }}
         run: python -m pipeline.publish_loop --state-dir .state --target 20 --max-posts 1 --segment-seconds 600
+      - name: Wake up again when the next phone drop can post
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git -C .state pull -q --ff-only origin state 2>/dev/null || true
+          wait=$(python -m pipeline.drops --state-dir .state --next-due || true)
+          if [ -n "$wait" ]; then
+            echo "Released drop waiting; next slot in ${wait}s"
+            gh workflow run drop-waker.yml --repo "$GITHUB_REPOSITORY" --ref main -f wait="$wait"
+          else
+            echo "No released drop waiting"
+          fi
