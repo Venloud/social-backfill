@@ -1,0 +1,20 @@
+name: Drop released
+
+# Lives on the drops branch only. The drop page commits here; when a caption file changes
+# (Publish now / Cancel), start the publisher on main instead of waiting for GitHub's cron.
+on:
+  push:
+    branches: [drops]
+    paths: ['drops/*.json']
+
+permissions:
+  actions: write
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Start Backfill Publish on main
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run backfill-publish-one.yml --repo "$GITHUB_REPOSITORY" --ref main
