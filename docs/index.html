@@ -39,14 +39,23 @@
   <h1>Social Drop</h1>
   <p class="sub">Drop a video + caption. It posts to Instagram and YouTube next, ahead of the TikTok backfill.</p>
 
-  <div class="card" id="tokenCard">
-    <label for="token">GitHub token (saved on this phone only)</label>
+  <div class="card" id="unlockCard" style="display:none">
+    <label for="pass">Passcode</label>
+    <input id="pass" type="password" autocomplete="current-password" placeholder="Passcode">
+    <div style="margin-top:12px"><button id="unlock">Submit</button></div>
+    <div id="unlockMsg" class="hint"></div>
+  </div>
+
+  <div class="card" id="tokenCard" style="display:none">
+    <label for="token">Owner setup: GitHub token</label>
     <input id="token" type="password" autocomplete="off" placeholder="github_pat_…">
     <p class="hint">Fine-grained token → repository <b>Venloud/social-backfill</b> only → Contents: Read and write.</p>
+    <label for="newPass" style="margin-top:12px">Passcode to share (8+ characters)</label>
+    <input id="newPass" type="password" autocomplete="new-password" placeholder="Passcode">
     <div style="margin-top:12px"><button id="save">Submit</button></div>
     <div id="tokenMsg" class="hint"></div>
   </div>
-  <p class="hint" id="saved" style="display:none">Token saved on this phone. <button class="link" id="change">Change</button></p>
+  <p class="hint" id="saved" style="display:none">Unlocked on this phone. <button class="link" id="change">Owner setup</button></p>
 
   <div class="card">
     <label>Video</label>
@@ -136,22 +145,59 @@ $("file").onchange = async () => {
   ready();
   cover = await grabCover(v);
 };
-function showToken(show) { $("tokenCard").style.display = show ? "" : "none"; $("saved").style.display = show ? "none" : ""; }
-$("token").oninput = ready;
-$("save").onclick = async () => {
-  // Read-only check: confirms the token can write to this repo; uploads nothing.
-  $("tokenMsg").textContent = "Checking…";
+// The owner's token is stored in docs/key.json only encrypted with the shared passcode (PBKDF2 + AES-GCM).
+const KEY_PATH = "docs/key.json", enc = new TextEncoder();
+const toB64 = buf => btoa(String.fromCharCode(...new Uint8Array(buf)));
+const fromB64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+async function passKey(pass, salt) {
+  const base = await crypto.subtle.importKey("raw", enc.encode(pass), "PBKDF2", false, ["deriveKey"]);
+  return crypto.subtle.deriveKey({ name: "PBKDF2", salt, iterations: 310000, hash: "SHA-256" }, base,
+    { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]);
+}
+let lockedKey = null;
+
+function view(which) {   // "unlock" | "setup" | "ready"
+  $("unlockCard").style.display = which === "unlock" ? "" : "none";
+  $("tokenCard").style.display = which === "setup" ? "" : "none";
+  $("saved").style.display = which === "ready" ? "" : "none";
+}
+function fail(el, e) { $(el).textContent = e.message || String(e); $(el).className = "hint err"; }
+
+$("unlock").onclick = async () => {
+  $("unlockMsg").className = "hint"; $("unlockMsg").textContent = "Checking…";
   try {
+    const key = await passKey($("pass").value, fromB64(lockedKey.salt));
+    const plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv: fromB64(lockedKey.iv) }, key, fromB64(lockedKey.data))
+      .catch(() => { throw new Error("Wrong passcode."); });
+    $("token").value = new TextDecoder().decode(plain);
+    store("drop_token", token());
+    $("pass").value = ""; $("unlockMsg").textContent = "";
+    view("ready"); ready(); refresh();
+  } catch (e) { fail("unlockMsg", e); }
+};
+
+$("save").onclick = async () => {
+  $("tokenMsg").className = "hint"; $("tokenMsg").textContent = "Checking…";
+  try {
+    const pass = $("newPass").value;
+    if (pass.length < 8) throw new Error("Use a passcode of at least 8 characters.");
     const repo = token() && await gh("");
     if (!repo || !repo.permissions || !repo.permissions.push) throw new Error("This token can't write to Venloud/social-backfill.");
+    const salt = crypto.getRandomValues(new Uint8Array(16)), iv = crypto.getRandomValues(new Uint8Array(12));
+    const data = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, await passKey(pass, salt), enc.encode(token()));
+    lockedKey = { salt: toB64(salt), iv: toB64(iv), data: toB64(data) };
+    const existing = await gh("/contents/" + KEY_PATH + "?ref=main");
+    await gh("/contents/" + KEY_PATH, { method: "PUT", body: JSON.stringify({ message: "Drop page: update locked key",
+      content: utf8b64(JSON.stringify(lockedKey)), branch: "main", ...(existing ? { sha: existing.sha } : {}) }) });
     store("drop_token", token());
-    $("tokenMsg").textContent = "";
-    showToken(false); ready(); refresh();
-  } catch (e) { $("tokenMsg").textContent = e.message; $("tokenMsg").className = "hint err"; }
+    $("newPass").value = ""; $("tokenMsg").textContent = "";
+    view("ready"); ready(); refresh();
+    say("Saved. Share the link and passcode; the page updates within a couple of minutes.", "ok");
+  } catch (e) { fail("tokenMsg", e); }
 };
-$("change").onclick = () => showToken(true);
+$("change").onclick = () => view("setup");
 $("caption").oninput = ready;
-$("forget").onclick = () => { store("drop_token", null); $("token").value = ""; showToken(true); ready(); };
+$("forget").onclick = () => { store("drop_token", null); $("token").value = ""; view(lockedKey ? "unlock" : "setup"); ready(); };
 
 $("push").onclick = async () => {
   const id = new Date().toISOString().replace(/[-:]/g, "").replace("T", "-").slice(0, 15) + "-" + Math.random().toString(36).slice(2, 6);
@@ -194,8 +240,11 @@ async function refresh() {
 }
 
 $("token").value = load("drop_token");
-showToken(!token());
-ready(); refresh();
+(async () => {
+  try { const r = await fetch("key.json", { cache: "no-store" }); if (r.ok) lockedKey = await r.json(); } catch (e) {}
+  view(token() ? "ready" : lockedKey ? "unlock" : "setup");
+  ready(); refresh();
+})();
 </script>
 </body>
 </html>
