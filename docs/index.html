@@ -106,7 +106,8 @@
 </main>
 <script>
 const REPO = "Venloud/social-backfill", BRANCH = "drops", API = "https://api.github.com/repos/" + REPO;
-const MAX_BYTES = 95 * 1024 * 1024; // GitHub's contents API refuses files over 100 MB
+// GitHub drops requests over ~100 MB, and base64 adds a third, so the video itself must stay under ~70 MB.
+const MAX_BYTES = 70 * 1024 * 1024;
 const $ = id => document.getElementById(id);
 let items = [];   // {file, cover, caption (textarea), el}
 
@@ -149,7 +150,7 @@ async function blob(file, onProgress) {
     x.upload.onprogress = e => e.lengthComputable && onProgress && onProgress(e.loaded / e.total);
     x.onload = () => x.status < 300 ? resolve(JSON.parse(x.responseText).sha)
       : reject(new Error("GitHub " + x.status + ": " + (JSON.parse(x.responseText || "{}").message || "")));
-    x.onerror = () => reject(new Error("Network error, check your connection."));
+    x.onerror = () => reject(new Error("The upload was cut off (weak signal or the video is too big)."));
     x.send(new Blob(parts, { type: "application/json" }));
   });
 }
@@ -209,7 +210,7 @@ $("file").onchange = () => {
     items.push(it); $("list").append(el);
   }
   $("file").value = "";
-  say(skipped.length ? "Skipped (over 95 MB): " + skipped.join(", ") : "", skipped.length ? "err" : "");
+  say(skipped.length ? "Too big, skipped (limit 70 MB, try exporting at 1080p): " + skipped.join(", ") : "", skipped.length ? "err" : "");
   ready();
 };
 // The owner's token is stored in docs/key.json only encrypted with the shared passcode (PBKDF2 + AES-GCM).
