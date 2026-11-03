@@ -177,19 +177,28 @@ async function ensureBranch() {
   await gh("/git/refs", { method: "POST", body: JSON.stringify({ ref: "refs/heads/" + BRANCH, sha: main.object.sha }) });
 }
 
-function grabCover(video) {
+// iPhone Safari won't decode a frame until the video plays, so play a hidden muted copy for a moment,
+// pause, seek, and draw that frame (scaled to 720 px wide to spare memory).
+function grabCover(url) {
   return new Promise(res => {
-    const seek = () => { video.currentTime = Math.min(1, (video.duration || 2) / 2); };
-    video.addEventListener("seeked", () => {
+    const v = document.createElement("video");
+    v.muted = true; v.playsInline = true; v.preload = "auto"; v.src = url;
+    v.style.cssText = "position:fixed;left:0;top:0;width:2px;height:2px;opacity:0;pointer-events:none";
+    document.body.append(v);
+    const finish = b => { v.remove(); res(b); };
+    v.addEventListener("seeked", () => {
       try {
+        const scale = Math.min(1, 720 / (v.videoWidth || 720));
         const c = document.createElement("canvas");
-        c.width = video.videoWidth; c.height = video.videoHeight;
-        c.getContext("2d").drawImage(video, 0, 0);
-        c.toBlob(b => res(b), "image/jpeg", 0.9);
-      } catch (e) { res(null); }
+        c.width = Math.round(v.videoWidth * scale); c.height = Math.round(v.videoHeight * scale);
+        if (!c.width || !c.height) return finish(null);
+        c.getContext("2d").drawImage(v, 0, 0, c.width, c.height);
+        c.toBlob(finish, "image/jpeg", 0.85);
+      } catch (e) { finish(null); }
     }, { once: true });
-    video.readyState >= 1 ? seek() : video.addEventListener("loadedmetadata", seek, { once: true });
-    setTimeout(() => res(null), 8000);
+    const seek = () => { v.pause(); v.currentTime = Math.min(1, (v.duration || 2) / 2); };
+    v.play().then(seek).catch(() => v.readyState >= 1 ? seek() : v.addEventListener("loadedmetadata", seek, { once: true }));
+    setTimeout(() => finish(null), 10000);
   });
 }
 
