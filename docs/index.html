@@ -33,6 +33,10 @@
   .item .top { display:flex; justify-content:space-between; align-items:center; font-size:13px; color:var(--mute); }
   .item .top .link { padding:0; }
   textarea.missing { border-color:var(--err); }
+  li.drop { display:flex; gap:12px; align-items:flex-start; }
+  li.drop video { width:64px; height:114px; object-fit:cover; border-radius:8px; background:#000; flex:none; }
+  li.drop div { min-width:0; }
+  li.drop .cap { display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; white-space:pre-line; }
   button { width:100%; border:0; border-radius:12px; padding:15px; font:600 17px/1 inherit; background:var(--accent); color:#fff; cursor:pointer; }
   button:disabled { opacity:.45; }
   .link { background:none; color:var(--mute); width:auto; padding:6px 0; font-size:13px; font-weight:400; text-decoration:underline; }
@@ -174,11 +178,12 @@ $("file").onchange = () => {
     el.innerHTML = '<video muted playsinline preload="auto"></video><div class="body">' +
       '<div class="top"><span class="num"></span><button class="link">Remove</button></div>' +
       '<textarea placeholder="Caption with #hashtags"></textarea></div>';
-    const v = el.querySelector("video"); v.src = URL.createObjectURL(file);
+    // "#t=0.1" makes iPhone Safari draw the first frame instead of a black box; tap to play.
+    const v = el.querySelector("video"); v.src = URL.createObjectURL(file) + "#t=0.1"; v.controls = true;
     const it = { file, cover: null, caption: el.querySelector("textarea"), el };
     it.caption.oninput = ready;
     el.querySelector(".link").onclick = () => { items = items.filter(x => x !== it); el.remove(); ready(); };
-    grabCover(v).then(b => { it.cover = b; });
+    grabCover(v).then(b => { it.cover = b; if (b) v.poster = URL.createObjectURL(b); });
     items.push(it); $("list").append(el);
   }
   $("file").value = "";
@@ -285,10 +290,30 @@ async function refresh() {
   try {
     const items = (await gh("/contents/drops?ref=" + BRANCH)) || [];
     const ids = items.filter(i => i.name.endsWith(".json")).map(i => i.name.slice(0, -5)).sort().reverse().slice(0, 10);
+    const names = new Set(items.map(i => i.name));
+    const raw = "https://raw.githubusercontent.com/" + REPO + "/" + BRANCH + "/drops/";
     $("recent").replaceChildren(...(ids.length ? ids.map(id => {
-      const li = document.createElement("li");
-      li.textContent = id.slice(0, 4) + "-" + id.slice(4, 6) + "-" + id.slice(6, 8) + " " + id.slice(9, 11) + ":" + id.slice(11, 13) + " UTC";
-      const s = document.createElement("small"); s.textContent = "drop-" + id; li.append(s);
+      const li = document.createElement("li"); li.className = "drop";
+      // Tap the thumbnail to play. GitHub serves .mp4 as octet-stream, so load it as a typed blob first.
+      const v = document.createElement("video");
+      v.preload = "none"; v.playsInline = true;
+      if (names.has(id + ".jpg")) v.poster = raw + id + ".jpg";
+      v.onclick = async () => {
+        if (v.src) return;
+        v.style.opacity = ".5";
+        try {
+          const buf = await (await fetch(raw + id + ".mp4")).arrayBuffer();
+          v.src = URL.createObjectURL(new Blob([buf], { type: "video/mp4" }));
+          v.controls = true; v.play().catch(() => {});
+        } catch (e) {} finally { v.style.opacity = ""; }
+      };
+      const body = document.createElement("div");
+      const cap = document.createElement("span"); cap.className = "cap"; cap.textContent = "…";
+      const when = document.createElement("small");
+      when.textContent = id.slice(0, 4) + "-" + id.slice(4, 6) + "-" + id.slice(6, 8) + " " + id.slice(9, 11) + ":" + id.slice(11, 13) + " UTC";
+      body.append(cap, when); li.append(v, body);
+      fetch(raw + id + ".json").then(r => r.json()).then(d => { cap.textContent = d.caption || "(no caption)"; })
+        .catch(() => { cap.textContent = "drop-" + id; });
       return li;
     }) : [Object.assign(document.createElement("li"), { textContent: "No drops yet." })]));
   } catch (e) { $("recent").replaceChildren(Object.assign(document.createElement("li"), { textContent: e.message })); }
