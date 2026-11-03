@@ -44,6 +44,8 @@
   li.drop div { min-width:0; }
   li.drop .link { display:block; padding:6px 0 0; color:var(--err); }
   li.drop small.ok { color:var(--ok); }
+  li.drop .eta small { display:block; }
+  li.drop .eta a { color:var(--ok); }
   li.drop .go { width:auto; padding:10px 14px; font-size:15px; margin-top:8px; }
   li.drop .cap { display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; white-space:pre-line; }
   button { width:100%; border:0; border-radius:12px; padding:15px; font:600 17px/1 inherit; background:var(--accent); color:#fff; cursor:pointer; }
@@ -123,7 +125,7 @@ const PART_BYTES = 25 * 1024 * 1024, MAX_BYTES = 250 * 1024 * 1024;
 const $ = id => document.getElementById(id);
 let items = [];   // {file, cover, caption (textarea), el}
 let covers = Promise.resolve();
-const VERSION = "2026-11-03.5";
+const VERSION = "2026-11-03.6";
 
 $("version").textContent = "Version " + VERSION;
 // GitHub Pages lets phones cache this page for 10 minutes; if a newer version is live, reload into it once.
@@ -384,8 +386,37 @@ function videoUrl(id, raw, files) {
     .then(bufs => local[id] = URL.createObjectURL(new Blob(bufs, { type: "video/mp4" }))));
 }
 
+// Posting estimates: the publisher's saved pacing (state branch) plus the released drops ahead in line.
+// Spacing matches pipeline/publish_one.py PLATFORM_INTERVAL_SECONDS.
+const PLATFORMS = { instagram: ["Instagram", 3600], youtube: ["YouTube", 6 * 3600] };
+const fmtLocal = ms => new Date(ms).toLocaleString([], { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+async function estimate(rows) {
+  let m = null;
+  try {
+    const t = await (await fetch("https://raw.githubusercontent.com/" + REPO + "/state/state/manifest.json?t=" + Date.now())).text();
+    m = JSON.parse(t.replace(/^﻿/, ""));
+  } catch (e) {}
+  const now = Date.now(), videos = (m && m.videos) || {};
+  const queue = rows.filter(r => r.meta && !r.meta.hold)
+    .sort((a, b) => String(a.meta.created_at).localeCompare(String(b.meta.created_at)));
+  queue.forEach((r, i) => { r.pos = i; });
+  for (const [p, [, gap]] of Object.entries(PLATFORMS)) {
+    const pace = ((m && m.publish_pacing) || {})[p] || {};
+    let at = Math.max(now, (pace.next_attempt_at || 0) * 1000, (pace.cooldown_until || 0) * 1000);
+    for (const r of queue) {
+      const d = ((videos["drop-" + r.id] || {}).destinations || {})[p];
+      if (d && d.status === "published") r.eta[p] = { live: true, url: d.url };
+      else if (d && d.status === "cancelled") r.eta[p] = { text: "cancelled" };
+      else if (d && d.status === "publishing") r.eta[p] = { text: "posting now" };
+      else { r.eta[p] = { at }; at += gap * 1000; }
+    }
+  }
+  rows.forEach(r => r.show());
+}
+
 async function refresh() {
   if (!token()) return;
+  const rows = [];
   try {
     const items = (await gh("/contents/drops?ref=" + BRANCH)) || [];
     const ids = items.filter(i => i.name.endsWith(".json")).map(i => i.name.slice(0, -5)).sort().reverse().slice(0, 10);
@@ -414,21 +445,34 @@ async function refresh() {
       // Pushed drops wait ("hold") until Publish now; Cancel removes the caption file so the publisher skips it.
       const path = "/contents/drops/" + id + ".json";
       let meta = null, sha = shas[id + ".json"];
-      const status = document.createElement("small");
+      const status = document.createElement("small"), etaBox = document.createElement("div"); etaBox.className = "eta";
       const publish = document.createElement("button"); publish.className = "go"; publish.textContent = "Publish now";
       const cancel = document.createElement("button"); cancel.className = "link"; cancel.textContent = "Cancel";
+      const row = { id, meta: null, eta: {} }; rows.push(row);
       const show = () => {
+        meta = row.meta || meta;
         publish.style.display = meta && meta.hold ? "" : "none";
-        status.textContent = !meta ? "" : meta.hold ? "Waiting — not posted until you publish" : "Publishing: next in line";
+        const place = !row.pos ? "next in line" : (row.pos + 1) + (["", "", "nd", "rd"][row.pos + 1] || "th") + " in line";
+        status.textContent = !meta ? "" : meta.hold ? "Waiting — not posted until you publish" : "Publishing: " + place;
         status.className = meta && !meta.hold ? "ok" : "";
+        etaBox.replaceChildren(...(meta && !meta.hold ? Object.entries(PLATFORMS).map(([p, [label]]) => {
+          const e = row.eta[p], line = document.createElement("small");
+          if (!e) { line.textContent = label + ": checking…"; return line; }
+          if (e.live) {
+            line.className = "ok"; line.append(label + ": live ✓ ");
+            if (e.url) line.append(Object.assign(document.createElement("a"), { href: e.url, target: "_blank", rel: "noopener", textContent: "open" }));
+          } else line.textContent = label + ": " + (e.text || "about " + fmtLocal(e.at));
+          return line;
+        }) : []));
       };
+      row.show = show;
       publish.onclick = async () => {
         publish.disabled = true; publish.textContent = "Publishing…";
         try {
           const next = { ...meta }; delete next.hold;
           const r = await gh(path, { method: "PUT", body: JSON.stringify({ message: "drop: publish " + id,
             content: utf8b64(JSON.stringify(next, null, 2)), sha, branch: BRANCH }) });
-          meta = next; sha = r.content.sha; show();
+          meta = row.meta = next; sha = r.content.sha; show(); estimate(rows);
         } catch (e) { alert("Couldn't publish: " + e.message); }
         publish.disabled = false; publish.textContent = "Publish now";
       };
@@ -440,14 +484,16 @@ async function refresh() {
           li.remove();
         } catch (e) { cancel.disabled = false; cancel.textContent = "Cancel"; alert("Couldn't cancel: " + e.message); }
       };
-      body.append(cap, when, status, publish, cancel); li.append(v, body);
+      body.append(cap, when, status, etaBox, publish, cancel); li.append(v, body);
       show();
-      gh(path + "?ref=" + BRANCH).then(f => {
-        meta = JSON.parse(decodeURIComponent(escape(atob(f.content.replace(/\n/g, ""))))); sha = f.sha;
+      row.loaded = gh(path + "?ref=" + BRANCH).then(f => {
+        meta = row.meta = JSON.parse(decodeURIComponent(escape(atob(f.content.replace(/\n/g, ""))))); sha = f.sha;
         cap.textContent = meta.caption || "(no caption)"; show();
       }).catch(() => { cap.textContent = "drop-" + id; });
       return li;
     }) : [Object.assign(document.createElement("li"), { textContent: "No drops yet." })]));
+    await Promise.all(rows.map(r => r.loaded));
+    estimate(rows);
   } catch (e) { $("recent").replaceChildren(Object.assign(document.createElement("li"), { textContent: e.message })); }
 }
 
