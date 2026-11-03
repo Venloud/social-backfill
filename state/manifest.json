@@ -25,8 +25,8 @@
   },
   "publish_pacing": {
     "instagram": {
-      "last_source_account": "drop",
-      "next_attempt_at": 1793691776.3149643
+      "last_source_account": "primary",
+      "next_attempt_at": 1793703918.5406644
     },
     "youtube": {
       "last_source_account": "drop",
@@ -34,7 +34,7 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-11-03T10:05:17Z",
+  "updated_at": "2026-11-03T10:05:18Z",
   "videos": {
     "7693026624211569934": {
       "destinations": {
@@ -14571,11 +14571,12 @@
     "7703682119893044494": {
       "destinations": {
         "instagram": {
-          "attempts": 0,
+          "attempts": 1,
           "last_error": null,
           "published_at": null,
           "remote_id": null,
-          "status": "pending",
+          "started_at": "2026-11-03T10:05:18Z",
+          "status": "publishing",
           "url": null
         },
         "snapchat": {
