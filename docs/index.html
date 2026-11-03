@@ -313,8 +313,8 @@ let installEvent = null;
   if (ios) {
     const safari = /Safari/.test(navigator.userAgent) && !/CriOS|FxiOS|EdgiOS|Instagram|FBAN|FBAV|GSA/.test(navigator.userAgent);
     show(safari
-      ? "Save this as an app: tap <b>Share</b> <span aria-hidden=\"true\">⬆︎</span> at the bottom, then <b>Add to Home Screen</b>."
-      : "Open this link in <b>Safari</b>, then tap <b>Share</b> → <b>Add to Home Screen</b> to save it as an app.");
+      ? "Save this as an app: tap <b>Share</b> <span aria-hidden=\"true\">⬆︎</span> at the bottom → <b>View More</b> → <b>Add to Home Screen</b> <span aria-hidden=\"true\">⊕</span>."
+      : "Open this link in <b>Safari</b>, then tap <b>Share</b> → <b>View More</b> → <b>Add to Home Screen</b> <span aria-hidden=\"true\">⊕</span> to save it as an app.");
   }
   addEventListener("beforeinstallprompt", e => {
     e.preventDefault(); installEvent = e;
