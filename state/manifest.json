@@ -37,7 +37,7 @@
   "publish_pacing": {
     "instagram": {
       "last_source_account": "primary",
-      "next_attempt_at": 1794007471.5387177
+      "next_attempt_at": 1794021797.4844747
     },
     "youtube": {
       "last_source_account": "primary",
@@ -45,7 +45,7 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-11-07T02:23:16Z",
+  "updated_at": "2026-11-07T02:23:17Z",
   "videos": {
     "7693026624211569934": {
       "destinations": {
@@ -9534,12 +9534,12 @@
     "7699916206936952077": {
       "destinations": {
         "instagram": {
-          "attempts": 4,
-          "last_error": "resumable upload failed: HTTPError: HTTP Error 400: Bad Request",
+          "attempts": 5,
+          "last_error": null,
           "published_at": null,
           "remote_id": null,
-          "started_at": "2026-11-06T17:29:47Z",
-          "status": "failed",
+          "started_at": "2026-11-07T02:23:17Z",
+          "status": "publishing",
           "url": null
         },
         "snapchat": {
