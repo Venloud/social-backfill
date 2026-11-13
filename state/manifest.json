@@ -35,7 +35,7 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-11-13T17:23:33Z",
+  "updated_at": "2026-11-13T17:23:38Z",
   "videos": {
     "7693026624211569934": {
       "destinations": {
@@ -11013,13 +11013,22 @@
         }
       },
       "media": {
-        "attempts": 1,
-        "downloaded_at": null,
-        "info": null,
-        "last_error": "ERROR: [TikTok] 7700024239423753486: Unexpected response from webpage request; please report this issue on https://github.com/yt-dlp/yt-dlp/issues?q= , filling out the appropriate issue template. Confirm you are on the latest version using yt-dlp -U",
-        "path": null,
-        "status": "failed",
-        "validated": false
+        "attempts": 2,
+        "downloaded_at": "2026-11-13T17:23:38Z",
+        "info": {
+          "audio": true,
+          "audio_codec": "aac",
+          "container": "mov,mp4,m4a,3gp,3g2,mj2",
+          "duration": 30.433,
+          "height": 1280,
+          "size_bytes": 1110949,
+          "video_codec": "hevc",
+          "width": 720
+        },
+        "last_error": null,
+        "path": "media/7700024239423753486.mp4",
+        "status": "ready",
+        "validated": true
       },
       "source": {
         "account": "primary",
