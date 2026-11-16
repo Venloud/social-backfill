@@ -34,7 +34,7 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-11-16T17:29:00Z",
+  "updated_at": "2026-11-16T23:43:05Z",
   "videos": {
     "7693026624211569934": {
       "destinations": {
@@ -2236,11 +2236,20 @@
       "media": {
         "attempts": 23,
         "downloaded_at": "2026-10-13T21:34:24Z",
-        "info": null,
-        "last_error": "ERROR: [TikTok] 7693313794331757838: Your IP address is blocked from accessing this post",
+        "info": {
+          "audio": true,
+          "audio_codec": "aac",
+          "container": "mov,mp4,m4a,3gp,3g2,mj2",
+          "duration": 75.418,
+          "height": 1280,
+          "size_bytes": 7642319,
+          "video_codec": "h264",
+          "width": 720
+        },
+        "last_error": null,
         "path": "media/7693313794331757838.mp4",
-        "status": "failed",
-        "validated": false
+        "status": "ready",
+        "validated": true
       },
       "source": {
         "account": "primary",
