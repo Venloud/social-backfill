@@ -34,7 +34,7 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-11-16T17:28:12Z",
+  "updated_at": "2026-11-16T17:28:16Z",
   "videos": {
     "7693026624211569934": {
       "destinations": {
@@ -2234,7 +2234,7 @@
         }
       },
       "media": {
-        "attempts": 22,
+        "attempts": 23,
         "downloaded_at": "2026-10-13T21:34:24Z",
         "info": null,
         "last_error": "ERROR: [TikTok] 7693313794331757838: Your IP address is blocked from accessing this post",
