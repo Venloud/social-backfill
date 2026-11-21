@@ -34,7 +34,7 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-11-21T11:48:22Z",
+  "updated_at": "2026-11-21T11:48:28Z",
   "videos": {
     "7693026624211569934": {
       "destinations": {
@@ -3273,12 +3273,18 @@
         },
         "youtube": {
           "attempts": 1,
+          "cover": {
+            "asset": "/home/runner/work/social-backfill/social-backfill/media/covers/7693710106235587854.jpg",
+            "status": "set"
+          },
+          "format": "original MP4",
           "last_error": null,
-          "published_at": null,
-          "remote_id": null,
+          "privacy": "public",
+          "published_at": "2026-11-21T11:48:28Z",
+          "remote_id": "1J5C2R5qo34",
           "started_at": "2026-11-21T11:48:22Z",
-          "status": "publishing",
-          "url": null
+          "status": "published",
+          "url": "https://youtube.com/shorts/1J5C2R5qo34"
         }
       },
       "media": {
