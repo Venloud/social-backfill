@@ -34,7 +34,7 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-11-23T22:03:02Z",
+  "updated_at": "2026-11-23T22:03:06Z",
   "videos": {
     "7693026624211569934": {
       "destinations": {
@@ -3753,12 +3753,18 @@
         },
         "youtube": {
           "attempts": 1,
+          "cover": {
+            "error": "Fail: HTTP 403: {\"code\": 403, \"message\": \"The thumbnail can't be set for the specified video. The request might not be properly authorized.\", \"errors\": [{\"message\": \"The thumbnail can't be set for the specified video. The request might not be properly authorized.\", \"domain\": \"youtube.thumbnail\", \"reason\":",
+            "status": "failed"
+          },
+          "format": "original MP4",
           "last_error": null,
-          "published_at": null,
-          "remote_id": null,
+          "privacy": "public",
+          "published_at": "2026-11-23T22:03:06Z",
+          "remote_id": "A8zZjx5yZ80",
           "started_at": "2026-11-23T22:03:02Z",
-          "status": "publishing",
-          "url": null
+          "status": "published",
+          "url": "https://youtube.com/shorts/A8zZjx5yZ80"
         }
       },
       "media": {
